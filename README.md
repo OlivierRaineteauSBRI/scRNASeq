@@ -1,10 +1,30 @@
-# Description scRNA-Seq project
+# scRNA-Seq project
 
  <img src="https://img.shields.io/badge/R-276DC3?style=for-the-badge&logo=r&logoColor=white"> <img src ="https://img.shields.io/badge/Python-14354C?style=for-the-badge&logo=python&logoColor=white"> ![Hits](https://hitcounter.pythonanywhere.com/count/tag.svg?url=https://github.com/OlivierRaineteauSBRI/scRNASeq) <img src="https://komarev.com/ghpvc/?username=OlivierRaineteauSBRI"/> 
 
 Welcome to the GitHub repository related to our recent publication **Transcriptional programs controlling closure of pallial germinal activity** 
 _à compléter avec auteurs, site de publication, année et lien :_ 
-This website supports documentation and script so that interested readers may reproduce the major results presented in the study.
+
+<!-- PROJECT LOGO -->
+<br />
+<div align="center">
+  <a href="https://github.com/OlivierRaineteauSBRI/scRNASeq">
+    <img src="https://raw.githubusercontent.com/othneildrew/Best-README-Template/master/images/logo.png" alt="Logo" width="80" height="80">
+  </a>
+
+<h3 align="center">Postnatal mouse brain scRNA-seq analysis</h3>
+
+  <p align="center">
+    This website supports documentation and script so that interested readers may reproduce the major results presented in the study.
+    <br />
+    <a href="https://github.com/OlivierRaineteauSBRI/scRNASeq"><strong>Explore the docs »</strong></a>
+    <br />
+    <br />
+    <a href="https://github.com/OlivierRaineteauSBRI/scRNASeq/issues">Report Bug</a>
+    ·
+    <a href="https://github.com/OlivierRaineteauSBRI/scRNASeq/issues">Request Feature</a>
+  </p>
+</div>
 
 ## Abstract
 
@@ -63,4 +83,3 @@ _(pour le lien mettez simplement l'URL de votre projets suivi de ``/tags``)_
 ## Questions
 <img src="https://img.shields.io/badge/Ask%20me-anything-1abc9c.svg">
 For any question or issue, please contact XXXXXXXXX  
-
