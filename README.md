@@ -1,4 +1,4 @@
-# scRNA-Seq 
+# Description scRNA-Seq project
 
  <img src="https://img.shields.io/badge/R-276DC3?style=for-the-badge&logo=r&logoColor=white"> <img src ="https://img.shields.io/badge/Python-14354C?style=for-the-badge&logo=python&logoColor=white"> ![Hits](https://hitcounter.pythonanywhere.com/count/tag.svg?url=https://github.com/OlivierRaineteauSBRI/scRNASeq) <img src="https://komarev.com/ghpvc/?username=OlivierRaineteauSBRI"/> 
 
@@ -46,10 +46,21 @@ Liste des versions : [Cliquer pour afficher](https://github.com/OlivierRaineteau
 _(pour le lien mettez simplement l'URL de votre projets suivi de ``/tags``)_
 
 ## Authors
-List of all the contributors [contributors](https://github.com/OlivierRaineteauSBRI/scRNASeq/contributors)
 
-_(pour le lien mettez simplement l'URL de votre projet suivi de ``/contirubors``)_
+**Olivier Raineteau**
+- [Profile](https://github.com/OlivierRaineteauSBRI "Olivier Raineteau")
+- [Email](mailto:olivier.raineteau@inserm.fr?subject=Hi% "Hi!")
 
-## Questions 
-For any question or issue, please contact XXXXXXXXX <img src="https://img.shields.io/badge/Ask%20me-anything-1abc9c.svg"> 
+**Guillaume Marcy**
+- [Profile](https://github.com/GuillaumeMarcy "Guillaume Marcy")
+- [Email](mailto:guillaume.marcy@universite-lyon.fr?subject=Hi% "Hi!")
+
+**Emeric Texeraud**
+- [Profile](https://github.com/GuillaumeMarcy "Guillaume Marcy")
+- [Email](mailto:etexero56@gmail.com?subject=Hi% "Hi!")
+
+
+## Questions
+<img src="https://img.shields.io/badge/Ask%20me-anything-1abc9c.svg">
+For any question or issue, please contact XXXXXXXXX  
 
