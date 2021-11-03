@@ -28,8 +28,9 @@ _à compléter avec auteurs, site de publication, année et lien :_
 
 ## Abstract
 
+<p align="justify">
 The ventricular-subventricular zone (V-SVZ) is the largest neurogenic region of the postnatal forebrain, containing neural stem cells (NSCs) emerging from both the embryonic pallium and subpallium. Despite of this dual origin, glutamatergic neurogenesis declines rapidly after birth, while gabaergic neurogenesis persists throughout life. Here, we performed single-cell RNA-sequencing (scRNA-Seq) of the postnatal dorsal V-SVZ for unravelling the mechanisms leading to pallial lineage germinal activity silencing. We identify cell lineage-specific NSCs primed for the generation of neurons or glial cells, as well as a large population of so far uncharacterized quiescent NSCs (qNSC). Pallial qNSCs enter a state of deep quiescence, characterized by persistent TGFβ signalling, reduced transcriptional activity and Hopx expression, whilst in contrast, subpallial qNSCs remain transcriptionally primed for activation. In addition, neurogenesis by pallial NSCs is paralleled by acquisition of subpallial traits, reduced progenitor proliferation and impaired neuronal differentiation. Thus, multiple mechanisms converge in silencing pallial germinal activity early after birth.
-
+ </p>
 
 ## Files you'll find here 
 
