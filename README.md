@@ -1,8 +1,9 @@
 # scRNA-Seq project
 
- <img src="https://img.shields.io/badge/R-276DC3?style=for-the-badge&logo=r&logoColor=white">  <img src ="https://img.shields.io/badge/Python-14354C?style=for-the-badge&logo=python&logoColor=white">  ![Hits](https://hitcounter.pythonanywhere.com/count/tag.svg?url=https://github.com/OlivierRaineteauSBRI/scRNASeq) <img src="https://komarev.com/ghpvc/?username=OlivierRaineteauSBRI"/> 
+ <img src="https://img.shields.io/badge/R-276DC3?style=for-the-badge&logo=r&logoColor=white">  <img src ="https://img.shields.io/badge/Python-14354C?style=for-the-badge&logo=python&logoColor=white">
 
-Welcome to the GitHub repository related to our recent publication **Transcriptional programs controlling closure of pallial germinal activity** 
+Welcome to the GitHub repository related to our recent publication **Single cell analysis of the dorsal V-SVZ reveals differential quiescence of postnatal
+pallial and subpallial neural stem cells driven by BMPR1A-signalling** 
 _à compléter avec auteurs, site de publication, année et lien :_ 
 
 <!-- PROJECT LOGO -->
