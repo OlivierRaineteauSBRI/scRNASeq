@@ -81,11 +81,7 @@ _(pour le lien mettez simplement l'URL de votre projets suivi de ``/tags``)_
 - [Profile](https://github.com/GuillaumeMarcy "Guillaume Marcy")
 - [Email](mailto:guillaume.marcy@universite-lyon.fr?subject=Hi% "Hi!")
 
-**Emeric Texeraud**
-- [Profile](https://github.com/GuillaumeMarcy "Guillaume Marcy")
-- [Email](mailto:etexero56@gmail.com?subject=Hi% "Hi!")
-
 
 ## Questions
 <img src="https://img.shields.io/badge/Ask%20me-anything-1abc9c.svg">
-For any question or issue, please contact XXXXXXXXX  
+For any question or issue, please contact [Email](mailto:olivier.raineteau@inserm.fr?subject=Hi% "Hi!")
