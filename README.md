@@ -84,4 +84,4 @@ _(pour le lien mettez simplement l'URL de votre projets suivi de ``/tags``)_
 
 ## Questions
 <img src="https://img.shields.io/badge/Ask%20me-anything-1abc9c.svg">
-For any question or issue, please contact [Email](mailto:olivier.raineteau@inserm.fr?subject=Hi% "Hi!")
+For any question or issue, please contact <a href="mailto:olivier.raineteau@inserm.fr?"> Olivier Raineteau
