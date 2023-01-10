@@ -47,8 +47,7 @@ The ventricular-subventricular zone (V-SVZ) is the largest neurogenic region of 
 ## Prerequisites 
 
 - R Studio : 
-  - packages : 
-  - libraries : 
+  - packages : dplyr - ggplot2 - 
 
 - Python :
 
