@@ -1,0 +1,147 @@
+---
+title: "Script linked to Figure 1: Analysis of the postnatal SVZ dorsal domain cellular composition and differentiation dynamics by large-scale single-cell profiling."
+subtitle: "Figure 1B, 1C, 1D, 1E, 1F"
+output: html_notebook
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+#### Load packages
+
+```{r,warning=FALSE, include=T}
+library(tidyverse,quietly=T)
+library(Seurat,quietly=T)
+library(patchwork,quietly=T)
+library(viridis,quietly=T)
+library(scales,quietly=T)
+library(treemap,quietly=T)
+library(ggplot2,quietly=T)
+library(ggpubr,quietly = T)
+```
+
+```{r,echo=FALSE}
+improved_clb_v6 <- readRDS("~/BioInfo/newdataset/improved_clb_v6.rds")
+```
+
+> Fig 1B: t-SNE projections of major cell types.
+
+```{r,fig.width=4,fig.height=5 }
+improved_clb_v6 <- suppressMessages(FindNeighbors(improved_clb_v6, dims = 1:15, assay = "RNA",verbose = F))
+DefaultAssay(improved_clb_v6) <- "RNA"
+improved_clb_v6 <- suppressMessages(FindClusters(improved_clb_v6, resolution = 0.5,verbose=F))
+improved_clb_v6 <- RunTSNE(improved_clb_v6, dims = 1:26)
+levels(improved_clb_v6) = c("4","0", "1", "2","8","9", "3", "5", "6", "10", "12","7", "13", "11", "14")
+DimPlot(improved_clb_v6, reduction = "tsne", label = T, repel = T, pt.size = 1.5, cols = c("#f8766d", "#c99800", "#c99800", 
+                "#c99800", "#6bb100", "#6bb100", "#6bb100", "#00c0af", "#00c0af", "#00c0af", "#619cff", "#b983ff", 
+                "#e76bf3", "#fd61d1", "#ff67a4"))+NoLegend()
+```
+
+> Fig 1C: Violin plots showing known markers for SVZ cell types.
+
+```{r,fig.width=7,fig.height=7}
+Idents(improved_clb_v6) <- "seurat_clusters"
+new_order   <-  c("4","0","1","2","8","9","3","5","6","10","12","7","13","11","14")
+improved_clb_v6$seurat_clusters <- factor(improved_clb_v6$seurat_clusters, levels = new_order)
+
+generic_ependym     <- c("Foxj1", "Ak7", "Pifo")
+generic_NSCs        <- c("Thbs4", "Sdc4", "Lrp4") 
+generic_profil      <- c("Egfr", "Mcm2", "Ascl1")
+generic_neuroblasts <- c("Dcx", "Cd24a", "Nrxn3")
+generic_astros      <- c("Aqp4", "Agt", "Lcat") 
+generic_endothelial <- c("Cldn5", "Flt1", "Pecam1") 
+generic_OLs         <- c("Pdgfra", "Bmp4", "Sox10") 
+generic_microglia   <- c("Cd53", "Tmem119", "C1qa") 
+
+## remove the x-axis text and tick
+## plot.margin to adjust the white space between each plot.
+## ... pass any arguments to VlnPlot in Seurat
+
+modify_vlnplot<- function(obj, 
+                          feature, 
+                          pt.size = 0, 
+                          plot.margin = unit(c(-0.75, 0, -0.75, 0), "cm"),
+                          ...) {
+  p<- VlnPlot(obj, features = feature, pt.size = pt.size, ... )  + 
+    xlab("") + ylab(feature) + ggtitle("") + 
+    theme(legend.position = "none", 
+          plot.title= element_blank(),
+          axis.title.x = element_blank(),
+          axis.text.x = element_blank(), 
+          axis.ticks.x = element_blank(), 
+          axis.title.y = element_text(size = rel(1), angle = 0), 
+          axis.text.y = element_text(size = rel(1)), 
+          plot.margin = plot.margin ) 
+  return(p)
+}
+
+## extract the max value of the y axis
+extract_max<- function(p){
+  ymax<- max(ggplot_build(p)$layout$panel_scales_y[[1]]$range$range)
+  return(ceiling(ymax))
+}
+
+## main function
+StackedVlnPlot<- function(obj, features,
+                          pt.size = 0, 
+                          plot.margin = unit(c(-0.75, 0, -0.75, 0), "cm"),
+                          ...) {
+  
+  plot_list<- purrr::map(features, function(x) modify_vlnplot(obj = obj,feature = x, ...))
+  
+  # Add back x-axis title to bottom plot. patchwork is going to support this?
+  plot_list[[length(plot_list)]]<- plot_list[[length(plot_list)]] +
+    theme(axis.text.x=element_text(), axis.ticks.x = element_line())
+  
+  # change the y-axis tick to only max value 
+  ymaxs <- purrr::map_dbl(plot_list, extract_max)
+  plot_list <- purrr::map2(plot_list, ymaxs, function(x,y) x + 
+                            scale_y_continuous(breaks = c(y)) + 
+                            expand_limits(y = y))
+  
+  p<- patchwork::wrap_plots(plotlist = plot_list, ncol = 1)
+  return(p)
+}
+
+suppressMessages(StackedVlnPlot(obj = improved_clb_v6, group.by = "seurat_clusters",features = c(generic_ependym, generic_NSCs, generic_profil, generic_neuroblasts, 
+                                          generic_astros, generic_endothelial, generic_OLs, generic_microglia)))
+```
+
+> Fig 1D: Combined expression of key markers on t-SNEs.
+
+```{r,fig.width=4,fig.height=7}
+qNSCs = WhichCells(improved_clb_v6, expression = (Slc1a3>1 & Prom1 >0.6 & Egfr<0.1 & Foxj1<0.1))
+p1=DimPlot(improved_clb_v6, reduction = "tsne", label=F, pt.size = 1, cells.highlight= list(qNSCs),cols.highlight = c("#c99800"), cols= "gray75")+NoLegend()
+aNSCs= WhichCells(improved_clb_v6, expression = (Egfr>1 & Ascl1>1 & Dlx1<0.01 & Dlx2<0.01)) #1257 and being positive for the embryonic RP and NSC-specific gene signatures  
+p2=DimPlot(improved_clb_v6, reduction = "tsne", label=F, pt.size = 1, cells.highlight= list(aNSCs),cols.highlight = c("#9AA500"), cols= "gray75")+NoLegend()
+TAPs= WhichCells(improved_clb_v6, expression = (Ascl1>1 & Mki67>0.01 & Gad1<0.1 & Gad2<0.1 & Tbr1<0.1)) #327 too restrictive
+p3=DimPlot(improved_clb_v6, reduction = "tsne", label=F, pt.size = 1, cells.highlight= list(TAPs),cols.highlight = c("#36B958"), cols= "gray75")+NoLegend()
+NBs= WhichCells(improved_clb_v6, expression = (Dlx1>0.2 & Dlx2>0.2 & Sp8>0.5 & Gad1>0.5 & Gad2>0.5)) #251 
+p4=DimPlot(improved_clb_v6, reduction = "tsne", pt.size = 1, cells.highlight = list(NBs), cols.highlight = c("#00c0af"), cols= "gray75")+NoLegend()
+OLs= WhichCells(improved_clb_v6, expression = (Pdgfra>0.5 & Sox10>0.5)) #114  
+p5=DimPlot(improved_clb_v6, reduction = "tsne", pt.size = 1, cells.highlight = list(OLs), cols.highlight = c("#fd61d1"), cols= "gray75")+NoLegend()
+Astros= WhichCells(improved_clb_v6, expression = (S100b>0.5 & Aqp4>2)) #126  
+p6=DimPlot(improved_clb_v6, reduction = "tsne", pt.size = 1, cells.highlight = list(Astros), cols.highlight = c("#b983ff"), cols= "gray75")+NoLegend()
+
+ggarrange(ncol=2,nrow=3,p1,p2,p3,p4,p5,p6,labels = c("qNSCs","aNSCs","TAPs","NBs","OLs","Astros"),font.label = list(size = 10, color = "black", face = "bold", family = NULL),align="hv",label.x = 0.4)
+
+```
+
+> Fig 1E: Treemap representing the proportion of the major cell types
+
+```{r,fig.width=4,fig.height=7}
+table <- suppressMessages(table(improved_clb_v6$Simplified_clusters))
+table <- suppressMessages(as.data.frame(table))
+mypal <- c("#CD9825","#00CC6C","#FF666C","#8CAA3A","#9867FA","#CC99FC","#009BFB","#FF64FB","#FF649A")
+
+suppressMessages(treemap(table,index="Var1",vSize = "Freq",type = "index",palette = mypal,border.col=c("white"),
+        border.lwds=c(2,5),fontface.labels=c(1,1)))
+
+```
+
+> Fig 1F: UMAP with simplified identity annotation
+
+```{r,fig.width=7,fig.height=6}
+suppressMessages(DimPlot(improved_clb_v6, label=T,label.size=5,pt.size = 1,group.by = "Simplified_clusters",cols=c("#CD9825","#5AD5C7","#FF666C","#99A424","#B984FB","#FF64FB","#5AD5C7","#FF649A","#FE57CC")))+NoLegend()
+```
