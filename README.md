@@ -17,7 +17,7 @@ _Guillaume Marcy, Louis Foucault, Elodie Babina, Timothy Capeliez, Emeric Texera
     <img src="https://raw.githubusercontent.com/othneildrew/Best-README-Template/master/images/logo.png" alt="Logo" width="80" height="80">
   </a>
 
-<h3 align="center">Postnatal mouse brain scRNA-seq analysis</h3>
+<h3 align="center">Postnatal mouse SVZ brain scRNA-seq analysis</h3>
 
   <p align="center">
     This website supports documentation and script so that interested readers may reproduce the major results presented in the study.
