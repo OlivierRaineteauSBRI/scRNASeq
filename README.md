@@ -68,7 +68,11 @@ Download ``Script.gz``
 
 **Guillaume Marcy**
 - [Profile](https://github.com/GuillaumeMarcy "Guillaume Marcy")
-- [Email](mailto:guillaume.marcy@universite-lyon.fr?subject=Hi% "Hi!")
+- [Email](mailto:guillaume.marcy@univ-lyon1.fr?subject=Hi% "Hi!")
+
+**Louis Foucault**
+- [Profile](https://github.com/LouisFoucault "Louis Foucault")
+- [Email](mailto:louis.foucault@inserm.fr?subject=Hi% "Hi!")
 
 
 ## Questions
