@@ -39,36 +39,26 @@ The ventricular-subventricular zone (V-SVZ) is the largest neurogenic region of 
 
 ## Files you'll find here 
 
-- ``blablabla.R`` : a full detailed script of the processing steps for blablablabla
-- ``blablabla.R`` : 
-- ``blablabla.R`` : 
-- ``blablabla.rds`` : the complete seurat object of blablablabla
+- ``Fig1.R`` : a full detailed script of the processing steps for blablablabla
+- ``Fig2.R`` : 
+- ``Fig3.R`` : 
+- ``Fig4.R`` :
+- ``Fig5.R`` :
+- ``Fig6.R`` :
+- ``Fig7.R`` :
+- ``P12.rds`` : the complete seurat object of P12 SVZ.
+- ``P2_P12_P22.rds`` : the complete seurat object of P2, P12, P22 SVZ.
 
 ## Prerequisites 
 
-- R Studio : 
-  - packages : dplyr - ggplot2 - 
-
-- Python :
-
-
-_exemples :_
 * [Python](https://www.python.org) - code
 * [RStudio](https://www.rstudio.com) - code
 * [Seurat](https://satijalab.org/seurat/index.html) - package
-* 
+
 
 ## To get started
 
-Download ``blablablabla.gz`` 
-
-## Versions
-Listez les versions ici 
-_exemple :_
-**Dernière version stable :** 5.0
-**Dernière version :** 5.1
-Liste des versions : [Cliquer pour afficher](https://github.com/OlivierRaineteauSBRI/scRNASeq/tags)
-_(pour le lien mettez simplement l'URL de votre projets suivi de ``/tags``)_
+Download ``Script.gz`` 
 
 ## Authors
 
