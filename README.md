@@ -62,16 +62,16 @@ Download ``Script.gz``
 
 ## Authors
 
-**Olivier Raineteau**
+**Olivier Raineteau**  _corresponding author_
 - [Profile](https://github.com/OlivierRaineteauSBRI "Olivier Raineteau")
 - [Email](mailto:olivier.raineteau@inserm.fr?subject=Hi% "Hi!")
 
-**Guillaume Marcy**
+**Guillaume Marcy** _first co-author_
 - [Profile](https://github.com/GuillaumeMarcy "Guillaume Marcy")
 - [Email](mailto:guillaume.marcy@univ-lyon1.fr?subject=Hi% "Hi!")
 
-**Louis Foucault**
-- [Profile](https://github.com/LouisFoucault "Louis Foucault")
+**Louis Foucault** _first co-author_
+- [Profile](https://github.com/LouisFoucault "Louis Foucault") 
 - [Email](mailto:louis.foucault@inserm.fr?subject=Hi% "Hi!")
 
 
