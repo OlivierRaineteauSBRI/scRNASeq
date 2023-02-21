@@ -6,7 +6,7 @@
 
 Welcome to the GitHub repository related to our recent publication **Single cell analysis of the dorsal V-SVZ reveals differential quiescence of postnatal
 pallial and subpallial neural stem cells driven by BMPR1A-signalling.** 
-_Guillaume Marcy, Louis Foucault, Elodie Babina, Timothy Capeliez, Emeric Texeraud, Stefan Zweifel, Christophe Heinrich, Hector Hernandez-Vargas, Carlos Parras, Denis Jabaudon, Olivier Raineteau, Science Advances, 2023 et lien :_ 
+_Guillaume Marcy<sup>1</sup>, Louis Foucault<sup>1</sup>, Elodie Babina, Timothy Capeliez, Emeric Texeraud, Stefan Zweifel, Christophe Heinrich, Hector Hernandez-Vargas, Carlos Parras, Denis Jabaudon, <ins> Olivier Raineteau</ins>, Science Advances, 2023 et lien :_ 
 
  </p>
 
