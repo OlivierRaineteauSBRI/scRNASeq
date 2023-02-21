@@ -51,9 +51,13 @@ The ventricular-subventricular zone (V-SVZ) is the largest neurogenic region of 
 
 ## Prerequisites 
 
-* [Python](https://www.python.org) - code
-* [RStudio](https://www.rstudio.com) - code
-* [Seurat](https://satijalab.org/seurat/index.html) - package
+* [Python](https://www.python.org)
+* [Velocyto](http://velocyto.org/)
+* [RStudio](https://www.rstudio.com)
+* [Seurat](https://satijalab.org/seurat/index.html)
+* [Rmagic](https://github.com/cran/Rmagic)
+* [ClusterProfiler](https://guangchuangyu.github.io/software/clusterProfiler/)
+* [ClusterMap](https://xgaoo.github.io/ClusterMap/ClusterMap.html)
 
 
 ## To get started
