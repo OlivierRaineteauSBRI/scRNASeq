@@ -1,0 +1,166 @@
+---
+title: "Script linked to Figure 5: Hopx and TGFβ/BMP signalling define pallial qNSCs quiescence/senescence."
+subtitle: "Figure 5E, 5F, 5G"
+output:
+  rmdformats::downcute:
+    self_contained: true
+    default_style: "light"
+    downcute_theme: "chaos"
+---
+***
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+#### Load packages
+
+```{r,warning=FALSE, include=T}
+suppressWarnings(suppressMessages({
+library(AUCell,quietly=T)
+library(devtools,quietly=T)
+library(tidyverse,quietly=T)
+library(Seurat,quietly=T)
+library(gridExtra,quietly=T)
+library(gt,quietly=T)
+library(glue,quietly=T)
+library(scater,quietly=T)
+library(tm,quietly=T)
+library(gghalves,quietly=T)
+library(broman,quietly=T)
+library(viridis,quietly=T)
+library(Cairo,quietly=T)
+library(hrbrthemes,quietly=T)
+library(ggplot2,quietly=T)
+library(cowplot,quietly=T)
+library(ggrepel,quietly=T)
+library(plyr,quietly=T)
+library(grid,quietly=T)
+library(doRNG,quietly=T)
+library(doSNOW,quietly=T)
+library(mixtools,quietly=T)
+library(SummarizedExperiment,quietly=T)
+library(DT,quietly=T)
+library(plotly,quietly=T)
+library(NMF,quietly=T)
+library(shiny,quietly=T)
+library(rbokeh,quietly=T)
+library(dynamicTreeCut,quietly=T)
+library(R2HTML,quietly=T)
+library(Rtsne,quietly=T)
+library(zoo,quietly=T)
+library(GSEABase,quietly=T)
+library(magrittr, quietly=T)
+library(imager, quietly=T)
+library(EBImage, quietly=T)
+library(STutility, quietly=T)
+library(magrittr, quietly=T)
+library(dplyr, quietly=T)
+library(DT, quietly=T)
+library(kableExtra, quietly=T)
+library(ggpubr, quietly = T)
+library(readr, quietly =T)
+}))
+
+```
+
+# E
+
+> Fig5E: Identification of key cellular states transitions along both trajectories.
+
+```{r, warning=FALSE,fig.width=15, fig.height=12}
+
+data_pallium <- read.csv("C:/Users/raine/OneDrive/Documents/BioInfo/papier figures et script/formated file for dotplot_Pallium.csv", sep =",", header = T, stringsAsFactors = FALSE)
+data_pallium$group <- factor(data_pallium$group,levels = c("Pallial1", "Pallial2"))
+data_pallium$name <- factor(data_pallium$name, levels = rev(unique(data_pallium$name)), ordered=TRUE)
+
+Pallial <- ggplot(data_pallium, aes(x= group, y=name, size=NES, color=FDR, group=group))+ 
+  scale_size(breaks = c(0.25, 0.5, 0.75, 1), range=c(0,8), limits = c(0.4,1)) + geom_point(alpha = 1,position = position_dodge(-7))+theme(panel.background = element_blank(),axis.text.y=element_text(size=15))
+Pallial <- Pallial + scale_colour_gradient(low = "red", high = "lightgrey", space = "Lab")+xlab("")+ylab("")+ theme(plot.margin = margin(0.1,0.1,0.1,0.1, "cm"))
+
+
+data_subpallium <- read.csv("C:/Users/raine/OneDrive/Documents/BioInfo/papier figures et script/formated file for dotplot_Subpallium.csv", sep =",", header = T, stringsAsFactors = FALSE)
+data_subpallium$group <- factor(data_subpallium$group,levels = c("Subpallial1", "Subpallial2"))
+data_subpallium$name <- factor(data_subpallium$name, levels = rev(unique(data_subpallium$name)), ordered=TRUE)
+
+Subpallial <- ggplot(data_subpallium, aes(x= group, y=name, size=NES, color=FDR, group=group))+ 
+  scale_size(breaks = c(0.25, 0.5, 0.75, 1), range=c(0,8), limits = c(0.4,1)) + geom_point(alpha = 1,position = position_dodge(16)) + theme(axis.title.y=element_blank(), axis.text.y=element_blank(), axis.ticks.y=element_blank(),panel.background = element_blank())
+Subpallial <- Subpallial + scale_colour_gradient(low = "blue", high = "lightgrey", space = "Lab")+xlab("")+ylab("")+ theme(plot.margin = margin(0.1,0.1,0.1,0.1, "cm"))
+```
+
+```{r,fig.width=22,fig.height=8,warning = FALSE,fig.align="center"}
+
+ggarrange(Pallial,Subpallial,legend = "top")+ theme(plot.margin = margin(0.1,0.1,0.1,0.1, "cm"))
+
+```
+
+# F
+
+>Fig5F: Pseudotime analysis of Bmpr1a expression in the pallial and subpallial quiescence trajectories.
+
+```{r, warning=FALSE,fig.width=5, fig.height=5,fig.align="center"}
+
+pal <- readRDS("C:/Users/raine/Downloads/wetransfer_subpallial_no_alra_slingshot_qnscs_axis_subset-rds_2022-11-18_1148/pallial_no_alra_slingshot_qNSCs_axis_subset.rds")
+subpal <- readRDS("C:/Users/raine/Downloads/wetransfer_subpallial_no_alra_slingshot_qnscs_axis_subset-rds_2022-11-18_1148/subpallial_no_alra_slingshot_qNSCs_axis_subset.rds")
+
+subpal_counts = subpal@assays$RNA@data
+subpal_counts = t(as.matrix(subpal_counts)) #switch row and columns
+subpal_counts = as.data.frame(subpal_counts)
+
+subpal_counts$pseudotime = subpal@meta.data$curve1
+subpal_counts$pseudotime <- subpal_counts$pseudotime/max(subpal_counts$pseudotime)
+subpal_counts$group <- "subpallial"
+
+
+pal_counts = pal@assays$RNA@data
+pal_counts = t(as.matrix(pal_counts)) #switch row and columns
+pal_counts = as.data.frame(pal_counts)
+
+pal_counts$pseudotime = pal@meta.data$curve1
+pal_counts$pseudotime <- pal_counts$pseudotime/max(pal_counts$pseudotime)
+pal_counts$group <- "pallial"
+
+counts <- rbind(subpal_counts, pal_counts)
+dataset_colors <- c(pallial = "#B31E2B", subpallial = "#2A4887")
+
+genes <- c("Bmpr1a")
+
+for (gene in genes) {
+  p <- ggplot(counts, aes(pseudotime, .data[[gene]], group=group, col=group)) + 
+    # geom_point() +
+    geom_smooth(formula = y ~ x, size=2, method = "loess", se = FALSE) + 
+    scale_color_manual(values=dataset_colors) + 
+    labs(title = gene,
+         color = "dataset")+NoLegend()+theme_classic()+coord_cartesian(ylim=c(0.50,1.50))
+  plot(p)
+  ggsave(paste0(gene,".png"), p, width = 5, height = 4)
+}
+
+```
+
+# G
+
+>Fig5G: Dot plot showing expression of TGFβ family type I receptor ligands transcripts per cell type.
+
+```{r, warning=FALSE,fig.width=11, fig.height=5,fig.align="center"}
+same_umap_P2_P12_P22=readRDS("C:/Users/raine/OneDrive/Documents/BioInfo/newdataset/same_umap_P2_P12_P22.rds")
+
+Idents(same_umap_P2_P12_P22)="orig.ident"
+P12_P2_test= subset(same_umap_P2_P12_P22,idents = c("p2","sdCLBNx1","sdCLBNx2"))
+Idents(P12_P2_test)="predicted.simplifiedcelltype"
+
+P12_P2_test@active.ident <- factor(P12_P2_test@active.ident, 
+                            levels=c("P12_Ependymal cells", 
+                                     "P12_qNSCs",
+                                     "P12_aNSCs", 
+                                     "P12_TAPs",
+                                     "P12_Neuroblasts",
+                                     "P12_Astrocytes", 
+                                     "P12_Oligos", 
+                                     "P12_Microglia", 
+                                     "P12_Endothelial/Mural cells"))
+
+suppressMessages(DotPlot(P12_P2_test, features = c("Bmp2", "Bmp4", "Gdf5", "Gdf6", "Bmp5", "Bmp6", "Bmp7", "Bmp8a", "Bmp8b", "Gdf15", "Amh", "Bmp15"), dot.scale = 10)+ 
+  scale_colour_viridis() + RotatedAxis() + theme_grey() + theme(axis.title = element_text(size=15,colour = "white"),axis.text=element_text(size=12)))
+
+```

@@ -1,0 +1,982 @@
+---
+title: "Script linked to Figure 3: Pallial and subpallial qNSCs are produced postnatally within the dorsal V-SVZ."
+subtitle: "Figure 3A, 3B, 3C"
+output:
+  rmdformats::downcute:
+    self_contained: true
+    default_style: "light"
+    downcute_theme: "chaos"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+#### Load packages 
+
+```{r,warning=FALSE, include=T}
+suppressWarnings(suppressMessages({
+library(Seurat)
+library(dplyr)
+library(patchwork)
+library(circlize)
+library(ape)
+library(pheatmap)
+library(ggplot2)
+library(RColorBrewer)
+library(viridis)
+}))
+```
+
+```{r}
+#Load Object1 - already produced
+Loo = readRDS("C:/Users/raine/OneDrive/Documents/BioInfo/LooMouseCortex-master/Merge_integrated_Loo.rds")
+#Load Object2 - already produced
+Marcy=readRDS("C:/Users/raine/OneDrive/Documents/BioInfo/newdataset/same_umap_P2_P12_P22.rds")
+Idents (Marcy) = "orig.ident"
+Marcy <- subset(Marcy,idents = c("sdCLBNx1","sdCLBNx2"))
+
+prefix = "Loo"
+suffix = Loo@meta.data$Simplified_loo_clusters
+Loo@meta.data$Simplified_loo_clusters = paste(prefix, suffix, sep = "_")
+prefix = "Loo"
+suffix = Loo@meta.data$loo_clusters
+Loo@meta.data$loo_clusters = paste(prefix, suffix, sep = "_")
+
+prefix = "Marcy"
+suffix = Marcy@meta.data$Simplified_clusters
+Marcy@meta.data$Simplified_clusters = paste(prefix, suffix, sep = "_")
+prefix = "Marcy"
+suffix = Marcy@meta.data$Full_clusters
+Marcy@meta.data$Full_clusters = paste(prefix, suffix, sep = "_")
+
+Loo@meta.data$merge_full_clusters = Loo@meta.data$loo_clusters
+Marcy@meta.data$merge_full_clusters = Marcy@meta.data$Full_clusters
+Loo@meta.data$merge_simplified_clusters = Loo@meta.data$Simplified_loo_clusters
+Marcy@meta.data$merge_simplified_clusters = Marcy@meta.data$Simplified_clusters
+Loo@meta.data$merge_final_clusters = Loo@meta.data$Simplified_loo_clusters
+Marcy@meta.data$merge_final_clusters = Marcy@meta.data$Full_clusters
+
+Marcy@meta.data[,"Condition"] = "Marcy"
+Loo@meta.data[,"Condition"] = "Loo"
+
+#Merge objects with merge function
+All.combined = merge(x = Marcy, y = Loo, add.cell.ids = c("Loo", "Marcy"), project = "MergeLoo_Marcy") 
+
+Condition.List <- SplitObject(All.combined, split.by = "Condition")
+reference.list <- Condition.List[c("Loo", "Marcy")]
+rm(Condition.List)
+for (i in 1:length(reference.list)) {
+  reference.list[[i]] <- NormalizeData(reference.list[[i]], verbose = FALSE)
+  reference.list[[i]] <- FindVariableFeatures(reference.list[[i]], selection.method = "vst", nfeatures = 2000, verbose = FALSE)
+}
+
+features <- SelectIntegrationFeatures(object.list = reference.list,verbose = F)
+
+for (i in 1:length(reference.list)) {
+  reference.list[[i]]<- ScaleData(reference.list[[i]], features = features, verbose = FALSE)
+  reference.list[[i]]<- RunPCA(reference.list[[i]], npcs = 100, features = features, verbose = FALSE)
+}
+
+rm(Loo)
+rm(Marcy)
+options(future.globals.maxSize = 3000 * 1024^2)
+Merge.anchors <- FindIntegrationAnchors(object.list = reference.list, reduction = "rpca", dims = 1:100,verbose = FALSE)
+rm(reference.list)
+Merge.integrated <- IntegrateData(anchorset = Merge.anchors,verbose = F) 
+
+DefaultAssay(Merge.integrated ) <- "integrated"
+
+Merge.integrated <- ScaleData(Merge.integrated , verbose = FALSE)
+Merge.integrated <- RunPCA(Merge.integrated , npcs = 50, verbose = FALSE)
+Merge.integrated <- RunUMAP(Merge.integrated, dims = 1:20,verbose=FALSE)
+```
+
+# A
+
+> Fig3A: Integration of current P12 dataset (pink) with previously published dataset of E14.5 and P0 pallium (GSE123335, gray).
+
+```{r,fig.width=8,fig.height=5,fig.align='center'}
+Loo_Marcy=readRDS("C:/Users/raine/OneDrive/Documents/BioInfo/LooMouseCortex-master/Merge_integrated_Loo_Marcy_final_OR.rds")
+Idents(Loo_Marcy) = "merge_simplified_clusters"
+DimPlot(Loo_Marcy, reduction = "umap", pt.size = 0.5, split.by = "Condition",cols=c("#ADADAD","#ADADAD","#ADADAD","#ADADAD","#ADADAD",
+                   "#ADADAD","#ADADAD","#ADADAD","#ADADAD","#ADADAD",
+                   "#ADADAD","#ADADAD","#ADADAD","#ADADAD","#ADADAD",
+                   "#ADADAD","#ADADAD","#ADADAD","#ADADAD","#F8766D",
+                   "#F8766D","#F8766D","#F8766D","#F8766D","#F8766D",
+                   "#F8766D","#F8766D","#F8766D"))+NoLegend()
+DimPlot(Loo_Marcy, reduction = "umap", pt.size = 0.5, group.by = "Condition",cols=c("#ADADAD","#F8766D"))
+```
+
+# B
+
+> Fig3B: Annotated UMAP depicting the identity of both datasets cell types.  
+
+```{r,fig.width=8,fig.height=5,fig.align='center'}
+DimPlot(Loo_Marcy, group.by = "Simplified_clusters",cols=c("#9BA333","#AF87F6","#F1D77B","#E87B73","#333333","#59BEB1","#D675EA","#BF9431","#59BEB1"),na.value = "#DEDEDE")
+
+DimPlot(Loo_Marcy, group.by = "merge_simplified_clusters",cols=c("#E8E0F6","#DEDEDE","#DEDEDE","#FAD5D2","#FAD5D2","#F9EFCC","#F9EFCC","#DEDEDE","#DEDEDE","#DEDEDE","#DEDEDE","#DEDEDE","#5C5858","#5C5858","#E5BFEC","#DEE1AE","#DEDEDE","#DEDEDE","#DEDEDE","#9BA333","#AF87F6","#F1D77B","#E87B73","#333333","#59BEB1","#D675EA","#BF9431","#59BEB1"),label=T,repel=T,label.size = 3,pt.size=0.5,label.box = T)+NoLegend()
+
+```
+
+> Fig2C: Circos plot representing transcriptional correlation between selected cell types of both datasets.
+
+### ClusterMap functions to run (from https://xgaoo.github.io/ClusterMap/ClusterMap.html)
+# C
+```{r, echo=F,include=F}
+
+#######################################################
+####################  ClusterMap  #####################
+#######################################################
+
+#################### Master function ##################
+
+#' cluster_map
+#'
+#' A master function to perform the full workflow of ClusterMap.
+#'
+#' @import ggplot2
+#' @import pheatmap
+#' @import ape
+#' @import Seurat
+#' @import circlize
+#'
+#' @importFrom grDevices col2rgb dev.off hcl dev.off pdf png rgb
+#' @importFrom graphics plot
+#' @importFrom stats dist hclust median setNames
+#' @importFrom utils combn read.csv read.table write.csv
+#'
+#' @param marker_file_list
+#' A list of csv files with names. Each file is a marker gene table for a sample. The columns named as 'cluster' and 'gene' are required.
+#' @param edge_cutoff
+#' The edge length cutoff to decide the sub-nodes to merge or not. DEFAULT is 0.1.
+#' @param output
+#' The output directory to save the matching results.
+#' @param cell_num_list
+#' A list of vector of cell numbers for each group and each sample.
+#' @param single_obj_list
+#' A list of Seurat object for each sample, with the same list names as the list names of marker_file_list.
+#' @param comb_obj
+#' A Seurat object for the combined sample. Cells in different samples are labelled by the sample names with the comb_delim. The sample names should be the same as the list names of marker_file_list.
+#' @param comb_delim
+#' The delimiter used in the cell names in the combined object to connect sample name and cell name in individual sample. DEFAULT is '-'.
+#' @param k
+#' K-nearest neighbours used to calculate distance. DEFAULT is 5.
+#' @param reduction
+#' Select the reduction of "tsne", "umap", or "pca" that used for the recolor image.
+#' @return A dataframe of the matching results. Heatmap of marker genes, the corresponding dendrogram, circos plot and recolored t-SNE plots will be saved into files.
+#' @export
+
+
+cluster_map <- function(marker_file_list, edge_cutoff = 0, output, cell_num_list = NULL, single_obj_list = NULL, comb_obj = NULL, comb_delim = '-', k = 5, seurat_version = 3, reduction="tsne")
+{
+  circos.clear()
+  ## Version check for comb delim
+  if(seurat_version == 3){
+    comb_delim = '_'
+  }
+  ## match sub groups
+  mapRes <- cluster_map_by_marker(marker_file_list, cutoff = edge_cutoff, output = output)
+  
+  ## pull out cell_num_list if single Seurat object list is provided.
+  if (!is.null(single_obj_list))
+  {
+    if (all(names(marker_file_list) == names(single_obj_list)) == FALSE | is.null(names(marker_file_list)) | is.null(names(single_obj_list)))
+      stop("names(marker_file_list) doesn't match names(single_obj_list).")
+    
+    if (single_obj_list[[1]]@version > 3){
+      cell_num_list <- lapply(single_obj_list,
+                              function(obj){
+                                summary(Idents(obj))
+                              })
+    }
+    
+    else if(single_obj_list[[1]]@version < 3){
+      cell_num_list <- lapply(single_obj_list, function(obj){
+        summary(obj@ident)})
+    }
+  }
+  ## make circos plot and add cell percentage if cell_num_list is provided or single Seurat object list is provided.
+  if (!is.null(cell_num_list))
+  {
+    if (all(names(marker_file_list) == names(cell_num_list)) == FALSE | is.null(names(marker_file_list)) | is.null(names(cell_num_list)))
+      stop("names(marker_file_list) doesn't match names(cell_num_list).")
+    circos_map(mapRes, cell_num_list, output)
+    mapRes <- add_perc(mapRes, cell_num_list)
+  }
+  
+  ## Recolor reduction plot for each sample if single Seurat object list is provided.
+  if (!is.null(single_obj_list))
+  {
+    sample_names <- names(single_obj_list)
+    new_group_list <- lapply(sample_names, function(n){
+      da <- structure(as.vector(mapRes[, n]), names = mapRes$regroup)
+      recolor_s(da, single_obj_list[[n]], n, reduction=reduction)
+    })
+    names(new_group_list) <- names(single_obj_list)
+    
+    ## Recolor reduction plot for combined sample and calculate separability if combined Seurat object is provided.
+    if (!is.null(comb_obj))
+    {
+      sample_label <- as.factor(sub(paste0(comb_delim, '.*'), '', colnames(GetAssayData(object = comb_obj))))
+      if (all(levels(sample_label) == names(new_group_list)) == FALSE)
+        stop("Sample label in comb_obj doesn't match names(new_group_list) or names(single_obj_list).")
+      
+      new_group_list$comb <- recolor_comb(comb_obj, new_group_list, output, comb_delim)
+      
+      coord <- as.data.frame(comb_obj@reductions[[reduction]]@cell.embeddings)
+      sepa <- separability_pairwise(coord, group = new_group_list$comb, sample_label, k = k)
+      colnames(sepa) <- paste0(colnames(sepa), '_separability')
+      
+      mapRes <- cbind(mapRes, sepa)
+    }
+    saveRDS(new_group_list, file = paste0(output, '.new.group.list.RDS'))
+  }
+  write.csv(mapRes, file = paste0(output, '.results.csv'))
+  return(mapRes)
+}
+
+
+################# Clustering and tree cut #############
+
+#' cluster_map_by_marker
+#'
+#' Match groups by marker genes and decompose into new groups by purity cut.
+#'
+#' @import pheatmap
+#' @import ape
+#' @param marker_file_list
+#' A list of csv files. Each file is a marker gene table for a sample. The columns named as 'cluster' and 'gene' are required.
+#' @param cutoff
+#' The edge length cutoff to decide the sub-nodes to merge or not. DEFAULT is 0.1.
+#' @param output
+#' The output directory to save the matching results.
+#' @return A dataframe of the matching results. Heatmap of marker genes and the dendrogram will be saved into files.
+#' @export
+
+cluster_map_by_marker <- function(marker_file_list, cutoff = 0, output)
+{ ## cluster_map_by_marker will call function purity_cut.
+  message("match sub-clusters")
+  ## get marker table
+  if (is.null(names(marker_file_list)))
+  {
+    names(marker_file_list) <- paste0('s', 1:length(marker_file_list))
+    warning("The names(marker_file_list) is empty. Sample names are assigned as '", paste(names(marker_file_list), collapse = ' '), "'" )
+  }
+  markerList <- lapply(marker_file_list, read.csv, as.is = T)
+  markerList <- lapply(names(markerList), function(n)
+  {
+    x <- markerList[[n]]
+    x$cluster <- paste0(n, '__', x$cluster)
+    return(x)
+  })
+  markers <- do.call(rbind, markerList)
+  ## clustering
+  da <- table(markers[,c("cluster","gene")])
+  d <- dist(da, method = 'binary')
+  hc <- hclust(d, method = 'average')
+  png(paste0(output, '.hcluster.png'), width = 480*length(marker_file_list)) ## save dendrogram png
+  plot(hc)
+  dev.off()
+  pdf(paste0(output, '.hcluster.pdf'), width = 7*length(marker_file_list)) ## save dendrogram pdf
+  plot(hc)
+  dev.off()
+  ## save heatmap png
+  png(paste0(output, '.heatmap.hcluster.png'), height = 480*length(marker_file_list))
+  ph <- pheatmap(da, scale = 'none', clustering_method = 'average', color = c('#e3f8f9', '#fc2807'),
+                 show_rownames = T, show_colnames = F, clustering_distance_rows = 'binary',
+                 legend_breaks = c(0, 1), legend_labels = c(0, 1))
+  dev.off()
+  ph <- pheatmap(da, scale = 'none', clustering_method = 'average', color = c('#e3f8f9', '#fc2807'),
+                 show_rownames = T, show_colnames = F, clustering_distance_rows = 'binary',
+                 legend_breaks = c(0, 1), legend_labels = c(0, 1),
+                 filename = paste0(output, '.heatmap.hcluster.pdf'), height = 7*length(marker_file_list))
+  ## tree cut
+  res <- purity_cut(hc, cutoff)
+  ##write.csv(res, file = paste0(output, '.cluster.map.csv'))
+  return(res)
+}
+
+#' purity_cut
+#'
+#' Cut hierarchical clustering dendrogram by edge length and purity of the nodes.
+#'
+#' @import ape
+#' @param hcluster
+#' A hclust object.
+#' @param cutoff
+#' The edge length cutoff to decide the sub-nodes to merge or not. DEFAULT is 0.1.
+#' @return A dataframe of the matching results.
+#' @export
+
+purity_cut <- function(hcluster, cutoff = 0)
+{
+  hcp <- as.phylo(hcluster)
+  png('ape.tree.png')
+  plot(hcp, edge.width = 2, label.offset = 0.1)
+  nodelabels()
+  tiplabels()
+  dev.off()
+  ## get edge info
+  tree <- cbind(hcp$edge, round(hcp$edge.length, 3))
+  colnames(tree) <- c('high_node', 'low_node', 'edge_length')
+  tree <- as.data.frame(tree, as.is = T)
+  tree$too_long <- (tree$edge_length > cutoff/2) ## edge_length is height/2
+  ## get all the offspring of each node
+  offs_nodeList <- lapply(tree$low_node, function(x) {
+    if (x <= length(hcp$tip.label)) return(hcp$tip.label[x]) else
+      return(extract.clade(hcp, x)$tip.label)})
+  names(offs_nodeList) <- tree$low_node
+  ## get sample list that the nodes belong to
+  sampleList <- lapply(offs_nodeList, function(x) unique(sub('__.*$', '', x)))
+  tree$low_node_offs_sample <-  unlist(lapply(sampleList, length))
+  ## check if keep the node
+  nodeList <- split(tree, tree$high_node)
+  n_single <- unlist(lapply(nodeList, function(x) sum(x$low_node_offs_sample == 1)))
+  n_too_long <- unlist(lapply(nodeList, function(x) sum(x$too_long)))
+  no_include <- unlist(lapply(nodeList, function(x)
+  {
+    low_node <- as.character(x$low_node)
+    sampleList_sub <- sampleList[low_node]
+    include <- (all(sampleList_sub[[1]] %in% sampleList_sub[[2]]) | all(sampleList_sub[[2]] %in% sampleList_sub[[1]]))
+    return(!include)
+  }))
+  keep <- (n_single == 2 | (n_single == 1 & n_too_long < 2)| (n_single == 0 & n_too_long == 0 & no_include))
+  names(keep) <- names(nodeList)
+  ## check if any offspring node is cut
+  node_merge_order <- rev(unique(tree$high_node))
+  for (nd in node_merge_order)
+  {
+    nd <- as.character(nd)
+    offs_nodes <- nodeList[[nd]]$low_node
+    keep_sub <- keep[as.character(offs_nodes)]
+    keep_sub[is.na(keep_sub)] <- TRUE
+    tmp <- (sum(keep_sub) == 2 & keep[nd])
+    keep[nd] <- tmp
+  }
+  if (all(keep == TRUE))
+  {
+    message("No matched groups.")
+    return(NULL)
+  }
+  
+  ## get rid of lower duplicated nodes
+  res <- offs_nodeList[names(keep)[keep == T]]
+  for (x in rev(names(res)))
+  {
+    if (any(res[[x]] %in% unlist(res[names(res) != x]))) res = res[names(res) != x]
+  }
+  ## get singletons
+  singles <- setdiff(hcp$tip.label, unlist(res))
+  res <- c(res, as.list(singles))
+  ## reform output
+  lev <- sort(unique(sub('__.*$', '', hcp$tip.label)))
+  res_reform <- do.call(rbind, lapply(res, function(x)
+  {
+    tmp <- split(x, f = factor(sub('__.*$', '', x), levels = lev))
+    unlist(lapply(tmp, paste, collapse = ';'))
+  }))
+  rownames(res_reform) <- 1:nrow(res_reform)
+  res_reform[res_reform == ''] <- NA
+  res_reform <- as.data.frame(res_reform, stringsAsFactors = FALSE)
+  ## add similarity
+  res_reform$similarity <- round(1 - branching.times(hcp)[names(res)]*2, 2)
+  ## add group
+  res_reform <- res_reform[order(-res_reform$similarity), ]
+  res_reform$regroup <- 1:nrow(res_reform)
+  rownames(res_reform) <-  res_reform$regroup
+  return(res_reform)
+}
+
+
+##################### Circos plot #####################
+
+#' circos_map
+#'
+#' Plot Circos plot for the matching results.
+#'
+#' @import circlize
+#' @param mapRes
+#' A dataframe of the output of function cluster_map_by_marker.
+#' @param cell_num_list
+#' A list of vector of cell numbers for each group and each sample.
+#' @param output
+#' The output directory to save the plot.
+#' @param color_cord
+#' A vector of colors for the cord of circos plot. DEFAULT is NULL. Pre defined internal color will be used.
+#' @param color_sample
+#' A vector of colors for the sample sectors in the circos plot. DEFAULT is NULL. Pre defined internal color will be used.
+#' @return circos plot will be save.
+#' @export
+
+
+circos_map <- function(mapRes, cell_num_list, output, color_cord = viridis(6, option = "D"), color_sample = c("#CC6C6D","#888888"))
+{ ## circos_map will call function plot_circos, gg_color_hue and makeTransparent.
+  message("new circos plot...")
+  
+  sample_name <- names(cell_num_list)
+  if (all(sample_name %in% colnames(mapRes)) == FALSE)
+    stop("names(marker_file_list) or samples in mapRes doesn't match names(cell_num_list).")
+  ## pairwise link
+  combs <- combn(1:length(sample_name), 2)
+  mapRes_samples <- mapRes[, sample_name]
+  colnames(mapRes_samples) <- NA
+  pair <- do.call(rbind, apply(combs, 2, function(x) mapRes_samples[, x]))
+  pair <- cbind(pair, mapRes[, c('regroup', 'similarity')])
+  pair <- pair[pair[, 1] != '' & pair[, 2] != '' & !is.na(pair[, 1]) & !is.na(pair[, 2]), ]
+  colnames(pair)[1:2] <- c('v1', 'v2')
+  ## split merged clusters with ;
+  pair_list <- lapply(1:nrow(pair), function(i)
+  {
+    y <- pair[i, ]
+    v1 <- unlist(strsplit(as.vector(y$v1), ';'))
+    v2 <- unlist(strsplit(as.vector(y$v2), ';'))
+    v <- c()
+    for (x in v1) v <- rbind(v, cbind(x, v2))
+    v <- as.data.frame(v, stringsAsFactors = FALSE)
+    v$similarity <- y$similarity
+    v$regroup <- y$regroup
+    return(v)
+  })
+  pair <- do.call(rbind, pair_list)
+  colnames(pair)[1:2] <- c('v1', 'v2')
+  pair$v1 <- as.vector(pair$v1)
+  pair$v2 <- as.vector(pair$v2)
+  ## cell number percentage
+  cell_perc_list <- lapply(cell_num_list, function(x) round(x/sum(x), 2))
+  if (is.null(color_sample)) col_sample <- rep(c("#f9865c", "#84e281", "#74d2f7", "#e083fc", "#ffbf66", "#6682ff"), 10) else col_sample <- color_sample
+  if (is.null(color_cord)) col_cord <- gg_color_hue(nrow(mapRes)) else col_cord <- color_cord
+  ## circos plot
+  png(paste0(output, '.circos.png'))
+  plot_circos(cell_perc_list, pair, mapRes, col_cord, col_sample)
+  dev.off()
+  pdf(paste0(output, '.circos.pdf'))
+  plot_circos(cell_perc_list, pair, mapRes, col_cord, col_sample)
+  dev.off()
+}
+
+
+plot_circos <- function(cell_perc_list, pair, mapRes, col_cord, col_sample)
+{
+  temp=cell_perc_list
+  names(temp)=paste0(names(temp),"__")
+  cell_perc <- unlist(temp)
+  names(cell_perc) <- sub('__.', '__', names(cell_perc))
+  cell_perc[cell_perc < 0.01] <- 0.01 ## too small to plot
+  fa <- factor(names(cell_perc), levels = unique(names(cell_perc)))
+  ## initialize
+  gaps <- lapply(cell_perc_list, function(x) c(rep(1, length(x)-1), 8))
+  circos.par(gap.after = unlist(gaps), start.degree = -3, cell.padding = c(0, 0, 0, 0))
+  circos.initialize(fa, xlim = cbind(rep(0, length(cell_perc)), cell_perc))
+  ## plot sample sectors
+  circos.track(ylim = c(0, 1), track.height = uh(4, "mm"), bg.border = "white" )
+  for (n in names(cell_perc_list)) highlight.sector(paste0(n, "__", names(cell_perc_list[[n]])), track.index = 1,
+                                                    col = col_sample[match(n, names(cell_perc_list))], padding = c(0, 0, 0.3, 0), text = n, cex = 1.5, text.col = "black",niceFacing = TRUE)
+  ## plot sub-group sectors
+  circos.track(fa, ylim = c(0, 1), panel.fun = function(x, y)
+  {
+    circos.text(CELL_META$xcenter, CELL_META$ylim[1], sub('.*__', '', CELL_META$sector.index),
+                adj =c(0.5, 0.5), facing = "clockwise", niceFacing = TRUE, cex = 0.5, col="black")
+  }, bg.col = 'grey', bg.border = NA, track.height = 0.05, track.margin = c(0, 0.1)
+  )
+  ## plot cord
+  for(i in 1:nrow(pair))
+  {
+    x <- pair[i, ]
+    col <- makeTransparent(col_cord[x$regroup], round(x$similarity*900))
+    circos.link(x$v1, c(0, cell_perc[x$v1]), x$v2, c(0, cell_perc[x$v2]), col = col, border = col, h.ratio = 0.5)
+  }
+  circos.clear()
+}
+
+##param color cords
+gg_color_hue <- function(n)
+{
+  hues = seq(0, 360, length = n + 1)
+  hcl(h = hues, l = 40, c = 100)[1:n] #Create a vector of colors from vectors specifying hue, chroma and luminance.
+}
+
+
+makeTransparent <- function(someColor, alpha)
+{
+  col <- col2rgb(someColor)
+  rgb(red = col[1], green = col[2], blue = col[3], alpha = alpha, maxColorValue = 360)
+}
+
+########## Add cell percentage to result table ########
+
+#' circos_map
+#'
+#' Plot Circos plot for the matching results.
+#'
+#' @import circlize
+#' @param mapRes
+#' A dataframe of the output of function cluster_map_by_marker.
+#' @param cell_num_list
+#' A list of vector of cell numbers for each group and each sample.
+#' @return A dataframe of the matching results with cell percentage column added.
+#' @export
+
+add_perc <- function(mapRes, cell_num_list)
+{
+  sample_name <- names(cell_num_list)
+  if (all(sample_name %in% colnames(mapRes)) == FALSE)
+    stop("names(marker_file_list) or samples in mapRes doesn't match names(cell_num_list).")
+  cell_perc_list <- lapply(cell_num_list, function(x) round(x/sum(x), 2))
+  temp=cell_perc_list
+  names(temp)=paste0(names(temp),"__")
+  cell_perc <- unlist(temp)
+  names(cell_perc) <- sub('__.', '__', names(cell_perc))
+  ## add to mapRes
+  res_sub <- mapRes[, sample_name]
+  res_perc <- apply(res_sub, 1:2, function(x)
+  {
+    paste(cell_perc[unlist(strsplit(x, ';'))], collapse = ';')
+  })
+  colnames(res_perc) <- paste0(colnames(res_perc), '_cell_perc')
+  res <- cbind(mapRes, res_perc)
+  return(res)
+}
+
+##################### Pre-analysis ####################
+
+#' make_single_obj
+#'
+#' A warper of Seurat function to generate Seurat object and marker genes for single sample.
+#' @import Seurat
+#' @param data_dir
+#' Directory with 10X genomics single cell data or full path of expression table.
+#' @param is.10X
+#' The input data is 10X genomics format or not. DEFAULT is TRUE.
+#' @param output
+#' The output directory to save the marker genes.
+#' @return A Seurat object.
+#' @export
+
+make_single_obj <- function(data_dir, is.10X = TRUE, output)
+{
+  
+  if (is.10X) da <- Read10X(data_dir) else da <- read.table(data_dir, sep = "\t")
+  obj <- CreateSeuratObject(raw.data = da, min.cells = 3, min.genes = 200)
+  obj <- NormalizeData(obj)
+  obj <- FindVariableGenes(obj)
+  obj <- ScaleData(obj, vars.to.regress = c("nUMI"))
+  obj <- RunPCA(obj, do.print = FALSE)
+  obj <- RunTSNE(obj, dims.use = 1:10)
+  obj <- FindClusters(obj, dims.use = 1:10, resolution = 0.6)
+  markers <- FindAllMarkers(obj, only.pos = TRUE)
+  write.csv(markers, file = paste0(output, '.markers.csv'))
+  return(obj)
+}
+
+#' make_comb_obj
+#'
+#' A warper of Seurat function to generate Seurat object for combined sample from single sample.
+#' @import Seurat
+#' @param data_dirList
+#' A list of directory with 10X genomics single cell data or full path of expression table.
+#' @param is.10X
+#' The input data is 10X genomics format or not. DEFAULT is TRUE.
+#' @param comb_delim
+#' The delimiter used in the cell names in the combined object to connect sample name and cell name in individual sample. DEFAULT is '-'.
+#' @return A Seurat object.
+#' @export
+
+make_comb_obj <- function(data_dirList, is.10X = TRUE, comb_delim = '-')
+{
+  
+  ## rename cell names in each dataset and then combine
+  n <- names(data_dirList)
+  if (is.null(n)) {
+    names(data_dirList) <- paste0('s', 1:length(data_dirList))
+    warning("The names(data_dirList) is NULL. Sample names are assigned as '", paste(names(data_dirList), collapse = ' '), "'")
+  }
+  da_list <- lapply(n, function(x){
+    if (is.10X) da <- Read10X(data_dirList[[x]]) else da <- read.table(data_dirList[[x]], sep = "\t")
+    colnames(da) <- paste0(x, comb_delim, colnames(da))
+    return(da)
+  })
+  comb_da <- do.call(cbind, da_list)
+  
+  obj <- CreateSeuratObject(raw.data = comb_da, min.cells = 3, min.genes = 200)
+  obj <- NormalizeData(obj)
+  obj <- FindVariableGenes(obj)
+  obj <- ScaleData(obj, vars.to.regress = c("nUMI"))
+  obj <- RunPCA(obj, do.print = FALSE)
+  obj <- RunTSNE(obj, dims.use = 1:10)
+  return(obj)
+}
+
+####################### Recolor #######################
+
+#' recolor_s
+#'
+#' Recolor a single sample based on the matching results from cluster_map_by_marker.
+#'
+#' @import Seurat
+#'
+#' @param mapRes_sub
+#' A vector of the column named by the sample in the output of cluster_map_by_marker, with the regroup column as the vector name.
+#' @param obj
+#' A Seurat object for the sample.
+#' @param output
+#' The output directory to save the plot.
+#' @param color
+#' A vector of colors used to recolor the new groups. DEFAULT is NULL. Pre defined internal color will be used.
+#' @param reduction
+#' Select the reduction of "tsne", "umap", or "pca" that used for the recolor image.
+#' @return A vector of new group labels with the cell name as the vector name.
+#' @export
+
+
+recolor_s <- function(mapRes_sub, obj, output, color = NULL, reduction="tsne")
+{
+  ## recolor_s will call function gg_colr_hue.
+  message(paste0("recolor ", output))
+  
+  if (is.null(names(mapRes_sub))) stop("There is no name of mapRes_sub.")
+  l <- lapply(strsplit(mapRes_sub, ';'), sub, pattern = '.*_', replacement = '')
+  new_match <- setNames(unlist(l, use.names = F), rep(names(l), lengths(l)))
+  if(obj@version > 3){
+    print("Using Seurat v3")
+    new_group <- Idents(object = obj)
+    levels(new_group) <- names(new_match)[match(levels(Idents(object=obj)), new_match)]
+  }
+  else{
+    new_group <- obj@ident
+    levels(new_group) <- names(new_match)[match(levels(obj@ident), new_match)]
+  }
+  new_group <- factor(new_group, levels = names(mapRes_sub))
+  ## t-SNE plot
+  obj@meta.data$regroup <- new_group
+  
+  if(obj@version < 3){	
+    if (is.null(color)) color <- gg_color_hue(length(levels(new_group)))
+    png(paste0(output, '.recolor.tsne.png'))
+    TSNEPlot(obj, do.label = T, label.size = 8, group.by = 'regroup',
+             colors.use = color[sort(as.numeric(unique(new_group)))], plot.title = toupper(output))
+    dev.off()
+    pdf(paste0(output, '.recolor.tsne.pdf'))
+    TSNEPlot(obj, do.label = T, label.size = 8, group.by = 'regroup',
+             colors.use = color[sort(as.numeric(unique(new_group)))], plot.title = toupper(output))
+    dev.off()
+    return(new_group)
+  }
+  
+  else{	
+    print("Using Seurat v3")
+    if (is.null(color)) color <- gg_color_hue(length(levels(new_group)))
+    
+    p3 <- DimPlot(obj, label = T, label.size = 8, group.by = 'regroup',
+                  reduction = reduction,
+                  cols = color[sort(as.numeric(unique(new_group)))])
+    ggtitle(paste(toupper(output))) 
+    ggsave(plot = p3, filename = paste0(output, '.recolor.', reduction, '.png'))
+    ggsave(plot = p3, filename = paste0(output, '.recolor.', reduction, '.pdf'))
+    
+    return(new_group)
+  }	   
+}
+#' recolor_comb
+#'
+#' Recolor the combined sample based on the matching results from recolor_s.
+#'
+#' @import Seurat
+#'
+#' @param comb_obj
+#' A Seurat object for the combined sample. Cells in different samples are labelled by the sample names with the comb_delim.
+#' @param new_group_list
+#' A list of vectors of new group assignment outputted from recolor_s.
+#' @param output
+#' The output directory to save the plot.
+#' @param comb_delim
+#' The delimiter used in the cell names in the combined object to connect sample name and cell name in individual sample. DEFAULT is '-'.
+#' @param color
+#' A vector of colors used to recolor the new groups. DEFAULT is NULL. Pre defined internal color will be used.
+#' @param reduction
+#' Select the reduction of "tsne", "umap", or "pca" that used for the recolor image.
+#' @return A vector of new group labels with the cell name as the vector name.
+#' @export
+
+
+recolor_comb <- function(comb_obj, new_group_list, output, comb_delim = '-', color = NULL, reduction="tsne")
+{
+  ## Change comb_delim if v3 Seurat
+  if(comb_obj@version > 3){
+    comb_delim = '_'
+    print("Changed comb_delim to '_'")
+  }
+  
+  ## recolor_comb will call function gg_color_hue.
+  message(paste0("recolor ", output))
+  
+  sample_label <- as.factor(sub(paste0(comb_delim, '.*'), '', colnames(GetAssayData(object = comb_obj))))
+  message("levels(sample_label):")
+  print(levels(sample_label))
+  message("names(new_group_list):")
+  print(names(new_group_list))
+  if (all(levels(sample_label) == names(new_group_list)) == FALSE)
+    stop("Sample label in comb_obj doesn't match names(new_group_list) or names(single_obj_list).")
+  names(sample_label) <- colnames(GetAssayData(object = comb_obj))
+  ## color by samples
+  comb_obj$samples <- sample_label
+  
+  if (comb_obj@version <3) {
+    print("Seurat v2")
+    png(paste0(output, '.color.by.sample.tsne.png'))
+    TSNEPlot(comb_obj, do.label = F, label.size = 8, group.by = 'samples', plot.title = 'Colored by sample')
+    dev.off()
+    pdf(paste0(output, '.color.by.sample.tsne.pdf'))
+    TSNEPlot(comb_obj, do.label = F, label.size = 8, group.by = 'samples', plot.title = 'Colored by sample')
+    dev.off()
+    ## assign new group
+    new_group <- unlist(new_group_list)
+    names(new_group) <- sub('\\.', comb_delim, names(new_group))
+    new_group <- factor(new_group, levels = levels(new_group_list[[1]]))
+    new_group <- new_group[match(colnames(GetAssayData(object = comb_obj)), as.vector(names(new_group)))] ## some cells may be filtered out in combined sample.
+    if (is.na(new_group[1]))
+      stop("Cell names in comb_obj don't match cell names in new_group_list or single_obj_list. Cell names in comb_obj should be sample name and cell name in individual sample connected by comb_delim.")
+    names(new_group) <- colnames(GetAssayData(object = comb_obj))
+    ## color by new group
+    comb_obj <- AddMetaData(object = comb_obj, metadata = new_group, col.name = "regroup")
+    if (is.null(color)) color  <-  gg_color_hue(length(levels(new_group)))
+    png(paste0(output, '.recolor.tsne.png'))
+    TSNEPlot(comb_obj, do.label = T, label.size = 8, group.by = 'regroup',
+             colors.use = color[sort(as.numeric(unique(new_group)))], plot.title = 'Combined')
+    dev.off()
+    pdf(paste0(output, '.recolor.tsne.pdf'))
+    TSNEPlot(comb_obj, do.label = T, label.size = 8, group.by = 'regroup',
+             colors.use = color[sort(as.numeric(unique(new_group)))], plot.title = 'Combined')
+    dev.off()
+    return(new_group)
+  }
+  else if(comb_obj@version > 3){
+    print("Seurat v3 comb_obj")
+    p5 <- DimPlot(comb_obj, label = F, label.size = 8, group.by = 'samples', 
+                  reduction = reduction) + 
+      ggtitle('Colored by sample') 
+    ggsave(plot = p5, filename = paste0(output, '.color.by.sample.', reduction, '.png'))
+    p4 <- DimPlot(comb_obj, label = F, label.size = 8, group.by = 'samples',
+                  reduction = reduction) +
+      ggtitle('Colored by sample')  
+    ggsave(plot = p4, filename = paste0(output, '.color.by.sample.', reduction, '.pdf'))
+    ## assign new group
+    new_group <- unlist(new_group_list)
+    names(new_group) <- sub('\\.', comb_delim, names(new_group))
+    new_group <- factor(new_group, levels = levels(new_group_list[[1]]))
+    new_group <- new_group[match(colnames(GetAssayData(object = comb_obj)), 
+                                 as.vector(names(new_group)))] ## some cells may be filtered out in combined sample.
+    if (is.na(new_group[1]))
+      stop("Cell names in comb_obj don't match cell names in new_group_list or single_obj_list. Cell names in comb_obj should be sample name and cell name in individual sample connected by comb_delim.")
+    names(new_group) <- colnames(GetAssayData(object = comb_obj))
+    ## color by new group
+    comb_obj <- AddMetaData(object = comb_obj, metadata = new_group, col.name = "regroup")
+    if (is.null(color)) color  <-  gg_color_hue(length(levels(new_group)))
+    plot1 <- DimPlot(comb_obj, label = T, label.size = 8, 
+                     reduction = reduction, group.by = 'regroup',
+                     cols = color[sort(as.numeric(unique(new_group)))]) +
+      ggtitle('Combined') 
+    ggsave(plot = plot1, filename = paste0(output, '.recolor.', reduction, '.png'))
+    plot2 <- DimPlot(comb_obj, label = T, label.size = 8,
+                     reduction = reduction, group.by = 'regroup',
+                     cols = color[sort(as.numeric(unique(new_group)))]) + 
+      ggtitle('Combined') 
+    ggsave(plot = plot2, filename = paste0(output, '.recolor.', reduction, '.pdf'))
+    return(new_group)
+  }
+  
+}
+
+##################### Separability ####################
+
+#' separability_pairwise
+#'
+#' Calculate separability for every sample pair. The higher the more separable.
+#'
+#' @param tsne_coord
+#' A dataframe of the two dimension t-SNE coordinates of each cell in the combined sample.
+#' @param group
+#' A vector of group assignment for each cell, with the same order as the tsne_coord.
+#' @param sample_label
+#' A vector of sample labels for each cell, with the same order as the tsne_coord.
+#' @param k
+#' K-nearest neighbours used to calculate distance. DEFAULT is 5.
+#' @return A matrix of separability for each sample pair (column) and each group (row).
+#' @export
+
+
+separability_pairwise <- function(tsne_coord, group, sample_label, k = 5)
+{## separability_pairwise will call function separability_by_group.
+  message("calculate separability for each sample pair")
+  sample_pair <- combn(levels(sample_label), 2)
+  colnames(sample_pair) <- paste0(sample_pair[1, ], '.vs.', sample_pair[2, ])
+  res <- apply(sample_pair, 2, function(x){
+    print(x)
+    ind <- sample_label %in% x
+    tsne_coord_sub <- tsne_coord[ind, ]
+    group_sub <- group[ind]
+    sample_label_sub <- sample_label[ind]
+    sepa <- separability_by_group(tsne_coord_sub, group_sub, sample_label_sub, k = k)
+    return(sepa)
+  })
+  return(res)
+}
+
+#' separability_by_group
+#'
+#' Calculate separability for each group in a pair of samples. Internal function called by separability_pairwise.
+#'
+#' @param tsne_coord
+#' A dataframe of the two dimension t-SNE coordinates of each cell in the combined sample.
+#' @param group
+#' A vector of group assignment for each cell, with the same order as the tsne_coord.
+#' @param sample_label
+#' A vector of sample labels for each cell, with the same order as the tsne_coord.
+#' @param k
+#' K-nearest neighbours used to calculate distance. DEFAULT is 5.
+#' @return A vector of separability for each group.
+#' @export
+
+separability_by_group <- function(tsne_coord, group, sample_label, k = 5)
+{ ## separability_by_group will call function separability.
+  p <- sapply(levels(group), function(i){
+    m <- tsne_coord[group == i, ]
+    if (nrow(m) == 0) avg_diff <- NA else
+    {
+      class_label <- sample_label[group == i]
+      avg_diff <- separability(m, class_label, k = k)
+    }
+  })
+  p <- p/(max(tsne_coord[, 1]) - min(tsne_coord[, 1]))*100
+  round(p, 2)
+}
+
+#' separability
+#'
+#' Calculate separability for labeled data. Internal function called by separability_by_group.
+#'
+#' @param coord
+#' A dataframe of the two dimension t-SNE coordinates of each cell in the combined sample.
+#' @param class_label
+#' A vector of sample labels for each cell, with the same order as the tsne_coord.
+#' @param k
+#' K-nearest neighbours used to calculate distance. DEFAULT is 5.
+#' @return A single value of separability.
+#' @export
+
+separability <- function(coord, class_label, k = 5)
+{ ## separability will call function inter_dist and inna_dist.
+  if(length(unique(class_label)) > 1)
+  {
+    d <- dist(coord)
+    dls <- split(as.data.frame(as.matrix(d)), class_label)
+    sample1_dls <- split(as.data.frame(t(dls[[1]])), class_label)
+    d1 <- sample1_dls[[1]] ## distance matrix between cells in sample1
+    d21 <- sample1_dls[[2]] ## distance matrix from cells in sample2 to cells in sample1
+    sample2_dls <- split(as.data.frame(t(dls[[2]])), class_label)
+    d2 <- sample2_dls[[2]] ## distance matrix between cells in sample2
+    d12 <- sample2_dls[[1]] ## distance matrix from cells in sample1 to cells in sample2
+    diff1 <- inter_dist(d12, k)-inna_dist(d1, k)
+    diff2 <- inter_dist(d21, k)-inna_dist(d2, k)
+    avg_diff <- mean(c(diff1, diff2)) ## average two samples
+  } else avg_diff <- Inf
+  return(avg_diff)
+}
+
+#' inter_dist
+#'
+#' Calculate the inter-sample distance. Internal function called by separability.
+#'
+#' @param x
+#' A distance matrix of cells in one sample to the cells in another sample.
+#' @param k
+#' K-nearest neighbours used to calculate distance. DEFAULT is 5.
+#' @return A single value of distance.
+
+inter_dist <- function(x, k)
+{
+  ## knn_mean <- function(x, k) {mean(sort(x)[1:k])}
+  ## mean(apply(x, 1, knn_mean, k))
+  knn_median <- function(x, k){ median(sort(x)[1:k]) } ## take median of K distance of a cell
+  median(apply(x, 1, knn_median, k)) ## take median of distance of all cells
+}
+
+#' inna_dist
+#'
+#' Calculate the inna-sample distance. Internal function called by separability.
+#'
+#' @param x
+#' A distance matrix of cells in one sample to the cells in the same sample.
+#' @param k
+#' K-nearest neighbours used to calculate distance.
+#' @return A single value of distance.
+
+inna_dist <- function(x, k)
+{
+  ## knn_mean <- function(x, k) {mean(sort(x)[2:k+1])}
+  ## mean(apply(x, 1, knn_mean, k))
+  knn_median <- function(x, k){ median(sort(x)[2:k+1]) } ## take median of K distance of a cell
+  median(apply(x, 1, knn_median, k)) ## take median of distance of all cells
+}
+
+```
+
+
+```{r}
+Current_dataset <- readRDS("~/BioInfo/newdataset/improved_clb_v6.rds")
+Loo <- readRDS("C:/Users/raine/OneDrive/Documents/BioInfo/LooMouseCortex-master/Merge_integrated_Loo.rds")
+```
+
+```{r}
+DefaultAssay(Current_dataset) <- "RNA"
+Idents(Current_dataset)="Simplified_clusters"
+Current_dataset = subset(Current_dataset,idents = c("Microglia","Endothelial/Mural cells","aNSCs","qNSCs"))
+Current_dataset <- FindVariableFeatures(Current_dataset,verbose=F)
+Current_dataset <- ScaleData(Current_dataset,verbose=F)
+Current_dataset <- RunPCA(Current_dataset, pcs.compute = 20,verbose=F)
+DefaultAssay(Current_dataset) <- "RNA"
+Current_dataset<-RunUMAP(Current_dataset, reduction = "pca", dims = 1:11,verbose=F) 
+Current_dataset<- FindNeighbors(Current_dataset, reduction= "umap",verbose = F,dims=1:2)
+Current_dataset <- FindClusters(Current_dataset, resolution = 0.1,verbose=F) 
+Current_dataset <- RunTSNE(Current_dataset, dims.use = 1:9, do.fast = T,verbose=F)
+
+Idents(Current_dataset)="Simplified_clusters"
+Current_dataset.markers <- FindAllMarkers(object = Current_dataset, only.pos = TRUE, min.pct = 0.25, thresh.use = 0.25,verbose=F)
+write.csv(Current_dataset.markers,file='Current_dataset.markers.csv')
+
+DefaultAssay(Loo) <- "RNA"
+Idents(Loo)="Simplified_loo_clusters"
+Loo=subset(Loo,idents = c("RG (E14)","Microglia (E14)","Microglia (P0)","Endothelial (E14)","Endothelial (P0)"))
+Loo <- FindVariableFeatures(Loo,verbose=F)
+Loo <- ScaleData(Loo,verbose=F)
+Loo <- RunPCA(Loo, pcs.compute = 20,verbose=F)
+DefaultAssay(Loo) <- "RNA"
+Loo<-RunUMAP(Loo, reduction = "pca", dims = 1:11,verbose=F) 
+Loo<- FindNeighbors(Loo, reduction= "umap",verbose=F,dims=1:2)
+Loo <- FindClusters(Loo, resolution = 0.1,verbose=F) 
+Loo <- RunTSNE(Loo, dims.use = 1:9, do.fast = T,verbose=F)
+
+Idents(Loo)="Simplified_loo_clusters"
+Loo.markers <- FindAllMarkers(object = Loo, only.pos = TRUE, min.pct = 0.25, thresh.use = 0.25,verbose = F)
+write.csv(Loo.markers,file='Loo.markers.csv')
+
+saveRDS(Current_dataset, file = "Current_dataset.RDS")
+saveRDS(Loo, file = "Loo.RDS")
+
+marker_file_list <- c(Current_dataset = 'Current_dataset.markers.csv',Loo = 'Loo.markers.csv') 
+fList <- c(Current_dataset = "Current_dataset.RDS", Loo ="Loo.RDS") 
+Idents(Loo)="Simplified_loo_clusters"
+Idents(Current_dataset)="Simplified_clusters"
+objList <- lapply(fList, readRDS)
+Idents(objList$Loo)="Simplified_loo_clusters"
+Idents(objList$Current_dataset)="Simplified_clusters"
+single_obj_list <- c(Current_dataset = objList$Current_dataset, Loo = objList$Loo) 
+Idents(Loo)="Simplified_loo_clusters"
+Idents(Current_dataset)="Simplified_clusters"
+cell_num_list <- lapply(single_obj_list, function(obj){summary(Idents(obj))})
+
+res <- cluster_map(marker_file_list, edge_cutoff = 0.2, output = 'circos_plot', cell_num_list = cell_num_list, single_obj_list = single_obj_list) 
+mapRes <- read.csv('circos_plot.results.csv') #file auto-save from cluster_map
+circos_map(mapRes, cell_num_list, output = 'circos.tmp', color_sample = c("#CC6C6D","#888888"),color_cord=brewer.pal(n = 8, "Pastel1")) #the plot is in the directory
+```
+```
