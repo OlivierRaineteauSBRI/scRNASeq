@@ -1,0 +1,226 @@
+---
+title: "Script linked to Figure 2: Early priming of pallial and subpallial aNSCs along multiple trajectories."
+subtitle: "Figure 2A, 2B, 2D, 2E, 2F, 2G, 2O, 2Q, 2R"
+output:
+  rmdformats::downcute:
+    self_contained: true
+    default_style: "light"
+    downcute_theme: "chaos"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+#### Load packages 
+
+```{r,warning=FALSE, include=T}
+suppressWarnings(suppressMessages({library(tidyverse,quietly=T)
+library(Seurat,quietly=T)
+library(patchwork,quietly=T)
+library(viridis,quietly=T)
+library(scales,quietly=T)
+library(treemap,quietly=T)
+library(ggplot2,quietly=T)
+library(ggpubr,quietly = T)
+library(Rmagic, quietly = T)
+library(reticulate, quietly=T)
+library(magrittr, quietly=T)
+library(imager, quietly=T)
+library(EBImage, quietly=T)
+library(STutility, quietly=T)
+library(magrittr, quietly=T)
+library(dplyr, quietly=T)
+library(DT, quietly=T)
+library(kableExtra, quietly=T)
+}))
+```
+
+
+```{r,echo=FALSE}
+aNSCs = readRDS("C:/Users/raine/OneDrive/Documents/BioInfo/Focus on aNSCs + cytoscape network/aNSCs_subclusters.RDS")
+same_umap_P2_P12_P22=readRDS("C:/Users/raine/OneDrive/Documents/BioInfo/newdataset/same_umap_P2_P12_P22.rds")
+```
+
+# A
+
+> Fig2A: UMAP plots of complete dataset.
+
+```{r,fig.width=8,fig.height=6,fig.align="center"}
+aNSCs = suppressMessages(FindClusters(aNSCs, resolution = 0.3,verbose=F))
+Idents(aNSCs) = "seurat_clusters"
+
+aNSC1 = WhichCells(aNSCs, idents = 1)
+aNSC3 = WhichCells(aNSCs, idents = 0)
+aNSC2 = WhichCells(aNSCs, idents = c(2,4))
+aNSC4 = WhichCells(aNSCs, idents = 3)
+
+aNSCs <- SetIdent(aNSCs, cells = aNSC1 , value = "aNSC1") 
+aNSCs[["Full_detailed_clusters"]] = Idents(aNSCs) 
+
+aNSCs <- SetIdent(aNSCs, cells = aNSC2 , value = "aNSC2") 
+aNSCs[["Full_detailed_clusters"]] = Idents(aNSCs) 
+
+aNSCs <- SetIdent(aNSCs, cells = aNSC3 , value = "aNSC3") 
+aNSCs[["Full_detailed_clusters"]] = Idents(aNSCs) 
+
+aNSCs <- SetIdent(aNSCs, cells = aNSC4 , value = "aNSC4") 
+aNSCs[["Full_detailed_clusters"]] = Idents(aNSCs) 
+
+Idents(same_umap_P2_P12_P22)="orig.ident"
+P12 = subset(same_umap_P2_P12_P22,idents = c("sdCLBNx1","sdCLBNx2"))
+
+DimPlot(P12, reduction="ref.umap",cols=c("#77C67D","#ADDD92","#2DA358","#9E9E23","#DEDEDE","#DEDEDE","#DEDEDE","#DEDEDE","#DEDEDE","#DEDEDE","#DEDEDE","#DEDEDE","#DEDEDE","#DEDEDE","#DEDEDE","#DEDEDE"), label = F, pt.size = 1,group.by = "Full_clusters",repel=T)
+
+```
+
+# B
+
+> Fig2B: UMAP plots of aNSCs subsets.
+
+```{r,fig.width=5,fig.height=5,fig.align="center"}
+
+DimPlot(aNSCs, label = TRUE, label.size = 6, pt.size = 3, group.by = "Full_detailed_clusters", cols=c("#9E9E23","#2DA358","#ADDD92","#77C67D"))+NoLegend()
+
+```
+
+# D
+
+> Fig2D: Heatmap showing the top 5 differentially expressed TF/TR for the 6 aNSC3 subclusters.
+
+```{r,fig.width=7,fig.height=5,fig.align="center"}
+aNSCs = FindClusters(aNSCs, resolution = 2,verbose=F)
+Idents(aNSCs) = "seurat_clusters"
+new_cluster       <- c("aNSC1","aNSC1","aNSC2","1","aNSC2","2","aNSC2","5","3","aNSC4","6","4","aNSC4","aNSC1","aNSC1")
+names(new_cluster)<- levels(aNSCs)
+aNSCs         <- RenameIdents(aNSCs, new_cluster)
+aNSCs$seurat_clusters   = aNSCs@active.ident
+Idents(aNSCs)<-"seurat_clusters"
+aNSCs_subset <- subset(aNSCs, idents = c("1", "2", "3", "4", "5", "6"), invert = FALSE)
+aNSCs_subset@active.ident=factor(aNSCs_subset@active.ident, levels = c("1", "2", "3", "4", "5", "6"))
+DefaultAssay(aNSCs_subset)="RNA"
+genes <- row.names(aNSCs_subset)
+aNSCs_subset <- ScaleData(aNSCs_subset, features = genes,verbose = F)
+suppressMessages(DoHeatmap(aNSCs_subset,
+          features = c("Sox4",	"Hes5",	"Zeb1",	"Hes6",
+                       "Rfx4",	"Klf6", "Olig1", "Olig2","Top2a", 	
+                       "Sp9", "Arx", "Dlx1", "Dlx2","Gsx2",
+                       	"Notch2",	"Six3", "Hes1",	"Klf4",	
+                        "Clu","Sox9", "Id4", "Hopx",
+                       "Emx1", "Fezf2", "Pax6",	"Eomes", "Neurog2"),
+cells = NULL, group.by = "ident",   group.bar = TRUE,   group.colors =c("#F0EC65","#00BA38","#00C0AF","#B983FF","#00BCD8","#619CFF"), disp.min = -0.2, disp.max = 1.2, 
+assay = "RNA", label = TRUE, size = 5, hjust = 0, angle = 45, raster = TRUE, draw.lines = TRUE,  lines.width = 5,
+group.bar.height = 0.02, combine = TRUE, slot = "scale.data")+ scale_fill_viridis(alpha = 1, begin = 0, end = 1, direction = 1,discrete = FALSE, option = "D")) 
+```
+
+# E
+
+> Fig2E: UMAP plot with identity of aNSC3 subclusters.
+
+```{r,fig.width=5,fig.height=4,fig.align="center"}
+DefaultAssay(aNSCs)="RNA"
+DimPlot(aNSCs, label = TRUE, label.size = 6, pt.size = 3, cols=c("#77C67D","#ADDD92","#F0EC65","#00BA38","#00C0AF","#00BCD8","#9E9E23","#619CFF","#B983FF"))+NoLegend()
+```
+
+```{r,include=F}
+conda_create("sandbox")
+conda_install("sandbox", "magic-impute", pip=TRUE)
+use_condaenv("sandbox", required = TRUE, conda = "C:/Users/raine/miniconda3/condabin/conda")
+reticulate::py_discover_config(required_module="magic")
+```
+
+> Fig2E: UMAP plot illustrating feature plots of markers identified in D.
+
+```{r,fig.width=8,fig.height=11,fig.align="center"}
+aNSCs_matrix <- t(as.matrix(aNSCs@assays$RNA@data))
+aNSCs_matrix <- aNSCs_matrix[, colSums(aNSCs_matrix != 0) > 0]
+aNSCs_MAGIC <- suppressMessages(suppressWarnings((magic(aNSCs_matrix,genes,verbose = F))))
+aNSCs_assay <- CreateAssayObject(data = t(as.matrix(aNSCs_MAGIC$result)))
+aNSCs[["magic"]] <- aNSCs_assay
+DefaultAssay(aNSCs) <- "magic"
+suppressMessages(suppressWarnings(FeaturePlot(aNSCs, order=T,pt.size=2,features = c("Dlx1","Dlx2","Olig1","Olig2","Gsx2","Emx1","Eomes","Neurog2"),ncol = 2)& scale_color_viridis_c(option="B")&theme_void()))
+```
+
+# F
+
+> Fig2F: UMAP plot identifying cells expressing pallial (red) or subpallial (blue) transcripts (or both, i.e. dual cells, yellow) within activated NSCs.
+
+```{r,fig.width=5,fig.height=4,fig.align="center"}
+Idents(aNSCs) = "Lineage"
+DimPlot(aNSCs, reduction="umap",cols = c("#DEDEDE", "#ff0000","#fde725","#0000ff"), label = F, pt.size = 2,group.by = "Lineage", order=c("GABACells","DualCells","GLUCells"))+NoLegend()
+```
+
+# G
+
+> Fig2G: UMAP plot identifying cells expressing pallial (red) or subpallial (blue) transcripts (or both, i.e. dual cells, yellow) within the entire dataset.
+
+```{r,fig.width=7,fig.height=5,fig.align="center"}
+Idents(P12) = "Lineage"
+DimPlot(P12, group.by = "Lineage", cols = c("#DEDEDE", "#fde725", "#ff0000", "#0000ff"), order = c("GABACells", "GLUCells", "DualCells"),pt.size = 1.5)
+```
+
+# O
+
+> Fig2O: Spatial transcriptomic (Visium) showing invasion of dorsal V-SVZ territories by subpallial marker.
+
+```{r}
+se.cropped=readRDS("C:/Users/raine/OneDrive/Documents/visium/merge_se_cropped.rds")
+se.cropped <- suppressWarnings(suppressMessages(se.cropped %>% 
+  SCTransform(verbose = F) %>%
+  RunPCA(verbose=F) %>%
+  RunUMAP(reduction = "pca", dims = 1:20,verbose = F)))
+```
+
+```{r, fig.width=10, fig.height=3,fig.align="center"}
+
+FeatureOverlay(se.cropped, features = "Emx1",
+sampleids = 1:3,
+cols = c("light grey", "mistyrose", "darkred"),
+pt.size = 3,
+add.alpha = TRUE,
+ncol = 3, show.sb = FALSE,
+pt.alpha = 0.1)
+
+FeatureOverlay(se.cropped, features = "Tfap2c",
+sampleids = 1:3,
+cols = c("light grey", "mistyrose", "darkred"),
+pt.size = 3,
+add.alpha = TRUE,
+ncol = 3, show.sb = FALSE,
+pt.alpha = 0.1)
+
+FeatureOverlay(se.cropped, features = "Six3",
+sampleids = 1:3,
+cols = c("light grey", "mistyrose", "darkred"),
+pt.size = 3,
+add.alpha = TRUE,
+ncol = 3, show.sb = FALSE,
+pt.alpha = 0.1)
+
+FeatureOverlay(se.cropped, features = "Gsx2",
+sampleids = 1:3,
+cols = c("light grey", "mistyrose", "darkred"),
+pt.size = 3,
+add.alpha = TRUE,
+ncol = 3, show.sb = FALSE,
+pt.alpha = 0.1)
+
+```
+
+# Q
+
+> Fig2Q: Analysis of cell proportion at P2, P12 and P22.
+
+```{r,fig.width=7,fig.height=5,fig.align="center"}
+
+same_umap_P2_P12_P22=readRDS("C:/Users/raine/OneDrive/Documents/BioInfo/newdataset/same_umap_P2_P12_P22.rds")
+Idents(same_umap_P2_P12_P22)="orig.ident"
+P2 = subset(same_umap_P2_P12_P22,idents = "p2")
+P22 = subset(same_umap_P2_P12_P22,idents = "p20")
+P12 = subset(same_umap_P2_P12_P22,idents = c("sdCLBNx1","sdCLBNx2"))
+
+DimPlot(P2, pt.size = 1.5, group.by = "lineage", cols = c("#999999", "#fde725", "#ff0000", "#0000ff"), order = c("GABACells", "GLUCells", "DualCells"))+NoLegend()+theme_void()
+DimPlot(P12, pt.size = 1.5, group.by = "Lineage", cols = c("#999999", "#fde725", "#ff0000", "#0000ff"), order = c("GABACells", "GLUCells", "DualCells"))+NoLegend()+theme_void()
+DimPlot(P22, pt.size = 1.5, group.by = "lineage", cols = c("#999999", "#fde725", "#ff0000", "#0000ff"), order = c("GABACells", "GLUCells", "DualCells"))+NoLegend()+theme_void()
+
+```
