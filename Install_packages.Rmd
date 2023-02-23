@@ -1,0 +1,46 @@
+---
+title: "Library_script"
+output:
+  rmdformats::downcute:
+    self_contained: true
+    default_style: "light"
+    downcute_theme: "chaos"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+```{r, include=T}
+
+install.packages("tidyverse")
+install.packages("dplyr")
+install.packages("ggpubr")
+install.packages("DT")
+install.packages("imager")
+install.packages("kableExtra")
+install.packages("circlize")
+install.packages("ape")
+install.packages("phheatmap")
+install.packages("broman")
+install.packages("Cairo")
+install.packages("devtools")
+install.packages("Seurat")
+install.packages("ggplot2")
+install.packages("Seurat")
+install.packages("Matrix")
+install.packages("remotes")
+remotes::install_github("https://github.com/cran/Rmagic")
+if (!require("BiocManager", quietly = TRUE))
+  install.packages("BiocManager")
+BiocManager::install("EBImage")
+remotes::install_github("jbergenstrahle/STUtility")
+install.packages("reticulate")
+options(reticulate.conda_binary = "C:/Users/path_to_conda.bat")
+BiocManager::install("AUCell")
+install.packages("viridis")
+BiocManager::install("scater")
+```
+
