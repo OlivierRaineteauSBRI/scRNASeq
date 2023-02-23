@@ -79,6 +79,14 @@ Download ``Script.gz`` and follow the script to retrieve our bioinformatic figur
 - [Profile](https://github.com/LouisFoucault "Louis Foucault") 
 - [Email](mailto:louis.foucault@inserm.fr?subject=Hi% "Hi!")
 
+**Elodie Babina** _second author_
+- [Profile](https://github.com/ElodieBabina "Elodie Babina") 
+- [Email](mailto:elodie.babina@inserm.fr?subject=Hi% "Hi!")
+
+**Timothy Capeliez** _third author_
+- [Profile](https://github.com/TimothyCapeliez "Timothy Capeliez") 
+- [Email](mailto:timothy.capeliez@inserm.fr?subject=Hi% "Hi!")
+
 
 ## Questions
 <img src="https://img.shields.io/badge/Ask%20me-anything-1abc9c.svg">
