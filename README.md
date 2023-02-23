@@ -63,7 +63,7 @@ The ventricular-subventricular zone (V-SVZ) is the largest neurogenic region of 
 
 ## To get started
 
-Download ``Script.gz`` and follow the script to retrieve our bioinformatic figures. For new beginners, make sure you download and install the script "Packages.Rmd" before started.
+Download ``Script.gz`` and follow the script to retrieve our bioinformatic figures. For new beginners, make sure you download and install the script "Install_packages.Rmd" before starting.
 
 ## Authors
 
