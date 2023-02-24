@@ -4,8 +4,7 @@
  
 <p align="justify">
 
-Welcome to the GitHub repository related to our recent publication **Single cell analysis of the dorsal V-SVZ reveals differential quiescence of postnatal
-pallial and subpallial neural stem cells driven by BMPR1A-signalling.** 
+Welcome to the GitHub repository related to our recent publication **Single cell analysis of the postnatal dorsal V-SVZ reveals a role for Bmpr1a-signaling in silencing pallial germinal activity** 
 _Guillaume Marcy<sup>1</sup>, Louis Foucault<sup>1</sup>, Elodie Babina, Timothy Capeliez, Emeric Texeraud, Stefan Zweifel, Christophe Heinrich, Hector Hernandez-Vargas, Carlos Parras, Denis Jabaudon, <ins> Olivier Raineteau</ins>, Science Advances, 2023 et lien :_ 
 
  </p>
@@ -34,18 +33,18 @@ _Guillaume Marcy<sup>1</sup>, Louis Foucault<sup>1</sup>, Elodie Babina, Timothy
 ## Abstract
 
 <p align="justify">
-The ventricular-subventricular zone (V-SVZ) is the largest neurogenic region of the postnatal forebrain, containing neural stem cells (NSCs) that emerge from both the embryonic pallium and subpallium. Despite of this dual origin, glutamatergic neurogenesis declines rapidly after birth, while gabaergic neurogenesis persists throughout life. Here, we performed single-cell RNA-sequencing (scRNA-Seq) of the postnatal dorsal V-SVZ for unravelling the mechanisms leading to pallial lineage germinal activity silencing. We identify cell lineage-specific NSCs primed for the generation of neurons or glial cells, as well as a large population of so far uncharacterized quiescent NSCs (qNSC). Pallial qNSCs enter a state of deep quiescence, characterized by persistent TGFbeta/BMP signalling, reduced transcriptional activity and Hopx expression, whilst in contrast, subpallial qNSCs remain transcriptionally primed for activation. Induction of deep pallial quiescence is paralleled by a rapid blockade of glutamatergic neuron production and differentiation. Finally, manipulation of the TGFbeta/BMP receptor Bmpr1a demonstrate its key role in mediating these effects at early postnatal times. Together, our results highlight a central role of TGFbeta/BMP-signalling in synchronizing quiescence induction and blockade of neuronal differentiation to rapidly silence pallial germinal activity after birth.
+The ventricular-subventricular zone (V-SVZ) is the largest neurogenic region of the postnatal forebrain, containing neural stem cells (NSCs) that emerge from both the embryonic pallium and subpallium. Despite of this dual origin, glutamatergic neurogenesis declines rapidly after birth, while gabaergic neurogenesis persists throughout life. We performed single-cell RNA-sequencing (scRNA-Seq) of the postnatal dorsal V-SVZ for unravelling the mechanisms leading to pallial lineage germinal activity silencing. We show that pallial NSCs enter a state of deep quiescence, characterized by high BMP-signaling, reduced transcriptional activity and Hopx expression, whilst in contrast, subpallial NSCs remain primed for activation. Induction of deep quiescence is paralleled by a rapid blockade of glutamatergic neurons production and differentiation. Finally, manipulation of Bmpr1a demonstrates its key role in mediating these effects. Together, our results highlight a central role of BMP-signaling in synchronizing quiescence induction and blockade of neuronal differentiation to rapidly silence pallial germinal activity after birth.
  </p>
 
 ## Files you'll find here 
 
-- ``Fig1.Rmd`` : a full detailed script of the processing steps for blablablabla
-- ``Fig2.Rmd`` : 
-- ``Fig3.Rmd`` : 
-- ``Fig4.Rmd`` :
-- ``Fig5.Rmd`` :
-- ``Fig6.Rmd`` :
-- ``Fig7.Rmd`` :
+- ``Fig1.Rmd`` 
+- ``Fig2.Rmd`` 
+- ``Fig3.Rmd`` 
+- ``Fig4.Rmd``
+- ``Fig5.Rmd``
+- ``Fig6.Rmd``
+- ``Fig7.Rmd``
 - ``P12.rds`` : the complete seurat object of P12 SVZ.
 - ``P2_P12_P22_dSVZ_Seq.rds`` : the complete seurat object of P2, P12, P22 SVZ.
 
