@@ -1,6 +1,9 @@
 # scRNA-Seq project <img height="32" width="32" src="https://cdn.simpleicons.org/rstudio/gray" />  <img height="32" width="32" src="https://cdn.simpleicons.org/python/gray" />
 
- <img src="https://img.shields.io/badge/R-276DC3?style=for-the-badge&logo=r&logoColor=white">  <img src ="https://img.shields.io/badge/Python-14354C?style=for-the-badge&logo=python&logoColor=white">
+<img src="https://img.shields.io/badge/R-276DC3?style=for-the-badge&logo=r&logoColor=white">  <img src ="https://img.shields.io/badge/Python-14354C?style=for-the-badge&logo=python&logoColor=white">
+ 
+![Dark Blue Modern Geometric LinkedIn Banner (1)](https://user-images.githubusercontent.com/92512533/224772581-e54e5c69-0833-462b-9946-93b538dab8eb.png)
+
  
 <p align="justify">
 
@@ -18,7 +21,8 @@ Welcome to the GitHub repository related to our recent publication **Single cell
 <h3 align="center">Postnatal mouse SVZ brain scRNA-seq analysis</h3>
 
   <p align="center">
-    This website supports documentation and script so that interested readers may reproduce the major results presented in the study.
+    This website supports documentation and script so that ![Uploading Dark Blue Modern Geometric LinkedIn Banner.png…]()
+interested readers may reproduce the major results presented in the study.
     <br />
     <a href="https://github.com/OlivierRaineteauSBRI/scRNASeq"><strong>Explore the docs »</strong></a>
     <br />
