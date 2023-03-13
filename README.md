@@ -1,28 +1,18 @@
-# scRNA-Seq project <img height="32" width="32" src="https://cdn.simpleicons.org/rstudio/gray" />  <img height="32" width="32" src="https://cdn.simpleicons.org/python/gray" />
-
 <img src="https://img.shields.io/badge/R-276DC3?style=for-the-badge&logo=r&logoColor=white">  <img src ="https://img.shields.io/badge/Python-14354C?style=for-the-badge&logo=python&logoColor=white">
  
-![Dark Blue Modern Geometric LinkedIn Banner (1)](https://user-images.githubusercontent.com/92512533/224772581-e54e5c69-0833-462b-9946-93b538dab8eb.png)
+![Dark Blue Modern Geometric LinkedIn Banner (1)](https://user-images.githubusercontent.com/92512533/224784748-9474061f-78b6-4d29-a73f-d1ea175471a2.png)
 
  
 <p align="justify">
 
-Welcome to the GitHub repository related to our recent publication **Single cell analysis of the postnatal dorsal V-SVZ reveals a role for Bmpr1a-signaling in silencing pallial germinal activity** _Guillaume Marcy<sup>1</sup>, Louis Foucault<sup>1</sup>, Elodie Babina, Timothy Capeliez, Emeric Texeraud, Stefan Zweifel, Christophe Heinrich, Hector Hernandez-Vargas, Carlos Parras, Denis Jabaudon, <ins> Olivier Raineteau</ins>, Science Advances, 2023 et lien :_ 
+Welcome to the GitHub repository related to our recent publication **Single cell analysis of the postnatal dorsal V-SVZ reveals a role for Bmpr1a-signaling in silencing pallial germinal activity** _Guillaume Marcy<sup>1</sup>, Louis Foucault<sup>1</sup>, Elodie Babina, Timothy Capeliez, Emeric Texeraud, Stefan Zweifel, Christophe Heinrich, Hector Hernandez-Vargas, Carlos Parras, Denis Jabaudon, <ins> Olivier Raineteau</ins>, Science Advances, 2023 et <a href="https://github.com/OlivierRaineteauSBRI/scRNASeq"> lien  </a>  :_ 
 
  </p>
-
-<!-- PROJECT LOGO -->
-<br />
-<div align="center">
-  <a href="https://github.com/OlivierRaineteauSBRI/scRNASeq">
-    <img src="https://raw.githubusercontent.com/othneildrew/Best-README-Template/master/images/logo.png" alt="Logo" width="80" height="80">
-  </a>
 
 <h3 align="center">Postnatal mouse SVZ brain scRNA-seq analysis</h3>
 
   <p align="center">
-    This website supports documentation and script so that ![Uploading Dark Blue Modern Geometric LinkedIn Banner.png…]()
-interested readers may reproduce the major results presented in the study.
+    This website supports documentation and script so that interested readers may reproduce the major results presented in the study.
     <br />
     <a href="https://github.com/OlivierRaineteauSBRI/scRNASeq"><strong>Explore the docs »</strong></a>
     <br />
