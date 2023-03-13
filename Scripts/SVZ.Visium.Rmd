@@ -1,0 +1,88 @@
+---
+title: "SCT Utility analysis related to spatial transcriptomics SVZ"
+subtitle: "Visium seurat object of E17.5, P2, P12 and P22"
+output:
+  rmdformats::downcute:
+    self_contained: true
+    default_style: "light"
+    downcute_theme: "chaos"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+#### Load packages
+
+```{r,warning=FALSE, include=T}
+suppressWarnings(suppressMessages({
+library(Seurat)
+library(magrittr)
+library(imager)
+library(EBImage)
+library(STutility)
+library(magrittr)
+library(dplyr)
+library(DT)
+library(kableExtra)
+}))
+```
+
+```{r}
+se.cropped <- readRDS("C:/Users/raine/OneDrive/Documents/visium/merge_se_cropped.rds")
+```
+
+
+# Normalization
+
+```{r}
+suppressWarnings(suppressMessages({se.cropped <- se.cropped %>% 
+  SCTransform(verbose = F) %>%
+  RunPCA(verbose = F) %>%
+  RunUMAP(reduction = "pca", dims = 1:20,verbose=F)}))
+
+Idents(se.cropped)="labels"
+se.cropped <- RenameIdents(se.cropped,"svze18"="E17.5","svzp2"="P2","svzp12"="P12","svzp22"="P22")
+se.cropped$labels <- Idents(se.cropped)
+se.cropped@meta.data[["labels"]]=as.character(se.cropped@meta.data[["labels"]])
+```
+
+# Visualize only the spots
+
+```{r,fig.width=9,fig.height=5, fig.align="center"}
+ST.FeaturePlot(se.cropped, features = c("Sox2", "Pax6"), ncol = 2, grid.ncol = 2, pt.size = 4, show.sb = FALSE)
+```
+
+# Visualize normalized gene expression in spots within sections
+
+```{r, fig.width=10, fig.height=3,fig.align='center'}
+FeatureOverlay(se.cropped, features = "Sox2",
+sampleids = 1:4,
+cols = c("light grey", "mistyrose", "darkred"),
+pt.size = 3,
+add.alpha = TRUE,
+ncol = 4, show.sb = FALSE,
+pt.alpha = 0.1,label.by = "labels")
+```
+
+# Visualize normalized gene expression in spots with section
+```{r, fig.width=10, fig.height=3,fig.align='center'}
+FeatureOverlay(se.cropped, features = "Lrp2",
+sampleids = 1:4,
+cols = c("light grey", "mistyrose", "darkred"),
+pt.size = 3,
+add.alpha = TRUE,
+ncol = 4, show.sb = FALSE,
+pt.alpha = 0.1,label.by = "labels")
+```
+
+# Other visualization parameters
+```{r, fig.width=10, fig.height=3}
+FeatureOverlay(se.cropped, features = "Sox2", 
+              sampleids = 1:4,
+              cols = c("lightgray", "mistyrose", "red", "darkred", "black"),
+              pt.size = 1.5, 
+              add.alpha = TRUE,
+              ncol = 4,label.by = "labels")
+```
+
