@@ -38,21 +38,21 @@ The ventricular-subventricular zone (V-SVZ) is the largest neurogenic region of 
 
 ## Files you'll find here 
 
-- ``Fig1.Rmd`` 
-- ``Fig2.Rmd`` 
-- ``Fig3.Rmd`` 
-- ``Fig4.Rmd``
-- ``Fig5.Rmd``
-- ``Fig6.Rmd``
-- ``Fig7.Rmd``
-- ``Suppl_Fig1.Rmd``
-- ``Suppl_Fig2.Rmd``
-- ``Suppl_Fig3.Rmd``
-- ``Suppl_Fig4.Rmd``
-- ``Suppl_Fig5.Rmd``
-- ``Suppl_Fig6.Rmd``
-- ``Suppl_Fig7.Rmd``
-- ``Suppl_Fig8.Rmd``
+- ``Fig1.Rmd`` : to retrieve the figure 1.
+- ``Fig2.Rmd`` : to retrieve the figure 2. 
+- ``Fig3.Rmd`` : to retrieve the figure 3. 
+- ``Fig4.Rmd`` : to retrieve the figure 4.
+- ``Fig5.Rmd`` : to retrieve the figure 5.
+- ``Fig6.Rmd`` : to retrieve the figure 6.
+- ``Fig7.Rmd`` : to retrieve the figure 7.
+- ``Suppl_Fig1.Rmd`` : to retrieve the suppl 1.
+- ``Suppl_Fig2.Rmd`` : to retrieve the suppl 2.
+- ``Suppl_Fig3.Rmd`` : to retrieve the suppl 3.
+- ``Suppl_Fig4.Rmd`` : to retrieve the suppl 4.
+- ``Suppl_Fig5.Rmd`` : to retrieve the suppl 5.
+- ``Suppl_Fig6.Rmd`` : to retrieve the suppl 6.
+- ``Suppl_Fig7.Rmd`` : to retrieve the suppl 7.
+- ``Suppl_Fig8.Rmd`` : to retrieve the suppl 8.
 - ``P12_dSVZ_Seq.rds`` : the complete seurat object of P12 dSVZ scRNAseq.
 - ``P2_P12_P22_dSVZ_Seq.rds`` : the complete seurat object of P2, P12, P22 dSVZ scRNAseq.
 - ``SVZ.Visium`` : the complete seurat object of E17.5, P2, P12 and P22 visium.
@@ -71,7 +71,7 @@ The ventricular-subventricular zone (V-SVZ) is the largest neurogenic region of 
 
 ## To get started
 
-Download ``Script.gz`` and follow the script to retrieve our bioinformatic figures. For new beginners, make sure you download and install the script ``Install_packages.Rmd`` before starting.
+Download ``Script.gz`` and follow the script to retrieve our bioinformatic figures. For new beginners, make sure you download and run the script ``Install_packages.Rmd`` before starting. To download all of the rds objects used, please follow the ``linux_command`` present on each directory.
 
 ## Authors
 
