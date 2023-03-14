@@ -1,6 +1,6 @@
 ---
 title: "Script linked to Figure 5: Hopx and TGFβ/BMP signalling define pallial qNSCs quiescence/senescence."
-subtitle: "Figure 5E, 5F, 5G"
+subtitle: "Figure 5C, 5E, 5F, 5G"
 output:
   rmdformats::downcute:
     self_contained: true
@@ -61,6 +61,22 @@ library(kableExtra, quietly=T)
 library(ggpubr, quietly = T)
 library(readr, quietly =T)
 }))
+
+```
+
+# C
+
+> Fig5C:  UMAP illustrating the pallial (red) and subpallial (blue) trajectories.
+
+```{r,fig.width=6,fig.height=5,fig.align="center"}
+same_umap_P2_P12_P22=readRDS("C:/Users/raine/OneDrive/Documents/BioInfo/newdataset/same_umap_P2_P12_P22.rds")
+Idents(same_umap_P2_P12_P22)="orig.ident"
+P12 = subset(same_umap_P2_P12_P22,idents = c("sdCLBNx1","sdCLBNx2"))
+
+DimPlot(P12,group.by = "Full_detailed_clusters",cols = c("#ea878b","#DEDEDE","#99c3e1","#DEDEDE","#DEDEDE",
+                                                         "#cef3fc","#DEDEDE","#DEDEDE","#f9bebe","#DEDEDE",
+                                                         "#DEDEDE","#DEDEDE","#DEDEDE","#DEDEDE","#DEDEDE",
+                                                         "#DEDEDE","#DEDEDE","#d26d6c","#4479b8","#d26d6c","#DEDEDE"),pt.size=1)+NoLegend()
 
 ```
 
