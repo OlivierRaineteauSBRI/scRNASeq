@@ -73,7 +73,7 @@ DimPlot(CLBNxs_Neurons_new_idents_V2,pt.size = 2, label = F, group.by = "Phase",
 
 # D
 
->Fig6D: Representation of overall gene count per feature as revealed by Visium spatial transcriptomics within the SVZ at corresponding timepoints.
+> Fig6D: Representation of overall gene count per feature as revealed by Visium spatial transcriptomics within the SVZ at corresponding timepoints.
 
 ```{r, fig.width=10, fig.height=3,fig.align="center"}
 
@@ -83,13 +83,18 @@ se.cropped <- suppressMessages(suppressMessages(se.cropped %>%
   RunPCA(verbose=F) %>%
   RunUMAP(reduction = "pca", dims = 1:20,verbose = F)))
 
+Idents(se.cropped)="labels"
+se.cropped <- RenameIdents(se.cropped,"svze18"="E17.5","svzp2"="P2","svzp12"="P12","svzp22"="P22")
+se.cropped$labels <- Idents(se.cropped)
+se.cropped@meta.data[["labels"]]=as.character(se.cropped@meta.data[["labels"]])
+
 FeatureOverlay(se.cropped, features = "Dlx2",
 sampleids = 2:4,
 cols = c("light grey", "mistyrose", "darkred"),
 pt.size = 3,
 add.alpha = TRUE,
 ncol = 3, show.sb = FALSE,
-pt.alpha = 0.1)
+pt.alpha = 0.1,label.by = "labels")
 
 FeatureOverlay(se.cropped, features = "Dlx1",
 sampleids = 2:4,
@@ -97,7 +102,7 @@ cols = c("light grey", "mistyrose", "darkred"),
 pt.size = 3,
 add.alpha = TRUE,
 ncol = 3, show.sb = FALSE,
-pt.alpha = 0.1)
+pt.alpha = 0.1,label.by = "labels")
 
 FeatureOverlay(se.cropped, features = "Neurog2",
 sampleids = 2:4,
@@ -105,7 +110,7 @@ cols = c("light grey", "mistyrose", "darkred"),
 pt.size = 3,
 add.alpha = TRUE,
 ncol = 3, show.sb = FALSE,
-pt.alpha = 0.1)
+pt.alpha = 0.1,label.by = "labels")
 
 FeatureOverlay(se.cropped, features = "Eomes",
 sampleids = 2:4,
@@ -113,7 +118,7 @@ cols = c("light grey", "mistyrose", "darkred"),
 pt.size = 3,
 add.alpha = TRUE,
 ncol = 3, show.sb = FALSE,
-pt.alpha = 0.1)
+pt.alpha = 0.1,label.by = "labels")
 
 ```
 
