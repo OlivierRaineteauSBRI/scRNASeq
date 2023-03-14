@@ -88,6 +88,8 @@ DimPlot(P12, label = F,label.size = 4, pt.size = 1,repel=T,cols= c("#DEDEDE","#6
 
 ```{r,fig.align="center"}
 DefaultAssay(P12)="RNA"
+my_levels <- c("P12_aNSC1","P12_aNSC2","P12_aNSC3","P12_aNSC4","P12_Astrocytes" ,"P12_Endothelial/Mural cells","P12_Ependymal cells","P12_GABAergic lineage","P12_GLUergic lineage","P12_Microglia","P12_Neuroblasts","P12_Oligos","P12_qNSC1","P12_qNSC3","P12_qNSC2", "P12_TAPs")
+Idents(P12) <- factor(P12@active.ident,levels=my_levels)
 suppressWarnings(suppressMessages(DotPlot(P12, features = c("Gsx2","Six3","Rorb","Eno1","Id4","Id3","Id2","Id1","Hopx","Fezf2","Dmrta2","Zic5","Tfap2c","Emx1"), idents = c("P12_qNSC1","P12_qNSC2","P12_qNSC3"), dot.scale = 10)+scale_colour_viridis(option="viridis")+theme_grey()+RotatedAxis()))
 ```
 
@@ -97,6 +99,10 @@ suppressWarnings(suppressMessages(DotPlot(P12, features = c("Gsx2","Six3","Rorb"
 
 ```{r}
 se.cropped=readRDS("C:/Users/raine/OneDrive/Documents/visium/merge_se_cropped.rds")
+Idents(se.cropped)="labels"
+se.cropped <- RenameIdents(se.cropped,"svze18"="E17.5","svzp2"="P2","svzp12"="P12","svzp22"="P22")
+se.cropped$labels <- Idents(se.cropped)
+se.cropped@meta.data[["labels"]]=as.character(se.cropped@meta.data[["labels"]])
 suppressMessages(suppressWarnings(se.cropped <- suppressMessages(se.cropped %>% 
   SCTransform(verbose = F) %>%
   RunPCA(verbose=F) %>%
@@ -112,7 +118,7 @@ cols = c("light grey", "mistyrose", "darkred"),
 pt.size = 3,
 add.alpha = TRUE,
 ncol = 4, show.sb = FALSE,
-pt.alpha = 0.1)
+pt.alpha = 0.1,label.by = "labels")
 
 FeatureOverlay(se.cropped, features = "Hopx",
 sampleids = 1:4,
@@ -120,7 +126,7 @@ cols = c("light grey", "mistyrose", "darkred"),
 pt.size = 3,
 add.alpha = TRUE,
 ncol = 4, show.sb = FALSE,
-pt.alpha = 0.1)
+pt.alpha = 0.1,label.by = "labels")
 
 ```
 
