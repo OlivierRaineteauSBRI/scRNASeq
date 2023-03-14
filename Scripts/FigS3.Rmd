@@ -1,0 +1,109 @@
+---
+title: "Script linked to Figure S3: A core set of “generic genes” defines distinct cellular states, related to Fig 1."
+subtitle: "Figure S3A, S3B, S3D"
+output:
+  rmdformats::downcute:
+    self_contained: true
+    default_style: "light"
+    downcute_theme: "chaos"
+---
+***
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+#### Load packages
+
+```{r,warning=FALSE, include=T}
+suppressWarnings(suppressMessages({
+library(Seurat,quietly=T)
+library(patchwork,quietly=T)
+library(viridis,quietly=T)
+library(scales,quietly=T)
+library(treemap,quietly=T)
+library(ggplot2,quietly=T)
+library(ggpubr,quietly = T)
+library(Rmagic, quietly = T)
+library(reticulate, quietly=T)
+library(magrittr, quietly=T)
+library(imager, quietly=T)
+library(EBImage, quietly=T)
+library(STutility, quietly=T)
+library(magrittr, quietly=T)
+library(dplyr, quietly=T)
+library(DT, quietly=T)
+library(kableExtra, quietly=T)
+}))
+```
+
+```{r,echo=FALSE}
+improved_clb_v6 <- readRDS("~/BioInfo/newdataset/improved_clb_v6.rds")
+```
+
+# A
+
+> Fig S3A: UMAP with simplified identity annotation
+
+```{r,fig.width=7,fig.height=6}
+suppressMessages(DimPlot(improved_clb_v6, label=T,label.size=5,pt.size = 1,group.by = "Simplified_clusters",cols=c("#CD9825","#5AD5C7","#FF666C","#99A424","#B984FB","#FF64FB","#5AD5C7","#FF649A","#FE57CC")))+NoLegend()
+```
+
+# B
+
+> Fig S3B: Percentage of expression of top 20 genes associated with previously known markers reflecting state transitions along the neurogenic lineage 
+
+```{r, fig.height=8, fig.width=16}
+suppressWarnings({
+cell_typeA_marker_gene_list <- list(c("Tmed10", "Lap3", "Hadh", "Gm11512", "Kcnj10", "Qk", "Slc48A1", "Wscd1", "Hsp90b1", "Arl6ip1", "Nde1", "InsiG1", "Sqle", "Idl1", "Rpn2", "Mpc2", "Gm12671", "Gm7336", "Gm10359", "St3gal4"))
+object <- AddModuleScore(object = improved_clb_v6, features = cell_typeA_marker_gene_list, name = "Lipid_Biosynthesis")
+P1<-FeaturePlot(object= object, features = "Lipid_Biosynthesis1", cols=c("grey","red"))
+
+cell_typeA_marker_gene_list <- list(c("Wsb1", "DclK1", "Gm3764", "Ncan", "Fgfr1", "Ugp2", "Smpdl3a", "Lfng", "Rgs20", "CyP2j9", "Per3", "Gabrg1", "Vcam1", "Slc6a11", "Adhfe1", "Aw047730", "Acsbg1", "Mlc1", "Cst3", "Mmd2"))
+object <- AddModuleScore(object = improved_clb_v6, features = cell_typeA_marker_gene_list, name = "Glycolisis")
+P2<-FeaturePlot(object = object, features = "Glycolisis1", cols=c("grey","red"))
+
+cell_typeA_marker_gene_list <- list(c("Ccp110", "Bcar1", "Nmral1", "Clic4", "Pdlim1", "Rtkn2", "Trim59", "Anln", "Me2", "Chchd4", "B230219d22rik", "Ado", "Glod4", "Eif4h", "Hnrnpm", "Timm50", "Fau", "Hmgb1", "Gm21596", "Gm4617"))
+object <- AddModuleScore(object = improved_clb_v6, features = cell_typeA_marker_gene_list, name = "Cell_cycle")
+P3<-FeaturePlot(object = object, features = "Cell_cycle1", cols=c("grey","red"))
+
+cell_typeA_marker_gene_list <- list(c("Gm11472", "Rpl17-ps8", "Gm6133", "Rpl17", "Rpl24", "Rps8", "Rps29", "Rpl41", "Rplp1", "Gm10073", "Rpl39", "Rps20", "Rplp2", "Rpl28", "Rps12-ps3", "Rpl3", "Rpl14-ps1", "Rpl14", "Gm14586", "Rps17"))
+object <- AddModuleScore(object = improved_clb_v6, features = cell_typeA_marker_gene_list, name = "Ribosomes_ProteinSynthesis")
+P4<-FeaturePlot(object = object, features = "Ribosomes_ProteinSynthesis1", cols=c("grey","red"))
+
+cell_typeA_marker_gene_list <- list(c("Evl", "Nol4", "Fnbp1l","Ccng2","Celsr3","Myt1","Dclk2","Arl4d", "Tubb3","Map1b","Dlx1as","Dlx2","Dlx1","Nrxn3","D930015E06RIK","Uchl1","Fxyd6","Dlgap4","Rtn1",""))
+object <- AddModuleScore(object = improved_clb_v6, features = cell_typeA_marker_gene_list, name = "Neuronal_Differentiation")
+P5<-FeaturePlot(object = object, features = "Neuronal_Differentiation1", cols=c("grey","red"))
+
+cell_typeA_marker_gene_list <- list(c("Bora", "Gsg2", "Gm6133","Aurka","Spdl1","Gtse1","Efcab11","Kif18a", "Psrc1","Nek2","Fam83d","Gas2l3","Cep55","Hmmr","Nsl1", "Prr11","Trip13","Neurl1b","Cdc25c","Kifc1"))
+object <- AddModuleScore(object = improved_clb_v6, features = cell_typeA_marker_gene_list, name = "Mitosis")
+P6<-FeaturePlot(object = object, features = "Mitosis1", cols=c("grey","red"))
+})
+
+ggarrange(P1, P2, P3, P4, P5, P6, ncol = 3, nrow = 2)
+```
+
+
+```{r,include=F}
+library("reticulate")
+conda_create("sandbox")
+conda_install("sandbox", "magic-impute", pip=TRUE)
+use_condaenv("sandbox", required = TRUE, conda = "C:/Users/raine/miniconda3/condabin/conda")
+reticulate::py_discover_config(required_module="magic")
+```
+
+# D
+
+> Fig S3D: Select genes from regulated gene sets illustrating the dynamics of gene expression during differentiation progression
+
+```{r,fig.width=9,fig.height=20,fig.align="center"}
+suppressMessages({
+improved_clb_v6_matrix<- t(as.matrix(improved_clb_v6@assays$RNA@data))
+improved_clb_v6_matrix<- improved_clb_v6_matrix[, colSums(improved_clb_v6_matrix != 0) > 0]
+improved_clb_v6_MAGIC <- suppressMessages(suppressWarnings((magic(improved_clb_v6_matrix,verbose = F))))
+improved_clb_v6_assay <- CreateAssayObject(data = t(as.matrix(improved_clb_v6_MAGIC$result)))
+improved_clb_v6[["magic"]] <- improved_clb_v6_assay
+DefaultAssay(improved_clb_v6) <- "magic"
+suppressMessages(suppressWarnings(FeaturePlot(improved_clb_v6, order=T,pt.size=2,features = c("Fzd1","Fzd2","Bmpr1b","Fgfr2","Lrp1","Gfap","Sox9","Hes5", "Foxm1", "Chek2", "Cdk1", "Ccnb1"),ncol = 2)& scale_color_viridis_c(option="B")&theme_void()))
+})
+```
