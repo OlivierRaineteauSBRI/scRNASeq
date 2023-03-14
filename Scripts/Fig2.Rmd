@@ -169,6 +169,11 @@ se.cropped <- suppressWarnings(suppressMessages(se.cropped %>%
   SCTransform(verbose = F) %>%
   RunPCA(verbose=F) %>%
   RunUMAP(reduction = "pca", dims = 1:20,verbose = F)))
+Idents(se.cropped)="labels"
+se.cropped <- RenameIdents(se.cropped,"svze18"="E17.5","svzp2"="P2","svzp12"="P12","svzp22"="P22")
+se.cropped$labels <- Idents(se.cropped)
+se.cropped@meta.data[["labels"]]=as.character(se.cropped@meta.data[["labels"]])
+
 ```
 
 ```{r, fig.width=10, fig.height=3,fig.align="center"}
@@ -179,7 +184,7 @@ cols = c("light grey", "mistyrose", "darkred"),
 pt.size = 3,
 add.alpha = TRUE,
 ncol = 3, show.sb = FALSE,
-pt.alpha = 0.1)
+pt.alpha = 0.1,label.by = "labels")
 
 FeatureOverlay(se.cropped, features = "Tfap2c",
 sampleids = 1:3,
@@ -187,7 +192,7 @@ cols = c("light grey", "mistyrose", "darkred"),
 pt.size = 3,
 add.alpha = TRUE,
 ncol = 3, show.sb = FALSE,
-pt.alpha = 0.1)
+pt.alpha = 0.1,label.by = "labels")
 
 FeatureOverlay(se.cropped, features = "Six3",
 sampleids = 1:3,
@@ -195,7 +200,7 @@ cols = c("light grey", "mistyrose", "darkred"),
 pt.size = 3,
 add.alpha = TRUE,
 ncol = 3, show.sb = FALSE,
-pt.alpha = 0.1)
+pt.alpha = 0.1,label.by = "labels")
 
 FeatureOverlay(se.cropped, features = "Gsx2",
 sampleids = 1:3,
@@ -203,7 +208,7 @@ cols = c("light grey", "mistyrose", "darkred"),
 pt.size = 3,
 add.alpha = TRUE,
 ncol = 3, show.sb = FALSE,
-pt.alpha = 0.1)
+pt.alpha = 0.1,label.by = "labels")
 
 ```
 
