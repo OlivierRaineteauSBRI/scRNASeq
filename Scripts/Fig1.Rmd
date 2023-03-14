@@ -1,6 +1,6 @@
 ---
 title: "Script linked to Figure 1: Analysis of the postnatal SVZ dorsal domain cellular composition and differentiation dynamics by large-scale single-cell profiling."
-subtitle: "Figure 1B, 1C, 1D, 1E, 1F"
+subtitle: "Figure 1B, 1C, 1D, 1E, 1F, 1G"
 output:
   rmdformats::downcute:
     self_contained: true
@@ -142,7 +142,7 @@ ggarrange(ncol=2,nrow=3,p1,p2,p3,p4,p5,p6,labels = c("qNSCs","aNSCs","TAPs","NBs
 
 # E
 
-> Fig 1E: Treemap representing the proportion of the major cell types
+> Fig 1E: Treemap representing the proportion of the major cell types.
 
 ```{r,fig.width=4,fig.height=7,fig.align="center"}
 table <- suppressMessages(table(improved_clb_v6$Simplified_clusters))
@@ -156,8 +156,175 @@ suppressMessages(treemap(table,index="Var1",vSize = "Freq",type = "index",palett
 
 # F
 
-> Fig 1F: UMAP with simplified identity annotation
+> Fig 1F: UMAP plot depicting the simplified identity annotation.
 
 ```{r,fig.width=7,fig.height=6}
 suppressMessages(DimPlot(improved_clb_v6, label=T,label.size=5,pt.size = 1,group.by = "Simplified_clusters",cols=c("#CD9825","#5AD5C7","#FF666C","#99A424","#B984FB","#FF64FB","#5AD5C7","#FF649A","#FE57CC")))+NoLegend()
 ```
+
+# G
+
+> Fig 1G: Pseudotime calculated by RNA velocity.
+
+```{python,eval=F}
+import scvelo as scv
+import pandas as pd
+import anndata
+import copy
+import pickle
+import os
+import csv
+import matplotlib.pyplot as plt
+import matplotlib.font_manager as font_manager
+```
+
+```{python,eval=F}
+print(f"scvelo version {scv.__version__}")
+```
+
+```{python,eval=F}
+adata1 = scv.read_loom(filename='/mnt/Data1/Raineteau/2020_03_10X_dSVZ_p12_Nx_Hx/cellranger_count/Nx1/velocyto/Nx1.loom')
+adata2 = scv.read_loom(filename='/mnt/Data1/Raineteau/2020_03_10X_dSVZ_p12_Nx_Hx/cellranger_count/Nx2/velocyto/Nx2.loom')
+
+adata1.var_names_make_unique()
+adata2.var_names_make_unique()
+
+def rename_barcode(barcodes, trim_start='', trim_end='', add_start='', add_end=''):
+    return [add_start + i[len(trim_start): -len(trim_end)] + add_end for i in barcodes]
+
+
+adata1.obs_names = rename_barcode(list(adata1.obs_names), trim_start = "Nx1:", trim_end = "x", add_start = "P12_1_")
+adata2.obs_names = rename_barcode(list(adata2.obs_names), trim_start = "Nx2:", trim_end = "x", add_start = "P12_2_")
+
+adata_bis = anndata.concat((adata1, adata2))  # unique var_names is mandatory
+```
+
+```{python,eval=F}
+os.chdir('/mnt/Data1/Raineteau/2020_03_10X_dSVZ_p12_Nx_Hx/scvelo')
+X_umap = scv.load('Nx_umap.csv', index_col=0)
+adata_bis = adata_bis[X_umap.index]
+
+adata_bis.obsm['X_umap'] = copy.deepcopy(X_umap.loc[adata_bis.obs_names].values)
+
+m = pd.read_csv("Nx_meta.csv", index_col='Unnamed: 0')
+adata_bis.obs['Simplified_clusters'] = copy.deepcopy(m['Simplified_clusters'].loc[adata_bis.obs_names].values)
+adata_bis.obs['Full_clusters'] = copy.deepcopy(m['Full_clusters'].loc[adata_bis.obs_names].values)
+```
+
+```{python,eval=F}
+scv.pp.filter_and_normalize(adata_bis, min_shared_counts=20, n_top_genes=2000)
+scv.pp.moments(adata_bis, n_pcs=30, n_neighbors=30)
+
+scv.tl.velocity(adata_bis, mode='stochastic')
+scv.tl.velocity_graph(adata_bis)
+```
+
+```{python,eval=F}
+scv.pl.velocity_embedding_stream(adata_bis, basis="umap", color='Simplified_clusters', figsize=(14, 10), legend_fontsize=20, linewidth=3, size=200, dpi=320, wspace=0, hspace=0, show=True, legend_loc = 'none')
+
+# save='/mnt/Data1/Raineteau/2020_03_10X_dSVZ_p12_Nx_Hx/final_images/fig1/Figure_1_G.png'
+```
+
+```{python,eval=F}
+old = ['#1f77b4', '#ff7f0e', '#2ca02c', '#d62728', '#9467bd', '#8c564b', '#e377c2', '#7f7f7f', '#bcbd22']
+new = ['#b983ff', '#1ac2b2', '#f8766d', '#1ac2b2', '#1ac2b2', '#fec9ef', '#1ac2b2', '#9aa500', '#c79300']
+adata_bis.uns['Simplified_clusters_colors'] = new
+```
+
+```{python,eval=F}
+adata = adata_bis[adata_bis.obs['Simplified_clusters'].isin(['qNSCs', "Ependymal cells", "Astrocytes", "aNSCs", "TAPs", "Oligos", "Neuroblasts"])]
+```
+
+```{python,eval=F}
+scv.pl.velocity_embedding_stream(adata, basis="umap", color='Simplified_clusters', figsize=(14, 10), legend_fontsize=20, linewidth=3, size=200, dpi=320, wspace=0, hspace=0, save='/mnt/Data1/Raineteau/2020_03_10X_dSVZ_p12_Nx_Hx/figures/Fig1/Figure_1_G_2.png', show=False, legend_loc='none')
+```
+
+```{python,eval=F}
+adata1 = scv.read_loom(filename='/mnt/Data1/Raineteau/2020_03_10X_dSVZ_p12_Nx_Hx/cellranger_count/Nx1/velocyto/Nx1.loom')
+adata2 = scv.read_loom(filename='/mnt/Data1/Raineteau/2020_03_10X_dSVZ_p12_Nx_Hx/cellranger_count/Nx2/velocyto/Nx2.loom')
+
+adata1.var_names_make_unique()
+adata2.var_names_make_unique()
+
+def rename_barcode(barcodes, trim_start='', trim_end='', add_start='', add_end=''):
+    return [add_start + i[len(trim_start): -len(trim_end)] + add_end for i in barcodes]
+
+
+adata1.obs_names = rename_barcode(list(adata1.obs_names), trim_start = "Nx1:", trim_end = "x", add_start = "NxCLB1_")
+adata2.obs_names = rename_barcode(list(adata2.obs_names), trim_start = "Nx2:", trim_end = "x", add_start = "NxCLB2_")
+
+adata_pallial = anndata.concat((adata1, adata2))
+adata_pallial.var_names_make_unique()
+X_umap = scv.load('/home/labex-bioinfo/Raineteau/2020_03_10X_dSVZ_p12_Nx_Hx/velocity/scvelo/data/pal_umap.csv', index_col=0)
+adata_pallial = adata_pallial[X_umap.index]
+
+adata_pallial.obsm['X_umap'] = copy.deepcopy(X_umap.loc[adata_pallial.obs_names].values)
+
+m = pd.read_csv("/home/labex-bioinfo/Raineteau/2020_03_10X_dSVZ_p12_Nx_Hx/velocity/scvelo/data/pal_meta.csv", index_col='Unnamed: 0')
+adata_pallial.obs['Simplified_clusters'] = copy.deepcopy(m['Simplified_clusters'].loc[adata_pallial.obs_names].values)
+adata_pallial.obs['Full_clusters'] = copy.deepcopy(m['Full_clusters'].loc[adata_pallial.obs_names].values)
+```
+
+```{python,eval=F}
+scv.pp.filter_and_normalize(adata_pallial, min_shared_counts=20, n_top_genes=2000)
+scv.pp.moments(adata_pallial, n_pcs=30, n_neighbors=30)
+
+scv.tl.velocity(adata_pallial, mode='stochastic')
+scv.tl.velocity_graph(adata_pallial)
+```
+
+```{python,eval=F}
+scv.pl.velocity_embedding_stream(adata_pallial, basis="umap", color='Simplified_clusters', figsize=(14, 10), legend_fontsize=20, linewidth=3, size=200, dpi=320, wspace=0, hspace=0, save='/mnt/Data1/Raineteau/2020_03_10X_dSVZ_p12_Nx_Hx/figures/Fig4/supp_Figure_4_A.png', show=False, legend_loc = 'none')
+```
+
+```{python,eval=F}
+old = ['#1f77b4', '#ff7f0e', '#2ca02c', '#d62728', '#9467bd', '#8c564b']
+new = ['#b983ff', '#f8766d', '#fec9ef', '#1ac2b2', '#9aa500', '#c79300']
+adata_pallial.uns['Simplified_clusters_colors'] = new
+```
+
+```{python,eval=F}
+adata1 = scv.read_loom(filename='/mnt/Data1/Raineteau/2020_03_10X_dSVZ_p12_Nx_Hx/cellranger_count/Nx1/velocyto/Nx1.loom')
+adata2 = scv.read_loom(filename='/mnt/Data1/Raineteau/2020_03_10X_dSVZ_p12_Nx_Hx/cellranger_count/Nx2/velocyto/Nx2.loom')
+
+adata1.var_names_make_unique()
+adata2.var_names_make_unique()
+
+def rename_barcode(barcodes, trim_start='', trim_end='', add_start='', add_end=''):
+    return [add_start + i[len(trim_start): -len(trim_end)] + add_end for i in barcodes]
+
+
+adata1.obs_names = rename_barcode(list(adata1.obs_names), trim_start = "Nx1:", trim_end = "x", add_start = "NxCLB1_")
+adata2.obs_names = rename_barcode(list(adata2.obs_names), trim_start = "Nx2:", trim_end = "x", add_start = "NxCLB2_")
+
+adata_subpallial = anndata.concat((adata1, adata2))
+adata_subpallial.var_names_make_unique()
+X_umap = scv.load('/home/labex-bioinfo/Raineteau/2020_03_10X_dSVZ_p12_Nx_Hx/velocity/scvelo/data/subpal_umap.csv', index_col=0)
+adata_subpallial = adata_subpallial[X_umap.index]
+
+adata_subpallial.obsm['X_umap'] = copy.deepcopy(X_umap.loc[adata_subpallial.obs_names].values)
+
+m = pd.read_csv("/home/labex-bioinfo/Raineteau/2020_03_10X_dSVZ_p12_Nx_Hx/velocity/scvelo/data/subpal_meta.csv", index_col='Unnamed: 0')
+adata_subpallial.obs['Simplified_clusters'] = copy.deepcopy(m['Simplified_clusters'].loc[adata_subpallial.obs_names].values)
+adata_subpallial.obs['Full_clusters'] = copy.deepcopy(m['Full_clusters'].loc[adata_subpallial.obs_names].values)
+```
+
+```{python,eval=F}
+scv.pp.filter_and_normalize(adata_subpallial, min_shared_counts=20, n_top_genes=2000)
+scv.pp.moments(adata_subpallial, n_pcs=30, n_neighbors=30)
+
+scv.tl.velocity(adata_subpallial, mode='stochastic')
+scv.tl.velocity_graph(adata_subpallial)
+```
+
+```{python,eval=F}
+scv.pl.velocity_embedding_stream(adata_subpallial, basis="umap", color='Simplified_clusters', figsize=(14, 10), legend_fontsize=20, linewidth=3, size=200, dpi=320, wspace=0, hspace=0, save='/mnt/Data1/Raineteau/2020_03_10X_dSVZ_p12_Nx_Hx/figures/Fig4/supp_Figure_4_B.png', show=False, legend_loc = 'none')
+```
+
+```{python,eval=F}
+old = ['#1f77b4', '#ff7f0e', '#2ca02c', '#d62728', '#9467bd', '#8c564b', '#e377c2']
+new = ['#b983ff', '#f8766d', '#5f97f1', '#fec9ef', '#1ac2b2', '#9aa500', '#c79300']
+adata_subpallial.uns['Simplified_clusters_colors'] = new
+```
+
+
