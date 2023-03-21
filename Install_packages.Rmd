@@ -42,5 +42,7 @@ options(reticulate.conda_binary = "C:/Users/path_to_conda.bat")
 BiocManager::install("AUCell")
 install.packages("viridis")
 BiocManager::install("scater")
+BiocManager::install("tradeSeq")
+install.packages("Scpubr")
 ```
 
