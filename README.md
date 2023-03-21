@@ -37,18 +37,22 @@ The ventricular-subventricular zone (V-SVZ) is the largest neurogenic region of 
 - ``Fig4.Rmd`` : to retrieve figure 4.
 - ``Fig5.Rmd`` : to retrieve figure 5.
 - ``Fig6.Rmd`` : to retrieve figure 6.
-- ``Fig7.Rmd`` : to retrieve figure 7.
-- ``Suppl_Fig1.Rmd`` : to retrieve suppl 1.
-- ``Suppl_Fig2.Rmd`` : to retrieve suppl 2.
-- ``Suppl_Fig3.Rmd`` : to retrieve suppl 3.
-- ``Suppl_Fig4.Rmd`` : to retrieve suppl 4.
-- ``Suppl_Fig5.Rmd`` : to retrieve suppl 5.
-- ``Suppl_Fig6.Rmd`` : to retrieve suppl 6.
-- ``Suppl_Fig7.Rmd`` : to retrieve suppl 7.
-- ``Suppl_Fig8.Rmd`` : to retrieve suppl 8.
+- ``FigS1.Rmd`` : to retrieve suppl 1.
+- ``FigS2.Rmd`` : to retrieve suppl 2.
+- ``FigS3.Rmd`` : to retrieve suppl 3.
+- ``FigS4.Rmd`` : to retrieve suppl 4.
+- ``FigS5.Rmd`` : to retrieve suppl 5.
+- ``FigS6.Rmd`` : to retrieve suppl 6.
+- ``FigS7.Rmd`` : to retrieve suppl 7.
 - ``P12_dSVZ_Seq.rds`` : the complete seurat object of P12 dSVZ scRNAseq.
+- ``P22_dSVZ_Seq.rds`` : the complete seurat object of P22 dSVZ scRNAseq.
+- ``P2_dSVZ_Seq.rds`` : the complete seurat object of P2 dSVZ scRNAseq.
 - ``P2_P12_P22_dSVZ_Seq.rds`` : the complete seurat object of P2, P12, P22 dSVZ scRNAseq.
 - ``SVZ.Visium.rds`` : the complete seurat object of E17.5, P2, P12 and P22 visium.
+- ``Merge_Loo.rds`` : the complete merged seurat object of Loo et al. datasets.
+- ``Loo_Marcy.rds`` : the complete integrated seurat object between Loo et al. dataset and our P12 dataset.
+- ``Mizrak2020_Marcy.rds`` : the complete seurat integrated object of Mizrak et al. dataset and our P12 dataset.
+- ``P12_Neurons.rds`` : the complete seurat object of P12 neuronal cells.
 
 ## Prerequisites 
 
