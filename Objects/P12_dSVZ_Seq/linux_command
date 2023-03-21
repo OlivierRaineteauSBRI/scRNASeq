@@ -1,1 +1,0 @@
-cat P2_P12_P22_dSVZ_Seq.tar.* | tar xzpvf -
