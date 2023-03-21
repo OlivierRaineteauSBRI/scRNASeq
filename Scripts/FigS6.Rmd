@@ -1,0 +1,148 @@
+---
+title: "Script linked to Fig S6. The dorsal V-SVZ shows high TGFb/Wnt signalling activity and contains pallial qNSCs showing high Bmpr1a receptor expression and signalling, related to Figure 5."
+subtitle: "Figure S6A, S6B, S6D"
+output:
+  rmdformats::downcute:
+    self_contained: true
+    default_style: "light"
+    downcute_theme: "chaos"
+---
+***
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+#### Load packages
+
+```{r,warning=FALSE, include=T}
+suppressWarnings(suppressMessages({
+library(AUCell,quietly=T)
+library(devtools,quietly=T)
+library(tidyverse,quietly=T)
+library(Seurat,quietly=T)
+library(gridExtra,quietly=T)
+library(gt,quietly=T)
+library(glue,quietly=T)
+library(scater,quietly=T)
+library(tm,quietly=T)
+library(gghalves,quietly=T)
+library(broman,quietly=T)
+library(viridis,quietly=T)
+library(Cairo,quietly=T)
+library(hrbrthemes,quietly=T)
+library(ggplot2,quietly=T)
+library(cowplot,quietly=T)
+library(ggrepel,quietly=T)
+library(plyr,quietly=T)
+library(grid,quietly=T)
+library(doRNG,quietly=T)
+library(doSNOW,quietly=T)
+library(mixtools,quietly=T)
+library(SummarizedExperiment,quietly=T)
+library(DT,quietly=T)
+library(plotly,quietly=T)
+library(NMF,quietly=T)
+library(shiny,quietly=T)
+library(rbokeh,quietly=T)
+library(dynamicTreeCut,quietly=T)
+library(R2HTML,quietly=T)
+library(Rtsne,quietly=T)
+library(zoo,quietly=T)
+library(GSEABase,quietly=T)
+library(magrittr, quietly=T)
+library(imager, quietly=T)
+library(EBImage, quietly=T)
+library(STutility, quietly=T)
+library(magrittr, quietly=T)
+library(dplyr, quietly=T)
+library(DT, quietly=T)
+library(kableExtra, quietly=T)
+library(ggpubr, quietly = T)
+}))
+```
+
+
+# A
+
+>FigS6A: Pseudotime analysis of type I receptors 
+
+```{r, warning=FALSE,fig.width=5, fig.height=5,fig.align="center"}
+
+pal <- readRDS("C:/Users/raine/Downloads/wetransfer_subpallial_no_alra_slingshot_qnscs_axis_subset-rds_2022-11-18_1148/pallial_no_alra_slingshot_qNSCs_axis_subset.rds")
+subpal <- readRDS("C:/Users/raine/Downloads/wetransfer_subpallial_no_alra_slingshot_qnscs_axis_subset-rds_2022-11-18_1148/subpallial_no_alra_slingshot_qNSCs_axis_subset.rds")
+
+subpal_counts = subpal@assays$RNA@data
+subpal_counts = t(as.matrix(subpal_counts)) #switch row and columns
+subpal_counts = as.data.frame(subpal_counts)
+
+subpal_counts$pseudotime = subpal@meta.data$curve1
+subpal_counts$pseudotime <- subpal_counts$pseudotime/max(subpal_counts$pseudotime)
+subpal_counts$group <- "subpallial"
+
+
+pal_counts = pal@assays$RNA@data
+pal_counts = t(as.matrix(pal_counts)) #switch row and columns
+pal_counts = as.data.frame(pal_counts)
+
+pal_counts$pseudotime = pal@meta.data$curve1
+pal_counts$pseudotime <- pal_counts$pseudotime/max(pal_counts$pseudotime)
+pal_counts$group <- "pallial"
+
+counts <- rbind(subpal_counts, pal_counts)
+dataset_colors <- c(pallial = "#B31E2B", subpallial = "#2A4887")
+
+genes <- c("Acvr1", "Acvr1b", "Acvr1c", "Bmpr1a", "Bmpr1b", "Tgfbr1")
+
+for (gene in genes) {
+  p <- ggplot(counts, aes(pseudotime, .data[[gene]], group=group, col=group,fill=group)) + 
+    geom_smooth(formula = y ~ x, size=2, method = "loess", se = T) + 
+    scale_color_manual(values=dataset_colors) +scale_fill_manual(values=c("#E39898","#B6CED9"))+
+    labs(title = gene,
+         color = "dataset")+theme_ipsum(grid = F)+NoLegend()+coord_cartesian(ylim=c(0,1.50))
+  plot(p)
+  ggsave(paste0(gene,".png"), p, width = 5, height = 4)
+}
+
+```
+
+# B
+
+>FigS6B: Pseudotime analysis of type II receptors
+
+```{r, warning=FALSE,fig.width=5, fig.height=5,fig.align="center"}
+
+genes <- c("Acvr2a", "Acvr2b", "Bmpr2", "Tgfbr2", "Amhr2")
+
+for (gene in genes) {
+  p <- ggplot(counts, aes(pseudotime, .data[[gene]], group=group, col=group,fill=group)) + 
+    geom_smooth(formula = y ~ x, size=2, method = "loess", se = T) + 
+    scale_color_manual(values=dataset_colors) +scale_fill_manual(values=c("#E39898","#B6CED9"))+
+    labs(title = gene,
+         color = "dataset")+theme_ipsum(grid = F)+NoLegend()+coord_cartesian(ylim=c(0,1.50))
+  plot(p)
+  ggsave(paste0(gene,".png"), p, width = 5, height = 4)
+}
+
+```
+
+
+# D
+
+>FigS6D: Pseudotime analysis of Bmpr1a and downstream effector 
+
+```{r, warning=FALSE,fig.width=5, fig.height=5,fig.align="center"}
+
+genes <- c("Bmpr1a", "Smad9", "Id1", "Id2", "Id3")
+
+for (gene in genes) {
+  p <- ggplot(counts, aes(pseudotime, .data[[gene]], group=group, col=group,fill=group)) + 
+    geom_smooth(formula = y ~ x, size=2, method = "loess", se = T) + 
+    scale_color_manual(values=dataset_colors) +scale_fill_manual(values=c("#E39898","#B6CED9"))+
+    labs(title = gene,
+         color = "dataset")+theme_ipsum(grid = F)+NoLegend()
+  plot(p)
+  ggsave(paste0(gene,".png"), p, width = 5, height = 4)
+}
+
+```

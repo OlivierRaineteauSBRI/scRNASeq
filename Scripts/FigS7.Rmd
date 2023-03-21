@@ -1,0 +1,161 @@
+---
+title: "Script linked to Figure S7: The dorsal V-SVZ shows high TGFb/Wnt signalling activity and contains pallial qNSCs showing high Bmpr1a receptor expression and signalling."
+subtitle: "Figure S7A, S7C, S7D"
+output:
+  rmdformats::downcute:
+    self_contained: true
+    default_style: "light"
+    downcute_theme: "chaos"
+---
+***
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+#### Load packages
+
+```{r}
+suppressWarnings(suppressMessages({
+library(tidyverse,quietly=T)
+library(Seurat,quietly=T)
+library(patchwork,quietly=T)
+library(viridis,quietly=T)
+library(scales,quietly=T)
+library(treemap,quietly=T)
+library(ggplot2,quietly=T)
+library(ggpubr,quietly = T)
+library(Rmagic, quietly = T)
+library(reticulate, quietly=T)
+library(magrittr, quietly=T)
+library(imager, quietly=T)
+library(EBImage, quietly=T)
+library(STutility, quietly=T)
+library(magrittr, quietly=T)
+library(dplyr, quietly=T)
+library(DT, quietly=T)
+library(kableExtra, quietly=T)
+library(SeuratWrappers, quietly=T)
+library(slingshot,quietly=T)
+library(tradeSeq,quietly=T)
+}))
+```
+
+```{r}
+P12_Neurons <- readRDS("C:/Users/raine/OneDrive/Bureau/P12_Neurons.rds")
+```
+
+# A
+
+>FigS7A: UMAP plots highlighting distribution of GLU, GABA and Dual cells within the neuronal trajectory.
+
+```{r,fig.width=5,fig.height=4,fig.align="center"}
+colors=c("GLUCells"="#ff0000","GABACells"="#0000ff","DualCells"="#fde725","NACells"="#DEDEDE")
+DimPlot(P12_Neurons,pt.size = 2, label = F, group.by="Lineage", cols = colors )
+```
+
+# B
+
+>FigS7B: Pseudotime analysis within cycling GLU and GABA cells, and related subclusters.
+
+```{r,fig.align="center",fig.width=5,fig.height=4,fig.align="center"}
+
+Idents(P12_Neurons)="new_clusters_neurons"
+sub_pal <- subset(P12_Neurons, idents = c("5", "3", "7"))
+DefaultAssay(sub_pal) <- "RNA"
+# run new UMAP on subsetted object, only if object was subsetted
+sub_pal <- RunUMAP(sub_pal, dims = 1:10,verbose = F)
+palsce <- as.SingleCellExperiment(sub_pal)
+# run graph
+palsds <- slingshot(Embeddings(sub_pal, "umap"), clusterLabels = sub_pal$new_clusters_neurons,start.clus = 5)
+palsling <- SlingshotDataSet(palsds)
+palpt <- slingPseudotime(palsling)
+
+palpt=as.data.frame(palpt)
+P12_Neurons=AddMetaData(P12_Neurons,metadata = palpt)
+
+Idents(P12_Neurons)="new_clusters_neurons"
+P12_Neurons$new_clusters_neurons[is.na(P12_Neurons$new_clusters_neurons)] <- "6"
+P12_Neurons=subset(P12_Neurons,idents="6",invert=T)
+
+suppressWarnings(suppressMessages(FeaturePlot(P12_Neurons,feature = "Lineage1",cols = viridis(12),pt.size = 3)+scale_color_gradientn(colors = viridis(12), na.value = "lightgray")))
+suppressWarnings(suppressMessages(FeaturePlot(P12_Neurons,feature = "pseudotime_GABA_curve1",cols = viridis(12),pt.size = 3)+scale_color_gradientn(colors = viridis(12), na.value = "lightgray")))
+
+Idents(P12_Neurons)="GLUGABA"
+DimPlot(P12_Neurons,group.by="GLUGABA",pt.size = 3, label = F, cols = c("#5A0017","#800021","#B76E78","#DEDEDE","#DEDEDE","#DEDEDE","#DEDEDE"))
+DimPlot(P12_Neurons,group.by="GLUGABA",pt.size = 3, label = F, cols = c("#DEDEDE","#DEDEDE","#DEDEDE","#001277","#0c409f","#3074c7","#70a1dc"))
+
+```
+
+
+# C
+
+>FigS7C: Feature plots illustrating expression of various cell types or cell status markers.
+
+```{r,fig.width=12,fig.height=5,fig.align="center"}
+suppressWarnings(suppressMessages({
+P12_Neurons_matrix<- t(as.matrix(P12_Neurons@assays$RNA@data))
+P12_Neurons_matrix<- P12_Neurons_matrix[, colSums(P12_Neurons_matrix!= 0) > 0]
+P12_Neurons_MAGIC <- suppressMessages(suppressWarnings((magic(P12_Neurons_matrix,verbose = F))))
+P12_Neurons_assay <- CreateAssayObject(data = t(as.matrix(P12_Neurons_MAGIC$result)))
+P12_Neurons[["magic"]] <- P12_Neurons_assay
+DefaultAssay(P12_Neurons) <- "magic"
+FeaturePlot(P12_Neurons, order=T,pt.size=1.5,features = c("Dlx2","Eomes","Olig1","Pdgfra","Mcm2","Mki67","Sox10","Dcx"),ncol = 4)& scale_color_viridis_c(option="B")&theme_void()
+}))
+```
+
+# D
+
+> FigS7D: Violin plots illustrating selected genes from representative GO terms over-represented in GLU cells at P2, P12 and P22.
+
+```{r,fig.width=12,fig.height=12,fig.align="center"}
+Marcy=readRDS("C:/Users/raine/OneDrive/Documents/BioInfo/newdataset/same_umap_P2_P12_P22.rds")
+DefaultAssay(Marcy)="RNA"
+Idents(Marcy)="orig.ident"
+P2=subset(Marcy,idents = "p2")
+
+DefaultAssay(Marcy)="RNA"
+Idents(Marcy)="orig.ident"
+P20=subset(Marcy,idents = "p20")
+
+DefaultAssay(P20)="RNA"
+DefaultAssay(P2)="RNA"
+Idents(P20)="full_clusters"
+Idents(P2)="full_clusters"
+
+GABA_cells=WhichCells(P20,idents=c("GABA_NBs_1","GABA_NBs_Cycling"))
+GLU_cells=WhichCells(P20,idents="GLU_NBs")
+
+GABA_cellsP2=WhichCells(P2,idents=c("GABA_NBs_cycling","GABA_NBs_1","GABA_NBs_2" ))
+GLU_cellsP2=WhichCells(P2,idents=c("GLU_NBs_1","GLU_NBs_2"))
+
+P2 <- SetIdent(P2, cells =GLU_cellsP2 , value = "GLU_cells") #first transform the cells into an ident
+P2[["GLUGABA_merge"]] = Idents(P2) #then write a new column called new_clusters
+P2 <- SetIdent(P2, cells =GABA_cellsP2 , value = "GABA_cells") #first transform the cells into an ident
+P2[["GLUGABA_merge"]] = Idents(P2) #then write a new column called new_clusters
+
+P20 <- SetIdent(P20, cells =GABA_cells , value = "GABA_cells") #first transform the cells into an ident
+P20[["GLUGABA_merge"]] = Idents(P20) #then write a new column called new_clusters
+P20 <- SetIdent(P20, cells =GLU_cells , value = "GLU_cells") #first transform the cells into an ident
+P20[["GLUGABA_merge"]] = Idents(P20) #then write a new column called new_clusters
+
+DefaultAssay(P2)="RNA"
+Idents(P2)="GLUGABA_merge"
+my_levels <- c("GABA_cells","GLU_cells")
+P2@active.ident <- factor(x = P2@active.ident, levels = my_levels)
+
+DefaultAssay(P20)="RNA"
+Idents(P20)="GLUGABA_merge"
+my_levels <- c("GABA_cells","GLU_cells")
+P20@active.ident <- factor(x = P20@active.ident, levels = my_levels)
+
+Idents(P12_Neurons)="GLUGABA_merge"
+
+p1=VlnPlot(P2, ncol=4, features = c("Id2","Ppp2r2b","Zhx2","Btg2"), idents=c("GLU_cells","GABA_cells"), cols=c("#2442a4","#b55b71"),assay = "RNA",pt.size = 0.1)+stat_compare_means(label = "p.signif", label.x = 1.5)+xlab("")+NoLegend()
+p3=VlnPlot(P20, ncol=4, features = c("Id2","Ppp2r2b","Zhx2","Btg2"), idents=c("GLU_cells","GABA_cells"), cols=c("#2442a4","#b55b71"),assay = "RNA",pt.size = 0.1)+stat_compare_means(label = "p.signif", label.x = 1.5)+xlab("")+NoLegend()
+p2=VlnPlot(P12_Neurons, ncol=4,features = c("Id2","Ppp2r2b","Zhx2","Btg2"), idents=c("GLU_ident","GABA_ident"), cols=c("#2442a4","#b55b71"),assay = "RNA",pt.size = 0.1)+stat_compare_means(label = "p.signif", label.x = 1.5)+xlab("")+NoLegend()
+
+ggarrange(p1,p2,p3,ncol = 1,labels=c("P2","P12","P22"))
+
+```
+

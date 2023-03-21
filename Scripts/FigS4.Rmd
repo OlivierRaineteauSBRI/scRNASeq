@@ -1,0 +1,116 @@
+---
+title: "Script linked to Figure S4: Pallial and subpallial lineages coexist within the dorsal V-SVZ, related to Fig 2 & 3."
+subtitle: "Figure S3A, S3B, S3G, S3H"
+output:
+  rmdformats::downcute:
+    self_contained: true
+    default_style: "light"
+    downcute_theme: "chaos"
+---
+***
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+#### Load packages
+
+```{r,warning=FALSE, include=T}
+suppressWarnings(suppressMessages({
+library(tidyverse,quietly=T)
+library(Seurat,quietly=T)
+library(patchwork,quietly=T)
+library(viridis,quietly=T)
+library(scales,quietly=T)
+library(treemap,quietly=T)
+library(ggplot2,quietly=T)
+library(ggpubr,quietly = T)
+library(SCpubr,quietly=T)
+}))
+```
+
+```{r,echo=FALSE}
+same_umap_P2_P12_P22=readRDS("C:/Users/raine/OneDrive/Documents/BioInfo/newdataset/same_umap_P2_P12_P22.rds")
+Idents(same_umap_P2_P12_P22)="orig.ident"
+P12 = subset(same_umap_P2_P12_P22,idents = c("sdCLBNx1","sdCLBNx2"))
+```
+
+# A
+
+> FigS4A: Dual cells' average number of detected genes compared to pallial cells and subpallial cells.
+
+```{r,fig.width=9,fig.height=5,fig.align="center"}
+Idents(P12) = "Lineage"
+###comment faire bar plot####
+Idents(P12)="Simplified_clusters"
+P12_subset=subset(P12,idents=c("P12_qNSCs"))
+Idents(P12_subset)="Lineage"
+P12_subset=subset(P12_subset,idents=c("GLUCells","GABACells","DualCells"))
+my_levels=c("DualCells","GLUCells","GABACells")
+P12_subset$Lineage <- factor(x = P12_subset$Lineage, levels = my_levels)
+Idents(P12_subset)="Lineage"
+colors=c("GLUCells"="#ff0000","GABACells"="#0000ff","DualCells"="#fde725")
+P1=SCpubr::do_BoxPlot(sample = P12_subset,feature = "nFeature_RNA",colors.use =colors,split.by="Lineage")+xlab("qNSCs")+NoLegend()
+
+P12_subset=subset(P12,idents=c("P12_aNSCs"))
+Idents(P12_subset)="Lineage"
+P12_subset=subset(P12_subset,idents=c("GLUCells","GABACells","DualCells"))
+my_levels=c("DualCells","GLUCells","GABACells")
+P12_subset$Lineage <- factor(x = P12_subset$Lineage, levels = my_levels)
+Idents(P12_subset)="Lineage"
+P2=SCpubr::do_BoxPlot(sample = P12_subset,feature = "nFeature_RNA",colors.use =colors,split.by="Lineage")+xlab("aNSCs")+NoLegend()
+
+P12_subset=subset(P12,idents=c("P12_TAPs"))
+Idents(P12_subset)="Lineage"
+P12_subset=subset(P12_subset,idents=c("GLUCells","GABACells","DualCells"))
+my_levels=c("DualCells","GLUCells","GABACells")
+P12_subset$Lineage <- factor(x = P12_subset$Lineage, levels = my_levels)
+Idents(P12_subset)="Lineage"
+P3=SCpubr::do_BoxPlot(sample = P12_subset,feature = "nFeature_RNA",colors.use =colors,split.by="Lineage")+xlab("TAPs")+NoLegend()
+
+P1+P2+P3
+```
+
+# B
+
+> FigS4B: Dual cells proportions within V-SVZ cell types.
+
+```{r}
+plot.data <- P12@meta.data %>%
+  dplyr:::select(Lineage, cluster   = Simplified_clusters) %>%
+  group_by(cluster, Lineage ) %>%
+  summarise(count      = n()) %>%
+  mutate(clust_total   = sum(count)) %>%
+  mutate(clust_prop    = count / clust_total) %>%
+  group_by(Lineage) %>%
+  mutate(dataset_total = sum(count)) %>%
+  ungroup() %>%
+  mutate(dataset_prop  = count / dataset_total)
+
+plt.data= plot.data %>% subset(cluster %in% c("P12_qNSCs","P12_aNSCs","P12_TAPs") & Lineage=="DualCells") %>% mutate(cluster = fct_reorder(cluster, -desc(clust_prop)))%>% mutate(across((clust_prop),function(x) x*100))
+
+#Distribution % in each clusters
+ggplot(plt.data, aes(x = cluster, y = clust_prop, fill=cluster)) +
+  geom_col()+scale_fill_manual(values=c("#c29200" ,"#9aa500","#45c2b2"))+theme_pubr()+NoLegend()
+```
+
+# G 
+
+> FigS2G: UMAP plots of integrated datasets presented in Fig 3A, with identity of Loo datasets.
+
+```{r}
+Loo_Marcy=readRDS("C:/Users/raine/OneDrive/Documents/BioInfo/LooMouseCortex-master/Merge_integrated_Loo_Marcy_final_OR.rds")
+Idents(Loo_Marcy) = "Simplified_loo_clusters"
+DimPlot(Loo_Marcy,cols=viridis(19),na.value = "#DEDEDE",group.by = "Simplified_loo_clusters")
+```
+
+# H 
+
+> FigS2H: UMAP plots of integrated datasets presented in Fig 3A, with pallial and subpallial cells from current P12 dataset.
+
+```{r}
+Idents(Loo_Marcy) = "Lineages"
+colors=c("GLUCells"="#ff0000","GABACells"="#0000ff","DualCells"="#fde725","NACells"="#DEDEDE")
+DimPlot(Loo_Marcy,cols=colors,group.by = "Lineages",na.value="grey")
+
+```

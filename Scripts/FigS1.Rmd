@@ -1,0 +1,64 @@
+---
+title: "Script linked to Figure 3: Fig S1. Data Metrics and Markers, related to Fig 1."
+subtitle: "Figure 1A, 1B, 1C, 1D, 1E, 1F"
+output:
+  rmdformats::downcute:
+    self_contained: true
+    default_style: "light"
+    downcute_theme: "chaos"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+#### Load packages
+
+```{r,warning=FALSE, include=T}
+suppressWarnings(suppressMessages({
+library(tidyverse)
+library(Seurat)
+library(patchwork)
+library(future)
+library(gridExtra)
+library(viridis)
+library(gridExtra)
+}))
+```
+
+# A
+
+> Fig3A: Integration of current P12 dataset (pink) with previously published dataset of E14.5 and P0 pallium (GSE123335, gray).
+
+```{r}
+Marcy = readRDS("C:/Users/raine/OneDrive/Documents/BioInfo/newdataset/same_umap_P2_P12_P22.rds")
+Idents(Marcy) = "orig.ident"
+P12_1 <- subset(Marcy,idents = c("sdCLBNx1"))
+P12_1_count <- subset(P12_1, nCount_RNA<50000)
+
+plot = VlnPlot(P12_1, features = c("nFeature_RNA"), ncol = 1, pt.size = 0.1) +NoLegend() +
+  scale_y_continuous(breaks=seq(0,10000,2000)) +ggtitle("nGenes detected") +theme(plot.title = element_text(size = 18), legend.text = element_text(20), axis.title.x = element_blank(), axis.text.x = element_text(angle = 0, hjust=0.5))
+
+plotbis = VlnPlot(P12_1_count, features = c("nCount_RNA"), ncol = 1, pt.size = 0.1) +NoLegend() +
+  scale_y_continuous(breaks=seq(0,50000,10000)) +ggtitle("nCounts") +theme(plot.title = element_text(size = 18), legend.text = element_text(20), axis.title.x = element_blank(), axis.text.x = element_text(angle = 0, hjust=0.5))
+
+plot
+plotbis
+```
+
+# B
+
+> Fig3B: Summary of metrics of the P2 and P22 additional datasets.
+
+```{r,fig.width=8,fig.height=5,fig.align='center'}
+
+at_least_one_gene <- apply(P12_1@meta.data , 2, function(x) sum(x>0))
+
+df <- as.data.frame(at_least_one_gene)
+plot1 <- ggplot(df, aes(x=at_least_one_gene)) + 
+  geom_histogram(color="black", fill="grey", binwidth = 200) +
+  scale_x_continuous(breaks=seq(0,10000,2000)) + 
+  theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), panel.background = element_blank(), axis.line = element_line(colour = "black"), plot.title = element_text(hjust = 0.5, size = 19)) +
+  ggtitle("Distribution of detected genes") + xlab("Genes with at least one count") + ylab("Number of detected genes") + theme(text = element_text(size = 19))
+plot1
+```
