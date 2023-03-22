@@ -30,7 +30,7 @@ The ventricular-subventricular zone (V-SVZ) is the largest neurogenic region of 
  </p>
 
 ## Files you'll find here 
-
+### In Scripts
 - ``Fig1.Rmd`` : to retrieve figure 1.
 - ``Fig1G_Velocity.Rmd`` : to retrieve figure 1G linked to velocity.
 - ``Fig2.Rmd`` : to retrieve figure 2. 
@@ -47,6 +47,7 @@ The ventricular-subventricular zone (V-SVZ) is the largest neurogenic region of 
 - ``FigS7.Rmd`` : to retrieve suppl 7.
 - ``SVZ.Visium.Rmd`` : brief analysis of Visium objects.
 
+### In Objects
 - ``P12_dSVZ_Seq.rds`` : the complete seurat object of P12 dSVZ scRNAseq.
 - ``P22_dSVZ_Seq.rds`` : the complete seurat object of P22 dSVZ scRNAseq.
 - ``P2_dSVZ_Seq.rds`` : the complete seurat object of P2 dSVZ scRNAseq.
