@@ -32,6 +32,7 @@ The ventricular-subventricular zone (V-SVZ) is the largest neurogenic region of 
 ## Files you'll find here 
 
 - ``Fig1.Rmd`` : to retrieve figure 1.
+- ``Fig1G_Velocity.Rmd`` : to retrieve figure 1G linked to velocity.
 - ``Fig2.Rmd`` : to retrieve figure 2. 
 - ``Fig3.Rmd`` : to retrieve figure 3. 
 - ``Fig4.Rmd`` : to retrieve figure 4.
@@ -44,6 +45,8 @@ The ventricular-subventricular zone (V-SVZ) is the largest neurogenic region of 
 - ``FigS5.Rmd`` : to retrieve suppl 5.
 - ``FigS6.Rmd`` : to retrieve suppl 6.
 - ``FigS7.Rmd`` : to retrieve suppl 7.
+- ``SVZ.Visium.Rmd`` : brief analysis of Visium objects.
+
 - ``P12_dSVZ_Seq.rds`` : the complete seurat object of P12 dSVZ scRNAseq.
 - ``P22_dSVZ_Seq.rds`` : the complete seurat object of P22 dSVZ scRNAseq.
 - ``P2_dSVZ_Seq.rds`` : the complete seurat object of P2 dSVZ scRNAseq.
@@ -51,8 +54,14 @@ The ventricular-subventricular zone (V-SVZ) is the largest neurogenic region of 
 - ``SVZ.Visium.rds`` : the complete seurat object of E17.5, P2, P12 and P22 visium.
 - ``Merge_Loo.rds`` : the complete merged seurat object of Loo et al. datasets.
 - ``Loo_Marcy.rds`` : the complete integrated seurat object between Loo et al. dataset and our P12 dataset.
-- ``Mizrak2020_Marcy.rds`` : the complete seurat integrated object of Mizrak et al. dataset and our P12 dataset.
+- ``Mizrak2020_Marcy.rds`` : the complete integrated seurat object of Mizrak et al. dataset and our P12 dataset.
 - ``P12_Neurons.rds`` : the complete seurat object of P12 neuronal cells.
+- ``aNSCs.rds`` : the complete seurat object of P12 activated neural stem cells.
+- ``Lineage_GLU.rds`` : the complete seurat object of P2, P12, P22 GLU lineage.
+- ``Slingshot`` : the folder containing slingshot objects of pallial and subpallial trajectories at P12.
+- ``Raw`` : the folder containing raw data of P2, P12, P22 datasets.
+- ``DotPlot`` : the folder containing files related to Figure 5E.
+
 
 ## Prerequisites 
 
