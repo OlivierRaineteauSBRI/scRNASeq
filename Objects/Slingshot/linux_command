@@ -1,0 +1,2 @@
+cat pallial_slingshot_qNSCs_axis_subset.tar.* | tar xzpvf -
+cat subpallial_slingshot_qNSCs_axis_subset.tar.* | tar xzpvf -
