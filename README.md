@@ -78,7 +78,7 @@ The ventricular-subventricular zone (V-SVZ) is the largest neurogenic region of 
 
 ## To get started
 
-Download ``Script.gz`` and follow the script to retrieve our bioinformatic figures. For new beginners, make sure you download and run the script ``Install_packages.Rmd`` before starting. To download all of the rds objects used, please follow the ``linux_command`` present on each directory.
+Download ``Scripts.gz`` and follow the script to retrieve our bioinformatic figures. For new beginners, make sure you download and run the script ``Install_packages.Rmd`` before starting. To download all of the rds objects used, please follow the ``linux_command`` file in each directory.
 
 ## Authors
 
