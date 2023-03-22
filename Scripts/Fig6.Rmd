@@ -39,7 +39,7 @@ library(kableExtra, quietly=T)
 ```
 
 ```{r}
-CLBNxs_Neurons_new_idents_V2=readRDS("C:/Users/raine/OneDrive/Documents/BioInfo/neuronalcells/CLBNxs_Neurons_new_idents_V2.RDS")
+P12_Neurons=readRDS("P12_Neurons/P12_Neurons.rds")
 ```
 
 # A
@@ -47,7 +47,7 @@ CLBNxs_Neurons_new_idents_V2=readRDS("C:/Users/raine/OneDrive/Documents/BioInfo/
 >Fig6A: UMAP plot with identity of GLU (deep red gradient) and GABA (deep blue gradient) TAPs/NBs subclusters at P12.
 
 ```{r,fig.width=4,fig.height=3,fig.align="center"}
-DimPlot(CLBNxs_Neurons_new_idents_V2,pt.size = 2, label = F, cols = c("#5A0017","#800021","#B76E78","#e4c1c6","#001277","#0c409f","#3074c7","#70a1dc"))
+DimPlot(P12_Neurons,pt.size = 2, label = F, cols = c("#5A0017","#800021","#B76E78","#e4c1c6","#001277","#0c409f","#3074c7","#70a1dc"))
 ```
 
 # B
@@ -56,7 +56,7 @@ DimPlot(CLBNxs_Neurons_new_idents_V2,pt.size = 2, label = F, cols = c("#5A0017",
 
 ```{r,fig.height=5,fig.width=6,fig.align="center"}
 
-Mizrak2020_CLB=readRDS("C:/Users/raine/OneDrive/Documents/BioInfo/mizrak2020/Mizrak2020_CLB.rds")
+Mizrak2020_CLB=readRDS("Mizrak2020_Marcy/Mizrak2020_Marcy.rds")
 
 Mizrak2020_CLB <- RenameIdents(Mizrak2020_CLB,  '5' = 'GLU1', '3' = 'GLU2', '7' = 'GLU3','4' = 'GABA1','0' = 'GABA2','2' = 'GABA3','1' = 'GABA4' )
 p=DimPlot(Mizrak2020_CLB, pt.size = 2, cols = c("#5A0017","#800021","#B76E78","#001277","#0c409f","#3074c7","#70a1dc","#e4c1c6","#dedede","#dedede","#dedede","#dedede","#dedede"),label=F)
@@ -68,7 +68,7 @@ LabelClusters(p,id="ident",fontface="bold")+NoLegend()
 >Fig6C: Feature plot indicating cycle phase, S.Score and G2M.Score of GLU and GABA cells.
 
 ```{r,fig.width=4,fig.height=3,fig.align="center"}
-DimPlot(CLBNxs_Neurons_new_idents_V2,pt.size = 2, label = F, group.by = "Phase",cols = c("#dad6cd","#a3b28a","#588157"))
+DimPlot(P12_Neurons,pt.size = 2, label = F, group.by = "Phase",cols = c("#dad6cd","#a3b28a","#588157"))
 ```
 
 # D
@@ -77,18 +77,18 @@ DimPlot(CLBNxs_Neurons_new_idents_V2,pt.size = 2, label = F, group.by = "Phase",
 
 ```{r, fig.width=10, fig.height=3,fig.align="center"}
 
-se.cropped = readRDS("C:/Users/raine/OneDrive/Documents/visium/merge_se_cropped.rds")
-se.cropped <- suppressMessages(suppressMessages(se.cropped %>% 
+SVZ.Visium = readRDS("SVZ.Visium/SVZ.Visium.rds")
+SVZ.Visium <- suppressMessages(suppressMessages(SVZ.Visium %>% 
   SCTransform(verbose = F) %>%
   RunPCA(verbose=F) %>%
   RunUMAP(reduction = "pca", dims = 1:20,verbose = F)))
 
-Idents(se.cropped)="labels"
-se.cropped <- RenameIdents(se.cropped,"svze18"="E17.5","svzp2"="P2","svzp12"="P12","svzp22"="P22")
-se.cropped$labels <- Idents(se.cropped)
-se.cropped@meta.data[["labels"]]=as.character(se.cropped@meta.data[["labels"]])
+Idents(SVZ.Visium)="labels"
+SVZ.Visium <- RenameIdents(SVZ.Visium,"svze18"="E17.5","svzp2"="P2","svzp12"="P12","svzp22"="P22")
+SVZ.Visium$labels <- Idents(SVZ.Visium)
+SVZ.Visium@meta.data[["labels"]]=as.character(SVZ.Visium@meta.data[["labels"]])
 
-FeatureOverlay(se.cropped, features = "Dlx2",
+FeatureOverlay(SVZ.Visium, features = "Dlx2",
 sampleids = 2:4,
 cols = c("light grey", "mistyrose", "darkred"),
 pt.size = 3,
@@ -96,7 +96,7 @@ add.alpha = TRUE,
 ncol = 3, show.sb = FALSE,
 pt.alpha = 0.1,label.by = "labels")
 
-FeatureOverlay(se.cropped, features = "Dlx1",
+FeatureOverlay(SVZ.Visium, features = "Dlx1",
 sampleids = 2:4,
 cols = c("light grey", "mistyrose", "darkred"),
 pt.size = 3,
@@ -104,7 +104,7 @@ add.alpha = TRUE,
 ncol = 3, show.sb = FALSE,
 pt.alpha = 0.1,label.by = "labels")
 
-FeatureOverlay(se.cropped, features = "Neurog2",
+FeatureOverlay(SVZ.Visium, features = "Neurog2",
 sampleids = 2:4,
 cols = c("light grey", "mistyrose", "darkred"),
 pt.size = 3,
@@ -112,7 +112,7 @@ add.alpha = TRUE,
 ncol = 3, show.sb = FALSE,
 pt.alpha = 0.1,label.by = "labels")
 
-FeatureOverlay(se.cropped, features = "Eomes",
+FeatureOverlay(SVZ.Visium, features = "Eomes",
 sampleids = 2:4,
 cols = c("light grey", "mistyrose", "darkred"),
 pt.size = 3,
@@ -127,20 +127,20 @@ pt.alpha = 0.1,label.by = "labels")
 >Fig6G: Violin plots illustrating selected genes from representative GO terms over-represented in GLU cells at P12.
 
 ```{r,fig.width=15,fig.height=4,fig.align="center"}
-DefaultAssay(CLBNxs_Neurons_new_idents_V2)="RNA"
-Idents(CLBNxs_Neurons_new_idents_V2)="GLUGABA_merge"
+DefaultAssay(P12_Neurons)="RNA"
+Idents(P12_Neurons)="GLUGABA_merge"
 
-p1=VlnPlot(CLBNxs_Neurons_new_idents_V2, features = c("Id1"), idents=c("GLU_ident","GABA_ident"), cols=c("#133ea2","#b55b71"))+stat_compare_means(label = "p.signif", label.x = 1.5, ncol(1))+NoLegend()
+p1=VlnPlot(P12_Neurons, features = c("Id1"), idents=c("GLU_ident","GABA_ident"), cols=c("#133ea2","#b55b71"))+stat_compare_means(label = "p.signif", label.x = 1.5, ncol(1))+NoLegend()
 
-p2=VlnPlot(CLBNxs_Neurons_new_idents_V2, features = c("Id2"), idents=c("GLU_ident","GABA_ident"), cols=c("#133ea2","#b55b71"))+stat_compare_means(label = "p.signif", label.x = 1.5, ncol(1))+NoLegend()
+p2=VlnPlot(P12_Neurons, features = c("Id2"), idents=c("GLU_ident","GABA_ident"), cols=c("#133ea2","#b55b71"))+stat_compare_means(label = "p.signif", label.x = 1.5, ncol(1))+NoLegend()
 
-p3=VlnPlot(CLBNxs_Neurons_new_idents_V2, features = c("Zhx2"), idents=c("GLU_ident","GABA_ident"), cols=c("#133ea2","#b55b71"))+stat_compare_means(label = "p.signif", label.x = 1.5, ncol(1))+NoLegend()
+p3=VlnPlot(P12_Neurons, features = c("Zhx2"), idents=c("GLU_ident","GABA_ident"), cols=c("#133ea2","#b55b71"))+stat_compare_means(label = "p.signif", label.x = 1.5, ncol(1))+NoLegend()
 
-p4=VlnPlot(CLBNxs_Neurons_new_idents_V2, features = c("Bmpr1a"), idents=c("GLU_ident","GABA_ident"), cols=c("#133ea2","#b55b71"))+stat_compare_means(label = "p.signif", label.x = 1.5, ncol(1))+NoLegend()
+p4=VlnPlot(P12_Neurons, features = c("Bmpr1a"), idents=c("GLU_ident","GABA_ident"), cols=c("#133ea2","#b55b71"))+stat_compare_means(label = "p.signif", label.x = 1.5, ncol(1))+NoLegend()
 
-p5=VlnPlot(CLBNxs_Neurons_new_idents_V2, features = c("Ppp2r2b"), idents=c("GLU_ident","GABA_ident"), cols=c("#133ea2","#b55b71"))+stat_compare_means(label = "p.signif", label.x = 1.5, ncol(1))+NoLegend()
+p5=VlnPlot(P12_Neurons, features = c("Ppp2r2b"), idents=c("GLU_ident","GABA_ident"), cols=c("#133ea2","#b55b71"))+stat_compare_means(label = "p.signif", label.x = 1.5, ncol(1))+NoLegend()
 
-p6=VlnPlot(CLBNxs_Neurons_new_idents_V2, features = c("Btg2"), idents=c("GLU_ident","GABA_ident"), cols=c("#133ea2","#b55b71"))+stat_compare_means(label = "p.signif", label.x = 1.5, ncol(1))+NoLegend()
+p6=VlnPlot(P12_Neurons, features = c("Btg2"), idents=c("GLU_ident","GABA_ident"), cols=c("#133ea2","#b55b71"))+stat_compare_means(label = "p.signif", label.x = 1.5, ncol(1))+NoLegend()
 
 suppressWarnings(CombinePlots(plots = list(p1,p2,p3,p4,p5,p6),ncol=6)+NoLegend())
 ```
@@ -151,15 +151,13 @@ suppressWarnings(CombinePlots(plots = list(p1,p2,p3,p4,p5,p6),ncol=6)+NoLegend()
 
 ```{r,fig.width=5, fig.height=4,fig.align="center"}
 
-V2_regression_lineage_GLU_without_GABA_and_oligos=readRDS("C:/Users/raine/OneDrive/Documents/BioInfo/lineage_GLU/V2_regression_lineage_GLU_without_GABA_and_oligos.rds")
-
-Idents(V2_regression_lineage_GLU_without_GABA_and_oligos)="merge_clusters_to_use"
-
-new_tp       <- c("P12", "P12", "P3", "P3", "P3", "P22", "P22")
-names(new_tp)<- levels(V2_regression_lineage_GLU_without_GABA_and_oligos)
-V2_regression_lineage_GLU_without_GABA_and_oligos         <- RenameIdents(V2_regression_lineage_GLU_without_GABA_and_oligos, new_tp)
-V2_regression_lineage_GLU_without_GABA_and_oligos$new_tp   = V2_regression_lineage_GLU_without_GABA_and_oligos@active.ident
-DimPlot(V2_regression_lineage_GLU_without_GABA_and_oligos,cols = c("#A94E66","#dcccd2","#510f3c"),pt.size=2)+NoLegend()
+Lineage_GLU=readRDS("Lineage_GLU/Lineage_GLU.rds")
+Idents(Lineage_GLU)="merge_clusters_to_use"
+new_tp       <- c("P12", "P12", "P2", "P2", "P2", "P22", "P22")
+names(new_tp)<- levels(Lineage_GLU)
+Lineage_GLU         <- RenameIdents(Lineage_GLU, new_tp)
+Lineage_GLU$new_tp   = Lineage_GLU@active.ident
+DimPlot(Lineage_GLU,cols = c("#A94E66","#dcccd2","#510f3c"),pt.size=2)+NoLegend()
 
 ```
 
@@ -169,7 +167,7 @@ DimPlot(V2_regression_lineage_GLU_without_GABA_and_oligos,cols = c("#A94E66","#d
 
 ```{r, fig.width=18, fig.height=4,fig.align="center"}
 
-FeaturePlot(object = V2_regression_lineage_GLU_without_GABA_and_oligos,
+FeaturePlot(object = Lineage_GLU,
             features = c("Dcx", "Mki67"),
             cols = c("#dedede", "#d1353e", "#3a8354"),
             blend = TRUE,
@@ -184,12 +182,12 @@ FeaturePlot(object = V2_regression_lineage_GLU_without_GABA_and_oligos,
 ```{r, fig.width=7, fig.height=3.5,fig.align="center"}
 
 new       <- c("P12_P22","P2", "P12_P22")
-names(new)<- levels(V2_regression_lineage_GLU_without_GABA_and_oligos)
-V2_regression_lineage_GLU_without_GABA_and_oligos         <- RenameIdents(V2_regression_lineage_GLU_without_GABA_and_oligos, new)
-V2_regression_lineage_GLU_without_GABA_and_oligos$new   = V2_regression_lineage_GLU_without_GABA_and_oligos@active.ident
+names(new)<- levels(Lineage_GLU)
+Lineage_GLU         <- RenameIdents(Lineage_GLU, new)
+Lineage_GLU$new   = Lineage_GLU@active.ident
 
-DefaultAssay(V2_regression_lineage_GLU_without_GABA_and_oligos)="RNA"
-suppressWarnings(DotPlot(V2_regression_lineage_GLU_without_GABA_and_oligos, features = c("Tbr1","Neurod1","Neurod6","Neurod2","Dcx","Tubb3","Fbxw7","Jun","Notch1","Neurog2","Eomes","Cdkn1a","Mki67","Bmpr1a"),
+DefaultAssay(Lineage_GLU)="RNA"
+suppressWarnings(DotPlot(Lineage_GLU, features = c("Tbr1","Neurod1","Neurod6","Neurod2","Dcx","Tubb3","Fbxw7","Jun","Notch1","Neurog2","Eomes","Cdkn1a","Mki67","Bmpr1a"),
         dot.scale = 10,cols = c("#572F4A","#DDD2D7"))+theme_grey()+RotatedAxis()+ xlab("")+ ylab("")+
   theme(axis.text.x = element_text(size=10, angle=45, hjust=1),
         axis.text.y = element_text(size=12,face="bold"),

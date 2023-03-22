@@ -30,9 +30,7 @@ library(SCpubr,quietly=T)
 ```
 
 ```{r,echo=FALSE}
-same_umap_P2_P12_P22=readRDS("C:/Users/raine/OneDrive/Documents/BioInfo/newdataset/same_umap_P2_P12_P22.rds")
-Idents(same_umap_P2_P12_P22)="orig.ident"
-P12 = subset(same_umap_P2_P12_P22,idents = c("sdCLBNx1","sdCLBNx2"))
+P12_dSVZ_Seq=readRDS("P12_dSVZ_Seq/P12_dSVZ_Seq.rds")
 ```
 
 # A
@@ -40,33 +38,33 @@ P12 = subset(same_umap_P2_P12_P22,idents = c("sdCLBNx1","sdCLBNx2"))
 > FigS4A: Dual cells' average number of detected genes compared to pallial cells and subpallial cells.
 
 ```{r,fig.width=9,fig.height=5,fig.align="center"}
-Idents(P12) = "Lineage"
+Idents(P12_dSVZ_Seq) = "Lineage"
 ###comment faire bar plot####
-Idents(P12)="Simplified_clusters"
-P12_subset=subset(P12,idents=c("P12_qNSCs"))
-Idents(P12_subset)="Lineage"
-P12_subset=subset(P12_subset,idents=c("GLUCells","GABACells","DualCells"))
+Idents(P12_dSVZ_Seq)="Simplified_clusters"
+P12_dSVZ_Seq_subset=subset(P12_dSVZ_Seq,idents=c("qNSCs"))
+Idents(P12_dSVZ_Seq_subset)="Lineage"
+P12_dSVZ_Seq_subset=subset(P12_dSVZ_Seq_subset,idents=c("GLUCells","GABACells","DualCells"))
 my_levels=c("DualCells","GLUCells","GABACells")
-P12_subset$Lineage <- factor(x = P12_subset$Lineage, levels = my_levels)
-Idents(P12_subset)="Lineage"
+P12_dSVZ_Seq_subset$Lineage <- factor(x = P12_dSVZ_Seq_subset$Lineage, levels = my_levels)
+Idents(P12_dSVZ_Seq_subset)="Lineage"
 colors=c("GLUCells"="#ff0000","GABACells"="#0000ff","DualCells"="#fde725")
-P1=SCpubr::do_BoxPlot(sample = P12_subset,feature = "nFeature_RNA",colors.use =colors,split.by="Lineage")+xlab("qNSCs")+NoLegend()
+P1=SCpubr::do_BoxPlot(sample = P12_dSVZ_Seq_subset,feature = "nFeature_RNA",colors.use =colors,split.by="Lineage")+xlab("qNSCs")+NoLegend()
 
-P12_subset=subset(P12,idents=c("P12_aNSCs"))
-Idents(P12_subset)="Lineage"
-P12_subset=subset(P12_subset,idents=c("GLUCells","GABACells","DualCells"))
+P12_dSVZ_Seq_subset=subset(P12_dSVZ_Seq,idents=c("aNSCs"))
+Idents(P12_dSVZ_Seq_subset)="Lineage"
+P12_dSVZ_Seq_subset=subset(P12_dSVZ_Seq_subset,idents=c("GLUCells","GABACells","DualCells"))
 my_levels=c("DualCells","GLUCells","GABACells")
-P12_subset$Lineage <- factor(x = P12_subset$Lineage, levels = my_levels)
-Idents(P12_subset)="Lineage"
-P2=SCpubr::do_BoxPlot(sample = P12_subset,feature = "nFeature_RNA",colors.use =colors,split.by="Lineage")+xlab("aNSCs")+NoLegend()
+P12_dSVZ_Seq_subset$Lineage <- factor(x = P12_dSVZ_Seq_subset$Lineage, levels = my_levels)
+Idents(P12_dSVZ_Seq_subset)="Lineage"
+P2=SCpubr::do_BoxPlot(sample = P12_dSVZ_Seq_subset,feature = "nFeature_RNA",colors.use =colors,split.by="Lineage")+xlab("aNSCs")+NoLegend()
 
-P12_subset=subset(P12,idents=c("P12_TAPs"))
-Idents(P12_subset)="Lineage"
-P12_subset=subset(P12_subset,idents=c("GLUCells","GABACells","DualCells"))
+P12_dSVZ_Seq_subset=subset(P12_dSVZ_Seq,idents=c("TAPs"))
+Idents(P12_dSVZ_Seq_subset)="Lineage"
+P12_dSVZ_Seq_subset=subset(P12_dSVZ_Seq_subset,idents=c("GLUCells","GABACells","DualCells"))
 my_levels=c("DualCells","GLUCells","GABACells")
-P12_subset$Lineage <- factor(x = P12_subset$Lineage, levels = my_levels)
-Idents(P12_subset)="Lineage"
-P3=SCpubr::do_BoxPlot(sample = P12_subset,feature = "nFeature_RNA",colors.use =colors,split.by="Lineage")+xlab("TAPs")+NoLegend()
+P12_dSVZ_Seq_subset$Lineage <- factor(x = P12_dSVZ_Seq_subset$Lineage, levels = my_levels)
+Idents(P12_dSVZ_Seq_subset)="Lineage"
+P3=SCpubr::do_BoxPlot(sample = P12_dSVZ_Seq_subset,feature = "nFeature_RNA",colors.use =colors,split.by="Lineage")+xlab("TAPs")+NoLegend()
 
 P1+P2+P3
 ```
@@ -75,8 +73,8 @@ P1+P2+P3
 
 > FigS4B: Dual cells proportions within V-SVZ cell types.
 
-```{r}
-plot.data <- P12@meta.data %>%
+```{r,message=FALSE,warning=FALSE}
+plot.data <- P12_dSVZ_Seq@meta.data %>%
   dplyr:::select(Lineage, cluster   = Simplified_clusters) %>%
   group_by(cluster, Lineage ) %>%
   summarise(count      = n()) %>%
@@ -87,7 +85,7 @@ plot.data <- P12@meta.data %>%
   ungroup() %>%
   mutate(dataset_prop  = count / dataset_total)
 
-plt.data= plot.data %>% subset(cluster %in% c("P12_qNSCs","P12_aNSCs","P12_TAPs") & Lineage=="DualCells") %>% mutate(cluster = fct_reorder(cluster, -desc(clust_prop)))%>% mutate(across((clust_prop),function(x) x*100))
+plt.data= plot.data %>% subset(cluster %in% c("qNSCs","aNSCs","TAPs") & Lineage=="DualCells") %>% mutate(cluster = fct_reorder(cluster, -desc(clust_prop)))%>% mutate(across((clust_prop),function(x) x*100))
 
 #Distribution % in each clusters
 ggplot(plt.data, aes(x = cluster, y = clust_prop, fill=cluster)) +
@@ -99,7 +97,7 @@ ggplot(plt.data, aes(x = cluster, y = clust_prop, fill=cluster)) +
 > FigS2G: UMAP plots of integrated datasets presented in Fig 3A, with identity of Loo datasets.
 
 ```{r}
-Loo_Marcy=readRDS("C:/Users/raine/OneDrive/Documents/BioInfo/LooMouseCortex-master/Merge_integrated_Loo_Marcy_final_OR.rds")
+Loo_Marcy=readRDS("Loo_Marcy/Loo_Marcy.rds")
 Idents(Loo_Marcy) = "Simplified_loo_clusters"
 DimPlot(Loo_Marcy,cols=viridis(19),na.value = "#DEDEDE",group.by = "Simplified_loo_clusters")
 ```

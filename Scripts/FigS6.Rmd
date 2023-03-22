@@ -69,8 +69,8 @@ library(ggpubr, quietly = T)
 
 ```{r, warning=FALSE,fig.width=5, fig.height=5,fig.align="center"}
 
-pal <- readRDS("C:/Users/raine/Downloads/wetransfer_subpallial_no_alra_slingshot_qnscs_axis_subset-rds_2022-11-18_1148/pallial_no_alra_slingshot_qNSCs_axis_subset.rds")
-subpal <- readRDS("C:/Users/raine/Downloads/wetransfer_subpallial_no_alra_slingshot_qnscs_axis_subset-rds_2022-11-18_1148/subpallial_no_alra_slingshot_qNSCs_axis_subset.rds")
+pal <- readRDS("Slingshot/pallial_slingshot_qNSCs_axis_subset.rds")
+subpal <- readRDS("Slingshot/subpallial_slingshot_qNSCs_axis_subset.rds")
 
 subpal_counts = subpal@assays$RNA@data
 subpal_counts = t(as.matrix(subpal_counts)) #switch row and columns

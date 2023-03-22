@@ -38,8 +38,8 @@ library(kableExtra, quietly=T)
 
 
 ```{r,echo=FALSE}
-aNSCs = readRDS("C:/Users/raine/OneDrive/Documents/BioInfo/Focus on aNSCs + cytoscape network/aNSCs_subclusters.RDS")
-same_umap_P2_P12_P22=readRDS("C:/Users/raine/OneDrive/Documents/BioInfo/newdataset/same_umap_P2_P12_P22.rds")
+aNSCs = readRDS("aNSCs/aNSCs.rds")
+P12_dSVZ_Seq=readRDS("P12_dSVZ_Seq/P12_dSVZ_Seq.rds")
 ```
 
 # A
@@ -67,10 +67,8 @@ aNSCs[["Full_detailed_clusters"]] = Idents(aNSCs)
 aNSCs <- SetIdent(aNSCs, cells = aNSC4 , value = "aNSC4") 
 aNSCs[["Full_detailed_clusters"]] = Idents(aNSCs) 
 
-Idents(same_umap_P2_P12_P22)="orig.ident"
-P12 = subset(same_umap_P2_P12_P22,idents = c("sdCLBNx1","sdCLBNx2"))
-
-DimPlot(P12, reduction="ref.umap",cols=c("#77C67D","#ADDD92","#2DA358","#9E9E23","#DEDEDE","#DEDEDE","#DEDEDE","#DEDEDE","#DEDEDE","#DEDEDE","#DEDEDE","#DEDEDE","#DEDEDE","#DEDEDE","#DEDEDE","#DEDEDE"), label = F, pt.size = 1,group.by = "Full_clusters",repel=T)
+Idents(P12_dSVZ_Seq)="orig.ident"
+DimPlot(P12_dSVZ_Seq, reduction="umap",cols=c("#DEDEDE","#9E9E23","#DEDEDE","#DEDEDE","#DEDEDE","#DEDEDE","#2DA358","#DEDEDE","#ADDD92","#77C67D","#DEDEDE","#DEDEDE","#DEDEDE","#DEDEDE","#DEDEDE","#DEDEDE"), label = F, pt.size = 1,group.by = "Full_clusters",repel=T)
 
 ```
 
@@ -131,7 +129,7 @@ reticulate::py_discover_config(required_module="magic")
 
 > Fig2E: UMAP plot illustrating feature plots of markers identified in D.
 
-```{r,fig.width=8,fig.height=11,fig.align="center"}
+```{r,fig.width=8,fig.height=11,fig.align="center",message=FALSE,warning=FALSE}
 aNSCs_matrix <- t(as.matrix(aNSCs@assays$RNA@data))
 aNSCs_matrix <- aNSCs_matrix[, colSums(aNSCs_matrix != 0) > 0]
 aNSCs_MAGIC <- suppressMessages(suppressWarnings((magic(aNSCs_matrix,genes,verbose = F))))
@@ -155,8 +153,8 @@ DimPlot(aNSCs, reduction="umap",cols = c("#DEDEDE", "#ff0000","#fde725","#0000ff
 > Fig2G: UMAP plot identifying cells expressing pallial (red) or subpallial (blue) transcripts (or both, i.e. dual cells, yellow) within the entire dataset.
 
 ```{r,fig.width=7,fig.height=5,fig.align="center"}
-Idents(P12) = "Lineage"
-DimPlot(P12, group.by = "Lineage", cols = c("#DEDEDE", "#fde725", "#ff0000", "#0000ff"), order = c("GABACells", "GLUCells", "DualCells"),pt.size = 1.5)
+Idents(P12_dSVZ_Seq) = "Lineage"
+DimPlot(P12_dSVZ_Seq, group.by = "Lineage", cols = c("#DEDEDE", "#fde725", "#ff0000", "#0000ff"), order = c("GABACells", "GLUCells", "DualCells"),pt.size = 1.5)
 ```
 
 # O
@@ -164,21 +162,21 @@ DimPlot(P12, group.by = "Lineage", cols = c("#DEDEDE", "#fde725", "#ff0000", "#0
 > Fig2O: Spatial transcriptomic (Visium) showing invasion of dorsal V-SVZ territories by subpallial marker.
 
 ```{r}
-se.cropped=readRDS("C:/Users/raine/OneDrive/Documents/visium/merge_se_cropped.rds")
-se.cropped <- suppressWarnings(suppressMessages(se.cropped %>% 
+SVZ.Visium=readRDS("SVZ.Visium/SVZ.Visium.rds")
+SVZ.Visium <- suppressWarnings(suppressMessages(SVZ.Visium %>% 
   SCTransform(verbose = F) %>%
   RunPCA(verbose=F) %>%
   RunUMAP(reduction = "pca", dims = 1:20,verbose = F)))
-Idents(se.cropped)="labels"
-se.cropped <- RenameIdents(se.cropped,"svze18"="E17.5","svzp2"="P2","svzp12"="P12","svzp22"="P22")
-se.cropped$labels <- Idents(se.cropped)
-se.cropped@meta.data[["labels"]]=as.character(se.cropped@meta.data[["labels"]])
+Idents(SVZ.Visium)="labels"
+SVZ.Visium <- RenameIdents(SVZ.Visium,"svze18"="E17.5","svzp2"="P2","svzp12"="P12","svzp22"="P22")
+SVZ.Visium$labels <- Idents(SVZ.Visium)
+SVZ.Visium@meta.data[["labels"]]=as.character(SVZ.Visium@meta.data[["labels"]])
 
 ```
 
 ```{r, fig.width=10, fig.height=3,fig.align="center"}
 
-FeatureOverlay(se.cropped, features = "Emx1",
+FeatureOverlay(SVZ.Visium, features = "Emx1",
 sampleids = 1:3,
 cols = c("light grey", "mistyrose", "darkred"),
 pt.size = 3,
@@ -186,7 +184,7 @@ add.alpha = TRUE,
 ncol = 3, show.sb = FALSE,
 pt.alpha = 0.1,label.by = "labels")
 
-FeatureOverlay(se.cropped, features = "Tfap2c",
+FeatureOverlay(SVZ.Visium, features = "Tfap2c",
 sampleids = 1:3,
 cols = c("light grey", "mistyrose", "darkred"),
 pt.size = 3,
@@ -194,7 +192,7 @@ add.alpha = TRUE,
 ncol = 3, show.sb = FALSE,
 pt.alpha = 0.1,label.by = "labels")
 
-FeatureOverlay(se.cropped, features = "Six3",
+FeatureOverlay(SVZ.Visium, features = "Six3",
 sampleids = 1:3,
 cols = c("light grey", "mistyrose", "darkred"),
 pt.size = 3,
@@ -202,7 +200,7 @@ add.alpha = TRUE,
 ncol = 3, show.sb = FALSE,
 pt.alpha = 0.1,label.by = "labels")
 
-FeatureOverlay(se.cropped, features = "Gsx2",
+FeatureOverlay(SVZ.Visium, features = "Gsx2",
 sampleids = 1:3,
 cols = c("light grey", "mistyrose", "darkred"),
 pt.size = 3,
@@ -217,15 +215,13 @@ pt.alpha = 0.1,label.by = "labels")
 > Fig2Q: Analysis of cell proportion at P2, P12 and P22.
 
 ```{r,fig.width=7,fig.height=5,fig.align="center"}
-
-same_umap_P2_P12_P22=readRDS("C:/Users/raine/OneDrive/Documents/BioInfo/newdataset/same_umap_P2_P12_P22.rds")
-Idents(same_umap_P2_P12_P22)="orig.ident"
-P2 = subset(same_umap_P2_P12_P22,idents = "p2")
-P22 = subset(same_umap_P2_P12_P22,idents = "p20")
-P12 = subset(same_umap_P2_P12_P22,idents = c("sdCLBNx1","sdCLBNx2"))
+Marcy=readRDS("P2_P12_P22_dSVZ_Seq/P2_P12_P22_dSVZ_Seq.rds")
+Idents(Marcy)="orig.ident"
+P2 = subset(Marcy,idents = "p2")
+P22 = subset(Marcy,idents = "p20")
 
 DimPlot(P2, pt.size = 1.5, group.by = "lineage", cols = c("#999999", "#fde725", "#ff0000", "#0000ff"), order = c("GABACells", "GLUCells", "DualCells"))+NoLegend()+theme_void()
-DimPlot(P12, pt.size = 1.5, group.by = "Lineage", cols = c("#999999", "#fde725", "#ff0000", "#0000ff"), order = c("GABACells", "GLUCells", "DualCells"))+NoLegend()+theme_void()
+DimPlot(P12_dSVZ_Seq, pt.size = 1.5, group.by = "Lineage", cols = c("#999999", "#fde725", "#ff0000", "#0000ff"), order = c("GABACells", "GLUCells", "DualCells"))+NoLegend()+theme_void()
 DimPlot(P22, pt.size = 1.5, group.by = "lineage", cols = c("#999999", "#fde725", "#ff0000", "#0000ff"), order = c("GABACells", "GLUCells", "DualCells"))+NoLegend()+theme_void()
 
 ```

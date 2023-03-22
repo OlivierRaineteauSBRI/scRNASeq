@@ -1603,11 +1603,9 @@ library(RColorBrewer)
 library(viridis)
 }))</code></pre>
 <pre class="r"><code>#Load Object1 - already produced
-Loo = readRDS(&quot;C:/Users/raine/OneDrive/Documents/BioInfo/LooMouseCortex-master/Merge_integrated_Loo.rds&quot;)
+Loo = readRDS(&quot;Merge_Loo/Merge_Loo.rds&quot;)
 #Load Object2 - already produced
-Marcy=readRDS(&quot;C:/Users/raine/OneDrive/Documents/BioInfo/newdataset/same_umap_P2_P12_P22.rds&quot;)
-Idents (Marcy) = &quot;orig.ident&quot;
-Marcy &lt;- subset(Marcy,idents = c(&quot;sdCLBNx1&quot;,&quot;sdCLBNx2&quot;))
+Marcy=readRDS(&quot;P12_dSVZ_Seq/P12_dSVZ_Seq.rds&quot;)
 
 prefix = &quot;Loo&quot;
 suffix = Loo@meta.data$Simplified_loo_clusters
@@ -1673,7 +1671,7 @@ Merge.integrated &lt;- RunUMAP(Merge.integrated, dims = 1:20,verbose=FALSE)</cod
 <p>Fig3A: Integration of current P12 dataset (pink) with previously
 published dataset of E14.5 and P0 pallium (GSE123335, gray).</p>
 </blockquote>
-<pre class="r"><code>Loo_Marcy=readRDS(&quot;C:/Users/raine/OneDrive/Documents/BioInfo/LooMouseCortex-master/Merge_integrated_Loo_Marcy_final_OR.rds&quot;)
+<pre class="r"><code>Loo_Marcy=readRDS(&quot;Loo_Marcy/Loo_Marcy.rds&quot;)
 Idents(Loo_Marcy) = &quot;merge_simplified_clusters&quot;
 DimPlot(Loo_Marcy, reduction = &quot;umap&quot;, pt.size = 0.5, split.by = &quot;Condition&quot;,cols=c(&quot;#ADADAD&quot;,&quot;#ADADAD&quot;,&quot;#ADADAD&quot;,&quot;#ADADAD&quot;,&quot;#ADADAD&quot;,
                    &quot;#ADADAD&quot;,&quot;#ADADAD&quot;,&quot;#ADADAD&quot;,&quot;#ADADAD&quot;,&quot;#ADADAD&quot;,
@@ -1705,8 +1703,8 @@ selected cell types of both datasets.</p>
 </div>
 <div id="c" class="section level1">
 <h1>C</h1>
-<pre class="r"><code>Current_dataset &lt;- readRDS(&quot;~/BioInfo/newdataset/improved_clb_v6.rds&quot;)
-Loo &lt;- readRDS(&quot;C:/Users/raine/OneDrive/Documents/BioInfo/LooMouseCortex-master/Merge_integrated_Loo.rds&quot;)</code></pre>
+<pre class="r"><code>Current_dataset &lt;- readRDS(&quot;P12_dSVZ_Seq/P12_dSVZ_Seq.rds&quot;)
+Loo &lt;- readRDS(&quot;Merge_Loo/Merge_Loo.rds&quot;)</code></pre>
 <pre class="r"><code>DefaultAssay(Current_dataset) &lt;- &quot;RNA&quot;
 Idents(Current_dataset)=&quot;Simplified_clusters&quot;
 Current_dataset = subset(Current_dataset,idents = c(&quot;Microglia&quot;,&quot;Endothelial/Mural cells&quot;,&quot;aNSCs&quot;,&quot;qNSCs&quot;))

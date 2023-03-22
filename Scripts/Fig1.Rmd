@@ -28,7 +28,7 @@ library(ggpubr,quietly = T)
 ```
 
 ```{r,echo=FALSE}
-improved_clb_v6 <- readRDS("~/BioInfo/newdataset/improved_clb_v6.rds")
+P12_dSVZ_Seq <- readRDS("P12_dSVZ_Seq/P12_dSVZ_Seq.rds")
 ```
 
 # B
@@ -36,12 +36,10 @@ improved_clb_v6 <- readRDS("~/BioInfo/newdataset/improved_clb_v6.rds")
 > Fig 1B: t-SNE projections of major cell types.
 
 ```{r,fig.width=4,fig.height=5, fig.align="center"}
-improved_clb_v6 <- suppressMessages(FindNeighbors(improved_clb_v6, dims = 1:15, assay = "RNA",verbose = F))
-DefaultAssay(improved_clb_v6) <- "RNA"
-improved_clb_v6 <- suppressMessages(FindClusters(improved_clb_v6, resolution = 0.5,verbose=F))
-improved_clb_v6 <- RunTSNE(improved_clb_v6, dims = 1:26)
-levels(improved_clb_v6) = c("4","0", "1", "2","8","9", "3", "5", "6", "10", "12","7", "13", "11", "14")
-DimPlot(improved_clb_v6, reduction = "tsne", label = T, repel = T, pt.size = 1.5, cols = c("#f8766d", "#c99800", "#c99800", 
+P12_dSVZ_Seq = RunTSNE(P12_dSVZ_Seq, dims = 1:26)
+Idents(P12_dSVZ_Seq)="seurat_clusters"
+levels(P12_dSVZ_Seq) = c("4","0", "1", "2","8","9", "3", "5", "6", "10", "12","7", "13", "11", "14")
+DimPlot(P12_dSVZ_Seq, reduction = "tsne", label = T, repel = T, pt.size = 1.5, cols = c("#f8766d", "#c99800", "#c99800", 
                 "#c99800", "#6bb100", "#6bb100", "#6bb100", "#00c0af", "#00c0af", "#00c0af", "#619cff", "#b983ff", 
                 "#e76bf3", "#fd61d1", "#ff67a4"))+NoLegend()
 ```
@@ -51,9 +49,9 @@ DimPlot(improved_clb_v6, reduction = "tsne", label = T, repel = T, pt.size = 1.5
 > Fig 1C: Violin plots showing known markers for SVZ cell types.
 
 ```{r,fig.width=7,fig.height=7,fig.align="center"}
-Idents(improved_clb_v6) <- "seurat_clusters"
+Idents(P12_dSVZ_Seq) <- "seurat_clusters"
 new_order   <-  c("4","0","1","2","8","9","3","5","6","10","12","7","13","11","14")
-improved_clb_v6$seurat_clusters <- factor(improved_clb_v6$seurat_clusters, levels = new_order)
+P12_dSVZ_Seq$seurat_clusters <- factor(P12_dSVZ_Seq$seurat_clusters, levels = new_order)
 
 generic_ependym     <- c("Foxj1", "Ak7", "Pifo")
 generic_NSCs        <- c("Thbs4", "Sdc4", "Lrp4") 
@@ -114,7 +112,7 @@ StackedVlnPlot<- function(obj, features,
   return(p)
 }
 
-suppressMessages(StackedVlnPlot(obj = improved_clb_v6, group.by = "seurat_clusters",features = c(generic_ependym, generic_NSCs, generic_profil, generic_neuroblasts, 
+suppressMessages(StackedVlnPlot(obj = P12_dSVZ_Seq, group.by = "seurat_clusters",features = c(generic_ependym, generic_NSCs, generic_profil, generic_neuroblasts, 
                                           generic_astros, generic_endothelial, generic_OLs, generic_microglia)))
 ```
 
@@ -123,18 +121,18 @@ suppressMessages(StackedVlnPlot(obj = improved_clb_v6, group.by = "seurat_cluste
 > Fig 1D: Combined expression of key markers on t-SNEs.
 
 ```{r,fig.width=4,fig.height=7, fig.align="center"}
-qNSCs = WhichCells(improved_clb_v6, expression = (Slc1a3>1 & Prom1 >0.6 & Egfr<0.1 & Foxj1<0.1))
-p1=DimPlot(improved_clb_v6, reduction = "tsne", label=F, pt.size = 1, cells.highlight= list(qNSCs),cols.highlight = c("#c99800"), cols= "gray75")+NoLegend()
-aNSCs= WhichCells(improved_clb_v6, expression = (Egfr>1 & Ascl1>1 & Dlx1<0.01 & Dlx2<0.01)) #1257 and being positive for the embryonic RP and NSC-specific gene signatures  
-p2=DimPlot(improved_clb_v6, reduction = "tsne", label=F, pt.size = 1, cells.highlight= list(aNSCs),cols.highlight = c("#9AA500"), cols= "gray75")+NoLegend()
-TAPs= WhichCells(improved_clb_v6, expression = (Ascl1>1 & Mki67>0.01 & Gad1<0.1 & Gad2<0.1 & Tbr1<0.1)) #327 too restrictive
-p3=DimPlot(improved_clb_v6, reduction = "tsne", label=F, pt.size = 1, cells.highlight= list(TAPs),cols.highlight = c("#36B958"), cols= "gray75")+NoLegend()
-NBs= WhichCells(improved_clb_v6, expression = (Dlx1>0.2 & Dlx2>0.2 & Sp8>0.5 & Gad1>0.5 & Gad2>0.5)) #251 
-p4=DimPlot(improved_clb_v6, reduction = "tsne", pt.size = 1, cells.highlight = list(NBs), cols.highlight = c("#00c0af"), cols= "gray75")+NoLegend()
-OLs= WhichCells(improved_clb_v6, expression = (Pdgfra>0.5 & Sox10>0.5)) #114  
-p5=DimPlot(improved_clb_v6, reduction = "tsne", pt.size = 1, cells.highlight = list(OLs), cols.highlight = c("#fd61d1"), cols= "gray75")+NoLegend()
-Astros= WhichCells(improved_clb_v6, expression = (S100b>0.5 & Aqp4>2)) #126  
-p6=DimPlot(improved_clb_v6, reduction = "tsne", pt.size = 1, cells.highlight = list(Astros), cols.highlight = c("#b983ff"), cols= "gray75")+NoLegend()
+qNSCs = WhichCells(P12_dSVZ_Seq, expression = (Slc1a3>1 & Prom1 >0.6 & Egfr<0.1 & Foxj1<0.1))
+p1=DimPlot(P12_dSVZ_Seq, reduction = "tsne", label=F, pt.size = 1, cells.highlight= list(qNSCs),cols.highlight = c("#c99800"), cols= "gray75")+NoLegend()
+aNSCs= WhichCells(P12_dSVZ_Seq, expression = (Egfr>1 & Ascl1>1 & Dlx1<0.01 & Dlx2<0.01)) #1257 and being positive for the embryonic RP and NSC-specific gene signatures  
+p2=DimPlot(P12_dSVZ_Seq, reduction = "tsne", label=F, pt.size = 1, cells.highlight= list(aNSCs),cols.highlight = c("#9AA500"), cols= "gray75")+NoLegend()
+TAPs= WhichCells(P12_dSVZ_Seq, expression = (Ascl1>1 & Mki67>0.01 & Gad1<0.1 & Gad2<0.1 & Tbr1<0.1)) #327 too restrictive
+p3=DimPlot(P12_dSVZ_Seq, reduction = "tsne", label=F, pt.size = 1, cells.highlight= list(TAPs),cols.highlight = c("#36B958"), cols= "gray75")+NoLegend()
+NBs= WhichCells(P12_dSVZ_Seq, expression = (Dlx1>0.2 & Dlx2>0.2 & Sp8>0.5 & Gad1>0.5 & Gad2>0.5)) #251 
+p4=DimPlot(P12_dSVZ_Seq, reduction = "tsne", pt.size = 1, cells.highlight = list(NBs), cols.highlight = c("#00c0af"), cols= "gray75")+NoLegend()
+OLs= WhichCells(P12_dSVZ_Seq, expression = (Pdgfra>0.5 & Sox10>0.5)) #114  
+p5=DimPlot(P12_dSVZ_Seq, reduction = "tsne", pt.size = 1, cells.highlight = list(OLs), cols.highlight = c("#fd61d1"), cols= "gray75")+NoLegend()
+Astros= WhichCells(P12_dSVZ_Seq, expression = (S100b>0.5 & Aqp4>2)) #126  
+p6=DimPlot(P12_dSVZ_Seq, reduction = "tsne", pt.size = 1, cells.highlight = list(Astros), cols.highlight = c("#b983ff"), cols= "gray75")+NoLegend()
 
 ggarrange(ncol=2,nrow=3,p1,p2,p3,p4,p5,p6,labels = c("qNSCs","aNSCs","TAPs","NBs","OLs","Astros"),font.label = list(size = 10, color = "black", face = "bold", family = NULL),align="hv",label.x = 0.4)
 
@@ -145,7 +143,7 @@ ggarrange(ncol=2,nrow=3,p1,p2,p3,p4,p5,p6,labels = c("qNSCs","aNSCs","TAPs","NBs
 > Fig 1E: Treemap representing the proportion of the major cell types.
 
 ```{r,fig.width=4,fig.height=7,fig.align="center"}
-table <- suppressMessages(table(improved_clb_v6$Simplified_clusters))
+table <- suppressMessages(table(P12_dSVZ_Seq$Simplified_clusters))
 table <- suppressMessages(as.data.frame(table))
 mypal <- c("#CD9825","#00CC6C","#FF666C","#8CAA3A","#9867FA","#CC99FC","#009BFB","#FF64FB","#FF649A")
 
@@ -159,7 +157,7 @@ suppressMessages(treemap(table,index="Var1",vSize = "Freq",type = "index",palett
 > Fig 1F: UMAP plot depicting the simplified identity annotation.
 
 ```{r,fig.width=7,fig.height=6}
-suppressMessages(DimPlot(improved_clb_v6, label=T,label.size=5,pt.size = 1,group.by = "Simplified_clusters",cols=c("#CD9825","#5AD5C7","#FF666C","#99A424","#B984FB","#FF64FB","#5AD5C7","#FF649A","#FE57CC")))+NoLegend()
+suppressMessages(DimPlot(P12_dSVZ_Seq, label=T,label.size=5,pt.size = 1,group.by = "Simplified_clusters",cols=c("#CD9825","#5AD5C7","#FF666C","#99A424","#B984FB","#FF64FB","#5AD5C7","#FF649A","#FE57CC")))+NoLegend()
 ```
 
 # G

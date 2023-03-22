@@ -29,7 +29,7 @@ library(ggpubr,quietly = T)
 ```
 
 ```{r,echo=FALSE}
-improved_clb_v6 <- readRDS("~/BioInfo/newdataset/improved_clb_v6.rds")
+P12_dSVZ_Seq <- readRDS("P12_dSVZ_Seq/P12_dSVZ_Seq.rds")
 ```
 
 # A
@@ -37,7 +37,7 @@ improved_clb_v6 <- readRDS("~/BioInfo/newdataset/improved_clb_v6.rds")
 > Fig S2A: UMAP with simplified identity annotation.
 
 ```{r,fig.width=7,fig.height=6}
-suppressMessages(DimPlot(improved_clb_v6, label=T,label.size=5,pt.size = 1,group.by = "Simplified_clusters",cols=c("#CD9825","#5AD5C7","#FF666C","#99A424","#B984FB","#FF64FB","#5AD5C7","#FF649A","#FE57CC")))+NoLegend()
+suppressMessages(DimPlot(P12_dSVZ_Seq, label=T,label.size=5,pt.size = 1,group.by = "Simplified_clusters",cols=c("#CD9825","#5AD5C7","#FF666C","#99A424","#B984FB","#FF64FB","#5AD5C7","#FF649A","#FE57CC")))+NoLegend()
 ```
 
 # B
@@ -46,28 +46,28 @@ suppressMessages(DimPlot(improved_clb_v6, label=T,label.size=5,pt.size = 1,group
 
 ```{r, fig.height=23, fig.width=9}
 genes <- c("Foxj1", "Ak7", "Pifo")
-ependymalcells <-FeaturePlot(improved_clb_v6, features = genes, combine = TRUE, order = FALSE, slot = "data", ncol = 3,cols=c("lightgrey", "#FF666C"))
+ependymalcells <-FeaturePlot(P12_dSVZ_Seq, features = genes, combine = TRUE, order = FALSE, slot = "data", ncol = 3,cols=c("lightgrey", "#FF666C"))
 
 genes <- c("Thbs4", "Sdc4", "Lrp4")
-qNSCs <-FeaturePlot(improved_clb_v6, features = genes, combine = TRUE, order = FALSE, slot = "data", ncol = 3,cols=c("lightgrey", "#CD9825") )
+qNSCs <-FeaturePlot(P12_dSVZ_Seq, features = genes, combine = TRUE, order = FALSE, slot = "data", ncol = 3,cols=c("lightgrey", "#CD9825") )
 
 genes <- c("Egfr", "Mcm2", "Ascl1")
-Taps <-FeaturePlot(improved_clb_v6, features = genes, combine = TRUE, order = FALSE, slot = "data", ncol = 3,cols=c("lightgrey", "#5AD5C7") )
+Taps <-FeaturePlot(P12_dSVZ_Seq, features = genes, combine = TRUE, order = FALSE, slot = "data", ncol = 3,cols=c("lightgrey", "#5AD5C7") )
 
 genes <- c("Dcx", "Cd24a", "Nrxn3")
-Neuroblasts <-FeaturePlot(improved_clb_v6, features = genes, combine = TRUE, order = FALSE, slot = "data", ncol = 3,cols=c("lightgrey", "#6E9AF3") )
+Neuroblasts <-FeaturePlot(P12_dSVZ_Seq, features = genes, combine = TRUE, order = FALSE, slot = "data", ncol = 3,cols=c("lightgrey", "#6E9AF3") )
 
 genes <- c("Aqp4", "Agt", "Lcat")
-astrocytes <-FeaturePlot(improved_clb_v6, features = genes, combine = TRUE, order = FALSE, slot = "data", ncol = 3,cols=c("lightgrey", "#B984FB") )
+astrocytes <-FeaturePlot(P12_dSVZ_Seq, features = genes, combine = TRUE, order = FALSE, slot = "data", ncol = 3,cols=c("lightgrey", "#B984FB") )
 
 genes <- c("Cldn5", "Flt1", "Pecam1")
-endothelialcells <-FeaturePlot(improved_clb_v6, features = genes, combine = TRUE, order = FALSE, slot = "data", ncol = 3,cols=c("lightgrey", "#FF64FB") )
+endothelialcells <-FeaturePlot(P12_dSVZ_Seq, features = genes, combine = TRUE, order = FALSE, slot = "data", ncol = 3,cols=c("lightgrey", "#FF64FB") )
 
 genes <- c("Pdgfra", "Bmp4", "Sox10")
-Oligodendrocytes<-FeaturePlot(improved_clb_v6, features = genes, combine = TRUE, order = FALSE, slot = "data", ncol = 3,cols=c("lightgrey", "#FE57CC") )
+Oligodendrocytes<-FeaturePlot(P12_dSVZ_Seq, features = genes, combine = TRUE, order = FALSE, slot = "data", ncol = 3,cols=c("lightgrey", "#FE57CC") )
 
 genes <- c("Cd53", "Tmem119", "C1qa")
-microglia<-FeaturePlot(improved_clb_v6, features = genes, combine = TRUE, order = FALSE, slot = "data", ncol = 3,cols=c("lightgrey", "#FF649A") ) 
+microglia<-FeaturePlot(P12_dSVZ_Seq, features = genes, combine = TRUE, order = FALSE, slot = "data", ncol = 3,cols=c("lightgrey", "#FF649A") ) 
 
 ggarrange(ependymalcells, qNSCs, Taps, Neuroblasts, astrocytes, endothelialcells, Oligodendrocytes, microglia, nrow=8)
 ```

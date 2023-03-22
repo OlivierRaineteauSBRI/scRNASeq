@@ -1,5 +1,5 @@
 ---
-title: "Script linked to Figure 3: Fig S1. Data Metrics and Markers, related to Fig 1."
+title: "Script linked to Figure S1. Data Metrics and Markers, related to Fig 1."
 subtitle: "Figure 1A, 1B, 1C, 1D, 1E, 1F"
 output:
   rmdformats::downcute:
@@ -8,14 +8,8 @@ output:
     downcute_theme: "chaos"
 ---
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-```
-
-#### Load packages
-
-```{r,warning=FALSE, include=T}
-suppressWarnings(suppressMessages({
+```{r, warning=FALSE}
+suppressMessages({
 library(tidyverse)
 library(Seurat)
 library(patchwork)
@@ -23,36 +17,32 @@ library(future)
 library(gridExtra)
 library(viridis)
 library(gridExtra)
-}))
+library(RColorBrewer)
+})
 ```
 
 # A
 
-> Fig3A: Integration of current P12 dataset (pink) with previously published dataset of E14.5 and P0 pallium (GSE123335, gray).
+> Fig S1A: Summary of metrics of the P12 replicates. Cells to be analyzed are selected based on the following criteria: percent.mt\<10% and number of genes expressed \>2000 & \<8000.
 
-```{r}
-Marcy = readRDS("C:/Users/raine/OneDrive/Documents/BioInfo/newdataset/same_umap_P2_P12_P22.rds")
-Idents(Marcy) = "orig.ident"
-P12_1 <- subset(Marcy,idents = c("sdCLBNx1"))
+```{r, warning=FALSE, fig.width=3, fig.height=4}
+CLBNx1.data <- Read10X(data.dir = "Raw/Nx1/", strip.suffix = TRUE)
+P12_1 <- CreateSeuratObject(counts = CLBNx1.data, project = "P12_1", min.cells = 0, min.features = 0) #8617cells
+P12_1 <- PercentageFeatureSet(P12_1, pattern = "^mt-", col.name = "percent.mt")
+#nGenes
+plot = suppressWarnings(suppressMessages(VlnPlot(P12_1, features = c("nFeature_RNA"), ncol = 1, pt.size = 0.1) +NoLegend() +
+  scale_y_continuous(breaks=seq(0,10000,2000)) +ggtitle("nGenes detected") +theme(plot.title = element_text(size = 18), legend.text = element_text(20), axis.title.x = element_blank(), axis.text.x = element_text(angle = 0, hjust=0.5))))
+#nCounts
 P12_1_count <- subset(P12_1, nCount_RNA<50000)
-
-plot = VlnPlot(P12_1, features = c("nFeature_RNA"), ncol = 1, pt.size = 0.1) +NoLegend() +
-  scale_y_continuous(breaks=seq(0,10000,2000)) +ggtitle("nGenes detected") +theme(plot.title = element_text(size = 18), legend.text = element_text(20), axis.title.x = element_blank(), axis.text.x = element_text(angle = 0, hjust=0.5))
-
-plotbis = VlnPlot(P12_1_count, features = c("nCount_RNA"), ncol = 1, pt.size = 0.1) +NoLegend() +
-  scale_y_continuous(breaks=seq(0,50000,10000)) +ggtitle("nCounts") +theme(plot.title = element_text(size = 18), legend.text = element_text(20), axis.title.x = element_blank(), axis.text.x = element_text(angle = 0, hjust=0.5))
+plotbis = suppressWarnings(suppressMessages(VlnPlot(P12_1_count, features = c("nCount_RNA"), ncol = 1, pt.size = 0.1) +NoLegend() +
+  scale_y_continuous(breaks=seq(0,50000,10000)) +ggtitle("nCounts") +theme(plot.title = element_text(size = 18), legend.text = element_text(20), axis.title.x = element_blank(), axis.text.x = element_text(angle = 0, hjust=0.5))))
 
 plot
 plotbis
 ```
 
-# B
-
-> Fig3B: Summary of metrics of the P2 and P22 additional datasets.
-
-```{r,fig.width=8,fig.height=5,fig.align='center'}
-
-at_least_one_gene <- apply(P12_1@meta.data , 2, function(x) sum(x>0))
+```{r}
+at_least_one_gene <- apply(CLBNx1.data, 2, function(x) sum(x>0))
 
 df <- as.data.frame(at_least_one_gene)
 plot1 <- ggplot(df, aes(x=at_least_one_gene)) + 
@@ -60,5 +50,333 @@ plot1 <- ggplot(df, aes(x=at_least_one_gene)) +
   scale_x_continuous(breaks=seq(0,10000,2000)) + 
   theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), panel.background = element_blank(), axis.line = element_line(colour = "black"), plot.title = element_text(hjust = 0.5, size = 19)) +
   ggtitle("Distribution of detected genes") + xlab("Genes with at least one count") + ylab("Number of detected genes") + theme(text = element_text(size = 19))
+
 plot1
+```
+
+```{r, fig.width=12, fig.height=4}
+good.cells = WhichCells(P12_1, expression = nFeature_RNA > 2000 & nFeature_RNA < 8000 & percent.mt < 10) #7004 cells
+P12_1 = SetIdent(P12_1, cells = good.cells, value = 'selected.cells')
+
+#nFeature vs npercent.mt
+plot2 <- FeatureScatter(P12_1, feature1 = "nFeature_RNA", feature2 = "percent.mt", pt.size = 0.1, cols = c("#3BD016", "grey")) +
+  scale_x_continuous(breaks=seq(0,10000,1000)) +
+  scale_y_continuous(breaks=seq(0,100,10)) + 
+  NoLegend()
+plot2
+
+#nFeature vs ncount
+plot3 <- FeatureScatter(P12_1, feature1 = "nFeature_RNA", feature2 = "nCount_RNA", pt.size = 0.1, cols = c("#3BD016", "grey")) +
+  scale_x_continuous(breaks=seq(0,10000,1000)) +
+  scale_y_continuous(breaks=seq(0,100000,25000)) + 
+  NoLegend()
+plot3
+plot2 + plot3
+```
+
+```{r}
+P12_1 <-subset(P12_1, subset = percent.mt<10 & nFeature_RNA>2000 & nFeature_RNA<8000)
+```
+
+```{r, warning=FALSE}
+metrics.df.P12_1 <- summarise(P12_1@meta.data,
+                        'Total number of cells' = n(),
+                        'Mean genes per cell' = round(mean(nFeature_RNA)),
+                        'Mean counts per cell' = round(mean(nCount_RNA)),
+                        'Mean percent.mt' = round(mean(percent.mt)))
+rownames(metrics.df.P12_1) <- "P12_1"
+metrics.df.P12_1 <- as.data.frame(t(metrics.df.P12_1))
+metrics.df.P12_1$Metrics <- rownames(metrics.df.P12_1)
+metrics.df.P12_1 <- metrics.df.P12_1[,2:1]
+metrics.df.P12_1
+```
+
+```{r, warning=FALSE, fig.width=3, fig.height=4}
+CLBNx2.data <- Read10X(data.dir = "Raw/Nx2/", strip.suffix = TRUE)
+P12_2 <- CreateSeuratObject(counts = CLBNx2.data, project = "P12_2", min.cells = 0, min.features = 0) #8617cells
+P12_2 <- PercentageFeatureSet(P12_2, pattern = "^mt-", col.name = "percent.mt")
+#nGenes
+plot4 = suppressWarnings(suppressMessages(VlnPlot(P12_2, features = c("nFeature_RNA"), ncol = 1, pt.size = 0.1) +NoLegend() +
+  scale_y_continuous(breaks=seq(0,10000,2000)) +ggtitle("nGenes detected") +theme(plot.title = element_text(size = 18), legend.text = element_text(20), axis.title.x = element_blank(), axis.text.x = element_text(angle = 0, hjust=0.5))))
+#nCounts
+P12_2_count <- subset(P12_2, nCount_RNA<50000)
+plot4bis = suppressWarnings(suppressMessages(VlnPlot(P12_2_count, features = c("nCount_RNA"), ncol = 1, pt.size = 0.1) +NoLegend() +
+  scale_y_continuous(breaks=seq(0,50000,10000)) +ggtitle("nCounts") +theme(plot.title = element_text(size = 18), legend.text = element_text(20), axis.title.x = element_blank(), axis.text.x = element_text(angle = 0, hjust=0.5))))
+
+plot4
+plot4bis
+```
+
+```{r}
+at_least_one_gene <- apply(CLBNx2.data, 2, function(x) sum(x>0))
+
+df <- as.data.frame(at_least_one_gene)
+plot5 <- ggplot(df, aes(x=at_least_one_gene)) + 
+  geom_histogram(color="black", fill="grey", binwidth = 200) +
+  scale_x_continuous(breaks=seq(0,10000,2000)) + 
+  theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), panel.background = element_blank(), axis.line = element_line(colour = "black"), plot.title = element_text(hjust = 0.5, size = 19)) +
+  ggtitle("Distribution of detected genes") + xlab("Genes with at least one count") + ylab("Number of detected genes") + theme(text = element_text(size = 19)) #title size = 18 better ?
+plot5
+```
+
+```{r, fig.width=12, fig.height=4}
+good.cells = WhichCells(P12_2, expression = nFeature_RNA > 2000 & nFeature_RNA < 8000 & percent.mt < 10) #7004 cells
+P12_2 = SetIdent(P12_2, cells = good.cells, value = 'selected.cells')
+
+#nFeature vs npercent.mt
+plot6 <- FeatureScatter(P12_2, feature1 = "nFeature_RNA", feature2 = "percent.mt", pt.size = 0.1, cols = c("#3BD016", "grey")) +
+  scale_x_continuous(breaks=seq(0,10000,1000)) +
+  scale_y_continuous(breaks=seq(0,100,10)) + 
+  NoLegend()
+
+plot6
+
+#nFeature vs ncount
+plot7 <- FeatureScatter(P12_2, feature1 = "nFeature_RNA", feature2 = "nCount_RNA", pt.size = 0.1, cols = c("#3BD016", "grey")) +
+  scale_x_continuous(breaks=seq(0,10000,1000)) +
+  scale_y_continuous(breaks=seq(0,100000,25000)) + 
+  NoLegend()
+
+plot7
+plot6 + plot7
+```
+
+```{r}
+P12_2 <-subset(P12_2, subset = percent.mt<10 & nFeature_RNA>2000 & nFeature_RNA<8000)
+P12_2
+```
+
+```{r, warning=FALSE}
+metrics.df.P12_2 <- summarise(P12_2@meta.data,
+                        'Total number of cells' = n(),
+                        'Mean genes per cell' = round(mean(nFeature_RNA)),
+                        'Mean counts per cell' = round(mean(nCount_RNA)),
+                        'Mean percent.mt' = round(mean(percent.mt)))
+rownames(metrics.df.P12_2) <- "P12_2"
+metrics.df.P12_2 <- as.data.frame(t(metrics.df.P12_2))
+metrics.df.P12_2$Metrics <- rownames(metrics.df.P12_2)
+metrics.df.P12_2 <- metrics.df.P12_2[,2:1]
+
+metrics.df.P12_2
+```
+
+# B
+
+> FigS1B: Summary of metrics of the P2 and P22 additional datasets.
+
+```{r, warning=FALSE, fig.width=3, fig.height=4}
+P22.data <- Read10X(data.dir = "Raw/p22_filtered_feature_bc_matrix/", strip.suffix = TRUE)
+P22 <- CreateSeuratObject(counts = P22.data, project = "P22", min.cells = 0, min.features = 0) #4887cells
+P22 <- PercentageFeatureSet(P22, pattern = "^mt-", col.name = "percent.mt")
+#nGenes
+plot8 = suppressMessages(suppressWarnings(VlnPlot(P22, features = c("nFeature_RNA"), ncol = 1, pt.size = 0.1) +NoLegend() +
+  scale_y_continuous(breaks=seq(0,10000,2000)) +ggtitle("nGenes detected") +theme(plot.title = element_text(size = 18), legend.text = element_text(20), axis.title.x = element_blank(), axis.text.x = element_text(angle = 0, hjust=0.5))))
+#nCounts
+P22_count <- subset(P22, nCount_RNA<50000)
+plot8bis = suppressMessages(suppressWarnings(VlnPlot(P22_count, features = c("nCount_RNA"), ncol = 1, pt.size = 0.1) +NoLegend() +
+  scale_y_continuous(breaks=seq(0,50000,10000)) +ggtitle("nCounts") +theme(plot.title = element_text(size = 18), legend.text = element_text(20), axis.title.x = element_blank(), axis.text.x = element_text(angle = 0, hjust=0.5))))
+
+plot8
+plot8bis
+```
+
+```{r}
+at_least_one_gene <- apply(P22.data, 2, function(x) sum(x>0))
+
+df <- as.data.frame(at_least_one_gene)
+plot9 <- ggplot(df, aes(x=at_least_one_gene)) + 
+  geom_histogram(color="black", fill="grey", binwidth = 200) +
+  scale_x_continuous(breaks=seq(0,10000,2000)) + 
+  theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), panel.background = element_blank(), axis.line = element_line(colour = "black"), plot.title = element_text(hjust = 0.5, size = 19)) +
+  ggtitle("Distribution of detected genes") + xlab("Genes with at least one count") + ylab("Number of detected genes") + theme(text = element_text(size = 19)) 
+plot9
+```
+
+```{r, fig.width=12, fig.height=4}
+good.cells = WhichCells(P22, expression = nFeature_RNA > 2000 & nFeature_RNA < 8000 & percent.mt < 10) #4254 cells
+P22 = SetIdent(P22, cells = good.cells, value = 'selected.cells')
+
+#nFeature vs npercent.mt
+plot10 <- FeatureScatter(P22, feature1 = "nFeature_RNA", feature2 = "percent.mt", pt.size = 0.1, cols = c("#3BD016", "grey")) +
+  scale_x_continuous(breaks=seq(0,10000,1000)) + NoLegend()
+plot10
+
+#nFeature vs ncount
+plot11 <- FeatureScatter(P22, feature1 = "nFeature_RNA", feature2 = "nCount_RNA", pt.size = 0.1, cols = c("#3BD016", "grey")) +
+  scale_x_continuous(breaks=seq(0,10000,1000)) +NoLegend()
+plot11
+plot10 + plot11
+```
+
+```{r}
+P22 <-subset(P22, subset = percent.mt<10 & nFeature_RNA>2000 & nFeature_RNA<8000)
+P22 #4254 cells
+```
+
+```{r, warning=FALSE}
+metrics.df.P22 <- summarise(P22@meta.data,
+                        'Total number of cells' = n(),
+                        'Mean genes per cell' = round(mean(nFeature_RNA)),
+                        'Mean counts per cell' = round(mean(nCount_RNA)),
+                        'Mean percent.mt' = round(mean(percent.mt)))
+rownames(metrics.df.P22) <- "P22"
+metrics.df.P22 <- as.data.frame(t(metrics.df.P22))
+metrics.df.P22$Metrics <- rownames(metrics.df.P22)
+metrics.df.P22 <- metrics.df.P22[,2:1]
+
+metrics.df.P22
+```
+
+```{r, warning=FALSE, fig.width=3, fig.height=4}
+p2.data <- Read10X(data.dir = "Raw/p2_filtered_feature_bc_matrix/", strip.suffix = TRUE)
+p2 <- CreateSeuratObject(counts = p2.data, project = "p2", min.cells = 0, min.features = 0) #4616 cells
+p2 <- PercentageFeatureSet(p2, pattern = "^mt-", col.name = "percent.mt")
+#nGenes
+plot9 = suppressMessages(suppressWarnings(VlnPlot(p2, features = c("nFeature_RNA"), ncol = 1, pt.size = 0.1) +NoLegend() +
+  scale_y_continuous(breaks=seq(0,10000,2000)) +ggtitle("nGenes detected") +theme(plot.title = element_text(size = 18), legend.text = element_text(20), axis.title.x = element_blank(), axis.text.x = element_text(angle = 0, hjust=0.5))))
+#nCounts
+p2_count <- subset(p2, nCount_RNA<50000)
+plot9bis = suppressMessages(suppressWarnings(VlnPlot(p2_count, features = c("nCount_RNA"), ncol = 1, pt.size = 0.1) +NoLegend() +
+  scale_y_continuous(breaks=seq(0,50000,10000)) +ggtitle("nCounts") +theme(plot.title = element_text(size = 18), legend.text = element_text(20), axis.title.x = element_blank(), axis.text.x = element_text(angle = 0, hjust=0.5))))
+
+plot9
+plot9bis
+```
+
+```{r}
+at_least_one_gene <- apply(p2.data, 2, function(x) sum(x>0))
+
+df <- as.data.frame(at_least_one_gene)
+plot10 <- ggplot(df, aes(x=at_least_one_gene)) + 
+  geom_histogram(color="black", fill="grey", binwidth = 200) +
+  scale_x_continuous(breaks=seq(0,10000,2000)) + 
+  theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), panel.background = element_blank(), axis.line = element_line(colour = "black"), plot.title = element_text(hjust = 0.5, size = 19)) +
+  ggtitle("Distribution of detected genes") + xlab("Genes with at least one count") + ylab("Number of detected genes") + theme(text = element_text(size = 19))
+plot10
+```
+
+```{r, fig.width=12, fig.height=4}
+good.cells = WhichCells(p2, expression = nFeature_RNA > 2000 & nFeature_RNA < 8000 & percent.mt < 10) #4037 cells
+p2 = SetIdent(p2, cells = good.cells, value = 'selected.cells')
+
+#nFeature vs npercent.mt
+plot11 <- FeatureScatter(p2, feature1 = "nFeature_RNA", feature2 = "percent.mt", pt.size = 0.1, cols = c("#3BD016", "grey")) +
+  scale_x_continuous(breaks=seq(0,10000,1000)) +
+  scale_y_continuous(breaks=seq(0,100,10)) + 
+  NoLegend()
+
+plot11
+
+#nFeature vs ncount
+plot12 <- FeatureScatter(p2, feature1 = "nFeature_RNA", feature2 = "nCount_RNA", pt.size = 0.1, cols = c("#3BD016", "grey")) +
+  scale_x_continuous(breaks=seq(0,10000,1000)) +
+  scale_y_continuous(breaks=seq(0,100000,25000)) + 
+  NoLegend()
+
+plot12
+plot11 + plot12
+```
+
+```{r}
+p2 <-subset(p2, subset = percent.mt<10 & nFeature_RNA>2000 & nFeature_RNA<8000)
+p2 #4037 cells
+```
+
+```{r, warning=FALSE}
+metrics.df.p2 <- summarise(p2@meta.data,
+                        'Total number of cells' = n(),
+                        'Mean genes per cell' = round(mean(nFeature_RNA)),
+                        'Mean counts per cell' = round(mean(nCount_RNA)),
+                        'Mean percent.mt' = round(mean(percent.mt)))
+rownames(metrics.df.p2) <- "p2"
+metrics.df.p2 <- as.data.frame(t(metrics.df.p2))
+metrics.df.p2$Metrics <- rownames(metrics.df.p2)
+metrics.df.p2 <- metrics.df.p2[,2:1]
+
+metrics.df.p2
+```
+
+# C
+
+> FigS1C: The dimensionality reduction technique tSNE shows the great overlap of the P12 replicates. Their homogenous contribution to the 15 clusters are shown in percentage.
+
+```{r, fig.width=12, fig.height=4}
+##Tsne to show overlap
+Marcy = readRDS("P12_dSVZ_Seq/P12_dSVZ_Seq.rds")
+Marcy = RunTSNE(Marcy, dims = 1:26)
+plot16 = DimPlot(Marcy, reduction = "tsne", pt.size = 0.5, group.by = "orig.ident") +NoLegend() +ggtitle("")
+plot17 = DimPlot(Marcy, reduction = "tsne", pt.size = 0.5, group.by = "orig.ident", split.by = "orig.ident") +NoLegend() +NoAxes() +ggtitle("")
+plot18 = DimPlot(Marcy, reduction = "tsne", pt.size = 0.5, group.by = "seurat_clusters", label = TRUE) +NoLegend() +NoAxes() +ggtitle("")
+
+plot16 + plot17 + plot18
+```
+
+```{r, fig.width=12, fig.height=4, message=FALSE}
+##Plot graph directly about % of each condition into clusters or ident
+plot.data <- Marcy@meta.data %>%
+  select(orig.ident , cluster = seurat_clusters) %>%
+  group_by(cluster, orig.ident ) %>%
+  summarise(count = n()) %>%
+  mutate(clust_total = sum(count)) %>%
+  mutate(clust_prop = count / clust_total) %>%
+  group_by(orig.ident ) %>%
+  mutate(dataset_total = sum(count)) %>%
+  ungroup() %>%
+  mutate(dataset_prop = count / dataset_total)
+
+#% de chaque cluster d'une condition
+plot19 <- ggplot(plot.data, aes(x = cluster, y = dataset_prop, fill = orig.ident)) +
+  geom_col(position = position_dodge(0.9)) +NoLegend()
+plot19
+```
+
+# D
+
+> FigS1D: Feature plots of most selected genes illustrating the precision of the microdissection approach.
+
+```{r, fig.width=12, fig.height=4, message=FALSE}
+FeaturePlot(Marcy, c("Pax6", "Rlbp1", "Gm29260"), reduction = "umap",ncol = 3)& scale_colour_gradientn(colours =brewer.pal(n=9,name = "Reds"))
+FeaturePlot(Marcy, c("Rbms1", "Nkx6-2", "Vax1"), reduction = "umap",ncol = 3)& scale_colour_gradientn(colours =brewer.pal(n=9,name = "Blues"))
+```
+
+# E
+
+> FigS1E: Markers of the main cell types observed in the dataset are shown as feature plots.
+
+```{r, fig.width=15, fig.height=12, message=FALSE}
+a = FeaturePlot(Marcy, "Foxj1", reduction = "umap", pt.size = 1, order = TRUE) +NoAxes() +theme(legend.key.size = unit(0.8, 'cm')) + scale_colour_viridis_c(na.value = "grey90", option="B") +NoLegend() + theme(plot.title = element_text(size = 25))
+b = FeaturePlot(Marcy, "Thbs4", reduction = "umap", pt.size = 1, order = TRUE) +NoAxes() +theme(legend.key.size = unit(0.8, 'cm')) + scale_colour_viridis_c(na.value = "grey90", option="B") +NoLegend() + theme(plot.title = element_text(size = 25))
+c = FeaturePlot(Marcy, "Egfr", reduction = "umap", pt.size = 1, order = TRUE) +NoAxes() +theme(legend.key.size = unit(0.8, 'cm')) + scale_colour_viridis_c(na.value = "grey90", option="B") +NoLegend() + theme(plot.title = element_text(size = 25))
+d = FeaturePlot(Marcy, "Cdk1", reduction = "umap", pt.size = 1, order = FALSE) +NoAxes() +theme(legend.key.size = unit(0.8, 'cm')) + scale_colour_viridis_c(na.value = "grey90", option="B") +NoLegend() + theme(plot.title = element_text(size = 25))
+e = FeaturePlot(Marcy, "Dcx", reduction = "umap", pt.size = 1, order = FALSE) +NoAxes() +theme(legend.key.size = unit(0.8, 'cm')) + scale_colour_viridis_c(na.value = "grey90", option="B") +NoLegend() + theme(plot.title = element_text(size = 25))
+f = FeaturePlot(Marcy, "Lcat", reduction = "umap", pt.size = 1, order = FALSE) +NoAxes() +theme(legend.key.size = unit(0.8, 'cm')) + scale_colour_viridis_c(na.value = "grey90", option="B") +NoLegend() + theme(plot.title = element_text(size = 25))
+g = FeaturePlot(Marcy, "Flt1", reduction = "umap", pt.size = 1, order = FALSE) +NoAxes() +theme(legend.key.size = unit(0.8, 'cm')) + scale_colour_viridis_c(na.value = "grey90", option="B") +NoLegend() + theme(plot.title = element_text(size = 25))
+h = FeaturePlot(Marcy, "Sox10", reduction = "umap", pt.size = 1, order = FALSE) +NoAxes() +theme(legend.key.size = unit(0.8, 'cm')) + scale_colour_viridis_c(na.value = "grey90", option="B") +NoLegend() + theme(plot.title = element_text(size = 25))
+i = FeaturePlot(Marcy, "Cd53", reduction = "umap", pt.size = 1, order = FALSE) +NoAxes() +theme(legend.key.size = unit(0.8, 'cm')) + scale_colour_viridis_c(na.value = "grey90", option="B") +NoLegend() + theme(plot.title = element_text(size = 25))
+a+b+c+d+e+f+g+h+i+plot_layout(ncol = 3)
+```
+
+# F
+
+> FigS1F: Heatmap depicting expression of top 5 markers distinguishing cell types.
+
+```{r, fig.width=10, fig.height=10, message=FALSE, error=FALSE}
+Idents(Marcy) = "Simplified_clusters"
+Marcy@meta.data$Simplified_clusters <- factor(Marcy@meta.data$Simplified_clusters, levels = c("qNSCs","aNSCs", "TAPs", "Neuroblasts","Astrocytes","Oligos", "Ependymal cells", "Microglia", "Endothelial/Mural cells"))
+
+my_levels = c("qNSCs","aNSCs", "TAPs", "Neuroblasts","Astrocytes","Oligos", "Ependymal cells", "Microglia", "Endothelial/Mural cells")
+
+markers <- FindAllMarkers(Marcy, logfc.threshold = 1, min.pct = 0.25, verbose = FALSE,
+                      assay = "RNA", slot = "data", only.pos = TRUE)
+#ranking by FC & diff.pct
+top5.genes <- markers %>% group_by(cluster) %>% mutate(diff.pct = pct.1 - pct.2) %>% slice_max(order_by = avg_log2FC, n = 10) %>% slice_max(order_by = diff.pct, n = 5)
+all.genes = rownames(Marcy)
+Marcy <- ScaleData(Marcy, assay = "RNA", features = all.genes,verbose = F)
+
+#ranking by FC
+top5.genes2 <- markers %>% group_by(cluster,levels(my_levels)) %>% mutate(diff.pct = pct.1 - pct.2) %>% slice_max(order_by = avg_log2FC, n = 5)
+top5.genes2=top5.genes2 %>%arrange(factor(cluster, levels = my_levels))
+Idents(Marcy) = "Simplified_clusters"
+plot <- DoHeatmap(subset(Marcy, downsample = 100), features = top5.genes2$gene, size = 3, hjust = 0, angle = 45, group.colors = c("#c79300", "#9aa500", "#00cc66", "#00fd9b", "#b983ff", "#fec9ef", "#f8766d", "#ff67fe", "#e76bf3")) + NoLegend() + scale_fill_viridis(option = "D")
+plot
 ```

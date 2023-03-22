@@ -62,9 +62,7 @@ library(ggpubr, quietly = T)
 ```
 
 ```{r, warning=FALSE}
-same_umap_P2_P12_P22=readRDS("C:/Users/raine/OneDrive/Documents/BioInfo/newdataset/same_umap_P2_P12_P22.rds")
-Idents (same_umap_P2_P12_P22) = "orig.ident"
-P12 <- subset(same_umap_P2_P12_P22,idents = c("sdCLBNx1","sdCLBNx2"))
+P12_dSVZ_Seq=readRDS("P12_dSVZ_Seq/P12_dSVZ_Seq.rds")
 ```
 
 # A
@@ -72,13 +70,12 @@ P12 <- subset(same_umap_P2_P12_P22,idents = c("sdCLBNx1","sdCLBNx2"))
 > Fig4A: UMAP highlighting 3 qNSCs subclusters.
 
 ```{r,fig.width=5,fig.height=4,fig.align="center"}
-Idents(P12) = "Full_clusters"
+Idents(P12_dSVZ_Seq) = "Full_clusters"
 
-qNSC3 = WhichCells(P12, idents = "P12_qNSC3")
-qNSC1 = WhichCells(P12, idents = "P12_qNSC2")
-qNSC2 = WhichCells(P12, idents = "P12_qNSC3")
-
-DimPlot(P12, label = F,label.size = 4, pt.size = 1,repel=T,cols= c("#DEDEDE","#6F4D0F","#C59226","#EDC251","#DEDEDE","#DEDEDE","#DEDEDE","#DEDEDE","#DEDEDE","#DEDEDE","#DEDEDE","#DEDEDE","#DEDEDE","#DEDEDE","#DEDEDE","#DEDEDE"))+NoLegend()
+qNSC3 = WhichCells(P12_dSVZ_Seq, idents = "qNSC3")
+qNSC1 = WhichCells(P12_dSVZ_Seq, idents = "qNSC2")
+qNSC2 = WhichCells(P12_dSVZ_Seq, idents = "qNSC3")
+DimPlot(P12_dSVZ_Seq, label = F,label.size = 4, pt.size = 1,repel=T,cols= c("#DEDEDE","#DEDEDE","#6F4D0F","#EDC251","#C59226","#DEDEDE","#DEDEDE","#DEDEDE","#DEDEDE","#DEDEDE","#DEDEDE","#DEDEDE","#DEDEDE","#DEDEDE","#DEDEDE","#DEDEDE"))+NoLegend()
 
 ```
 
@@ -87,10 +84,10 @@ DimPlot(P12, label = F,label.size = 4, pt.size = 1,repel=T,cols= c("#DEDEDE","#6
 > Fig4C: Dot plot analysis revealing that some TFs/TRs are enriched or exclusive to a specific cluster.
 
 ```{r,fig.align="center"}
-DefaultAssay(P12)="RNA"
-my_levels <- c("P12_aNSC1","P12_aNSC2","P12_aNSC3","P12_aNSC4","P12_Astrocytes" ,"P12_Endothelial/Mural cells","P12_Ependymal cells","P12_GABAergic lineage","P12_GLUergic lineage","P12_Microglia","P12_Neuroblasts","P12_Oligos","P12_qNSC1","P12_qNSC3","P12_qNSC2", "P12_TAPs")
-Idents(P12) <- factor(P12@active.ident,levels=my_levels)
-suppressWarnings(suppressMessages(DotPlot(P12, features = c("Gsx2","Six3","Rorb","Eno1","Id4","Id3","Id2","Id1","Hopx","Fezf2","Dmrta2","Zic5","Tfap2c","Emx1"), idents = c("P12_qNSC1","P12_qNSC2","P12_qNSC3"), dot.scale = 10)+scale_colour_viridis(option="viridis")+theme_grey()+RotatedAxis()))
+DefaultAssay(P12_dSVZ_Seq)="RNA"
+my_levels <- c("aNSC1","aNSC2","aNSC3","aNSC4","Astrocytes" ,"Endothelial/Mural cells","Ependymal cells","GABAergic lineage","GLUergic lineage","Microglia","Neuroblasts","Oligos","qNSC1","qNSC3","qNSC2", "TAPs/Nascent Neurons")
+Idents(P12_dSVZ_Seq) <- factor(P12_dSVZ_Seq@active.ident,levels=my_levels)
+suppressWarnings(suppressMessages(DotPlot(P12_dSVZ_Seq, features = c("Gsx2","Six3","Rorb","Eno1","Id4","Id3","Id2","Id1","Hopx","Fezf2","Dmrta2","Zic5","Tfap2c","Emx1"), idents = c("qNSC1","qNSC2","qNSC3"), dot.scale = 10) +scale_colour_viridis(option="viridis")+theme_grey()+RotatedAxis()))
 ```
 
 # D
@@ -98,12 +95,12 @@ suppressWarnings(suppressMessages(DotPlot(P12, features = c("Gsx2","Six3","Rorb"
 > Fig4D: Spatial transcriptomic (Visium) showing the expression of Sox2 and Hopx.
 
 ```{r}
-se.cropped=readRDS("C:/Users/raine/OneDrive/Documents/visium/merge_se_cropped.rds")
-Idents(se.cropped)="labels"
-se.cropped <- RenameIdents(se.cropped,"svze18"="E17.5","svzp2"="P2","svzp12"="P12","svzp22"="P22")
-se.cropped$labels <- Idents(se.cropped)
-se.cropped@meta.data[["labels"]]=as.character(se.cropped@meta.data[["labels"]])
-suppressMessages(suppressWarnings(se.cropped <- suppressMessages(se.cropped %>% 
+SVZ.Visium=readRDS("SVZ.Visium/SVZ.Visium.rds")
+Idents(SVZ.Visium)="labels"
+SVZ.Visium <- RenameIdents(SVZ.Visium,"svze18"="E17.5","svzp2"="P2","svzp12"="P12","svzp22"="P22")
+SVZ.Visium$labels <- Idents(SVZ.Visium)
+SVZ.Visium@meta.data[["labels"]]=as.character(SVZ.Visium@meta.data[["labels"]])
+suppressMessages(suppressWarnings(SVZ.Visium <- suppressMessages(SVZ.Visium %>% 
   SCTransform(verbose = F) %>%
   RunPCA(verbose=F) %>%
   RunUMAP(reduction = "pca", dims = 1:20,verbose = F))))
@@ -112,7 +109,7 @@ suppressMessages(suppressWarnings(se.cropped <- suppressMessages(se.cropped %>%
 
 ```{r, fig.width=10, fig.height=3,fig.align="center"}
 
-FeatureOverlay(se.cropped, features = "Sox2",
+FeatureOverlay(SVZ.Visium, features = "Sox2",
 sampleids = 1:4,
 cols = c("light grey", "mistyrose", "darkred"),
 pt.size = 3,
@@ -120,7 +117,7 @@ add.alpha = TRUE,
 ncol = 4, show.sb = FALSE,
 pt.alpha = 0.1,label.by = "labels")
 
-FeatureOverlay(se.cropped, features = "Hopx",
+FeatureOverlay(SVZ.Visium, features = "Hopx",
 sampleids = 1:4,
 cols = c("light grey", "mistyrose", "darkred"),
 pt.size = 3,
@@ -146,7 +143,7 @@ Astro_Zeisel = c("Fam107a",
         "Cldn10",
         "S1pr1")
 
-data_matrix <- GetAssayData(same_umap_P2_P12_P22, assay = "RNA")
+data_matrix <- GetAssayData(P12_dSVZ_Seq, assay = "RNA")
 data_matrix <- as.matrix(data_matrix)
 
 astroSets10 = Astro_Zeisel
@@ -157,23 +154,24 @@ ranking <- AUCell_buildRankings(data_matrix)
 AUC_10 <- AUCell_calcAUC(CellTypes10, ranking)
 rankings10 <- apply(AUC_10@assays@data@listData[["AUC"]], 1, function(x) (x-min(x))/(max(x)-min(x))) 
 rankings10 <- as.data.frame(rankings10)
-rankings10$class <- as.data.frame(same_umap_P2_P12_P22@meta.data$predicted.fullcelltype, row.names = Cells(same_umap_P2_P12_P22))[row.names(rankings10),]
+rankings10$class <- as.data.frame(P12_dSVZ_Seq@meta.data$Full_clusters, row.names = Cells(P12_dSVZ_Seq))[row.names(rankings10),]
 ```
+
 ```{r,warning=FALSE,fig.align="center"}
 
-my_comparisons <- list(c("P12_Astrocytes", "P12_qNSC1"), 
-                       c("P12_Astrocytes", "P12_qNSC2"), 
-                       c("P12_qNSC1", "P12_qNSC2"))
+my_comparisons <- list(c("Astrocytes", "qNSC1"), 
+                       c("Astrocytes", "qNSC2"), 
+                       c("qNSC1", "qNSC2"))
 
-astro_quiescent <- c("P12_Astrocytes" = "#B882FC","P12_qNSC1" = "#75540D" , "P12_qNSC2"="#CB9B20")
+astro_quiescent <- c("Astrocytes" = "#B882FC","qNSC1" = "#75540D" , "qNSC2"="#CB9B20")
 
 suppressMessages(suppressWarnings(rankings10 %>%
-  filter(class == "P12_qNSC1" |
-          class == "P12_qNSC2" | 
-      class == "P12_Astrocytes" ) %>%
+  filter(class == "qNSC1" |
+          class == "qNSC2" | 
+      class == "Astrocytes" ) %>%
   ggplot(aes(x = class, y = astroSets10,fill=class)) +
   geom_violin(trim = F,position = "dodge")+ggtitle("AUCell score astrocytes markers")+stat_compare_means(label="p.signif",comparisons = my_comparisons)+
-  ylab("AUCell score")+theme_ipsum()+ scale_x_discrete("class", limits = c("P12_qNSC1", "P12_qNSC2","P12_Astrocytes"),labels=c("qNSC1","qNSC2","Astro"))+
+  ylab("AUCell score")+theme_ipsum()+ scale_x_discrete("class", limits = c("qNSC1", "qNSC2","Astrocytes"),labels=c("qNSC1","qNSC2","Astro"))+
   scale_fill_manual(values=astro_quiescent)+NoLegend()))
 
 ```

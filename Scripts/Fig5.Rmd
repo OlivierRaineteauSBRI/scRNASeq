@@ -69,14 +69,12 @@ library(readr, quietly =T)
 > Fig5C:  UMAP illustrating the pallial (red) and subpallial (blue) trajectories.
 
 ```{r,fig.width=6,fig.height=5,fig.align="center"}
-same_umap_P2_P12_P22=readRDS("C:/Users/raine/OneDrive/Documents/BioInfo/newdataset/same_umap_P2_P12_P22.rds")
-Idents(same_umap_P2_P12_P22)="orig.ident"
-P12 = subset(same_umap_P2_P12_P22,idents = c("sdCLBNx1","sdCLBNx2"))
-
-DimPlot(P12,group.by = "Full_detailed_clusters",cols = c("#ea878b","#DEDEDE","#99c3e1","#DEDEDE","#DEDEDE",
-                                                         "#cef3fc","#DEDEDE","#DEDEDE","#f9bebe","#DEDEDE",
-                                                         "#DEDEDE","#DEDEDE","#DEDEDE","#DEDEDE","#DEDEDE",
-                                                         "#DEDEDE","#DEDEDE","#d26d6c","#4479b8","#d26d6c","#DEDEDE"),pt.size=1)+NoLegend()
+P12_dSVZ_Seq=readRDS("P12_dSVZ_Seq/P12_dSVZ_Seq.rds")
+Idents(P12_dSVZ_Seq)="Full_detailed_clusters"
+DimPlot(P12_dSVZ_Seq,group.by = "Full_detailed_clusters",cols = c("#cef3fc","#DEDEDE","#DEDEDE","#DEDEDE","#DEDEDE",
+                                                         "#f9bebe","#99c3e1","#DEDEDE","#ea878b","#d26d6c",
+                                                         "#d26d6c","#4479b8","#DEDEDE","#DEDEDE","#DEDEDE",
+                                                         "#DEDEDE","#DEDEDE","#DEDEDE","#DEDEDE","#DEDEDE","#DEDEDE"),pt.size=1)+NoLegend()
 
 ```
 
@@ -86,7 +84,7 @@ DimPlot(P12,group.by = "Full_detailed_clusters",cols = c("#ea878b","#DEDEDE","#9
 
 ```{r, warning=FALSE,fig.width=15, fig.height=12}
 
-data_pallium <- read.csv("C:/Users/raine/OneDrive/Documents/BioInfo/papier figures et script/formated file for dotplot_Pallium.csv", sep =",", header = T, stringsAsFactors = FALSE)
+data_pallium <- read.csv("DotPlot/formated file for dotplot_Pallium.csv", sep =",", header = T, stringsAsFactors = FALSE)
 data_pallium$group <- factor(data_pallium$group,levels = c("Pallial1", "Pallial2"))
 data_pallium$name <- factor(data_pallium$name, levels = rev(unique(data_pallium$name)), ordered=TRUE)
 
@@ -95,7 +93,7 @@ Pallial <- ggplot(data_pallium, aes(x= group, y=name, size=NES, color=FDR, group
 Pallial <- Pallial + scale_colour_gradient(low = "red", high = "lightgrey", space = "Lab")+xlab("")+ylab("")+ theme(plot.margin = margin(0.1,0.1,0.1,0.1, "cm"))
 
 
-data_subpallium <- read.csv("C:/Users/raine/OneDrive/Documents/BioInfo/papier figures et script/formated file for dotplot_Subpallium.csv", sep =",", header = T, stringsAsFactors = FALSE)
+data_subpallium <- read.csv("DotPlot/formated file for dotplot_Subpallium.csv", sep =",", header = T, stringsAsFactors = FALSE)
 data_subpallium$group <- factor(data_subpallium$group,levels = c("Subpallial1", "Subpallial2"))
 data_subpallium$name <- factor(data_subpallium$name, levels = rev(unique(data_subpallium$name)), ordered=TRUE)
 
@@ -116,8 +114,8 @@ ggarrange(Pallial,Subpallial,legend = "top")+ theme(plot.margin = margin(0.1,0.1
 
 ```{r, warning=FALSE,fig.width=5, fig.height=5,fig.align="center"}
 
-pal <- readRDS("C:/Users/raine/Downloads/wetransfer_subpallial_no_alra_slingshot_qnscs_axis_subset-rds_2022-11-18_1148/pallial_no_alra_slingshot_qNSCs_axis_subset.rds")
-subpal <- readRDS("C:/Users/raine/Downloads/wetransfer_subpallial_no_alra_slingshot_qnscs_axis_subset-rds_2022-11-18_1148/subpallial_no_alra_slingshot_qNSCs_axis_subset.rds")
+pal <- readRDS("Slingshot/pallial_slingshot_qNSCs_axis_subset.rds")
+subpal <- readRDS("Slingshot/subpallial_slingshot_qNSCs_axis_subset.rds")
 
 subpal_counts = subpal@assays$RNA@data
 subpal_counts = t(as.matrix(subpal_counts)) #switch row and columns
@@ -159,22 +157,27 @@ for (gene in genes) {
 >Fig5G: Dot plot showing expression of TGFβ family type I receptor ligands transcripts per cell type.
 
 ```{r, warning=FALSE,fig.width=11, fig.height=5,fig.align="center"}
-same_umap_P2_P12_P22=readRDS("C:/Users/raine/OneDrive/Documents/BioInfo/newdataset/same_umap_P2_P12_P22.rds")
+Marcy=readRDS("P2_P12_P22_dSVZ_Seq/P2_P12_P22_dSVZ_Seq.rds")
 
-Idents(same_umap_P2_P12_P22)="orig.ident"
-P12_P2_test= subset(same_umap_P2_P12_P22,idents = c("p2","sdCLBNx1","sdCLBNx2"))
-Idents(P12_P2_test)="predicted.simplifiedcelltype"
+Idents(Marcy)="orig.ident"
+P12_P2_test= subset(Marcy,idents = c("p2","sdCLBNx1","sdCLBNx2"))
+Idents(P12_P2_test)="Simplified_clusters"
+
+P12_P2_test$merge_clusters=str_replace_all(P12_P2_test$Simplified_clusters,"P12_","")
+P12_P2_test$merge_clusters=str_replace_all(P12_P2_test$merge_clusters,"P2_","")
+
+Idents(P12_P2_test)="merge_clusters"
 
 P12_P2_test@active.ident <- factor(P12_P2_test@active.ident, 
-                            levels=c("P12_Ependymal cells", 
-                                     "P12_qNSCs",
-                                     "P12_aNSCs", 
-                                     "P12_TAPs",
-                                     "P12_Neuroblasts",
-                                     "P12_Astrocytes", 
-                                     "P12_Oligos", 
-                                     "P12_Microglia", 
-                                     "P12_Endothelial/Mural cells"))
+                            levels=c("Ependymal cells", 
+                                     "qNSCs",
+                                     "aNSCs", 
+                                     "TAPs",
+                                     "Neuroblasts",
+                                     "Astrocytes", 
+                                     "Oligos", 
+                                     "Microglia", 
+                                     "Endothelial/Mural cells"))
 
 suppressMessages(DotPlot(P12_P2_test, features = c("Bmp2", "Bmp4", "Gdf5", "Gdf6", "Bmp5", "Bmp6", "Bmp7", "Bmp8a", "Bmp8b", "Gdf15", "Amh", "Bmp15"), dot.scale = 10)+ 
   scale_colour_viridis() + RotatedAxis() + theme_grey() + theme(axis.title = element_text(size=15,colour = "white"),axis.text=element_text(size=12)))

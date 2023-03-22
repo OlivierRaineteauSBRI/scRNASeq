@@ -64,9 +64,7 @@ library(ggpubr, quietly = T)
 
 
 ```{r, warning=FALSE}
-same_umap_P2_P12_P22=readRDS("C:/Users/raine/OneDrive/Documents/BioInfo/newdataset/same_umap_P2_P12_P22.rds")
-Idents (same_umap_P2_P12_P22) = "orig.ident"
-P12 <- subset(same_umap_P2_P12_P22,idents = c("sdCLBNx1","sdCLBNx2"))
+P12_dSVZ_Seq=readRDS("P12_dSVZ_Seq/P12_dSVZ_Seq.rds")
 ```
 
 # A
@@ -74,9 +72,8 @@ P12 <- subset(same_umap_P2_P12_P22,idents = c("sdCLBNx1","sdCLBNx2"))
 > FigS5A: UMAP highlighting 2 qNSCs subclusters.
 
 ```{r,fig.width=5,fig.height=4,fig.align="center"}
-Idents(P12) = "Full_clusters"
-
-DimPlot(P12, label = F,label.size = 4, pt.size = 1,repel=T,cols= c("#DEDEDE","#6F4D0F","#C59226","#DEDEDE","#DEDEDE","#DEDEDE","#DEDEDE","#DEDEDE","#DEDEDE","#DEDEDE","#DEDEDE","#DEDEDE","#DEDEDE","#DEDEDE","#DEDEDE","#DEDEDE"))+NoLegend()
+Idents(P12_dSVZ_Seq) = "Full_clusters"
+DimPlot(P12_dSVZ_Seq, label = F,label.size = 4, pt.size = 1,repel=T,cols= c("#DEDEDE","#DEDEDE","#6F4D0F","#DEDEDE","#C59226","#DEDEDE","#DEDEDE","#DEDEDE","#DEDEDE","#DEDEDE","#DEDEDE","#DEDEDE","#DEDEDE","#DEDEDE","#DEDEDE","#DEDEDE"))+NoLegend()
 
 ```
 
@@ -85,37 +82,37 @@ DimPlot(P12, label = F,label.size = 4, pt.size = 1,repel=T,cols= c("#DEDEDE","#6
 > FigS5B: Violin plots illustrating expression of transcription factors/transcriptional regulators enriched in qNSC1 and qNSC2
 
 ```{r,fig.width=30,fig.height=15,fig.align="center"}
-DefaultAssay(same_umap_P2_P12_P22)="RNA"
-Idents(same_umap_P2_P12_P22) = "Full_clusters"
+DefaultAssay(P12_dSVZ_Seq)="RNA"
+Idents(P12_dSVZ_Seq) = "Full_clusters"
 
 
-p1=VlnPlot(same_umap_P2_P12_P22, features = c("Emx1"), idents=c("P12_qNSC1","P12_qNSC2"), cols=c("#6F4D0F","#C59226"))+stat_compare_means(label = "p.signif", label.x = 1.5)+NoLegend()
+p1=VlnPlot(P12_dSVZ_Seq, features = c("Emx1"), idents=c("qNSC1","qNSC2"), cols=c("#6F4D0F","#C59226"))+stat_compare_means(label = "p.signif", label.x = 1.5)+NoLegend()
 
-p2=VlnPlot(same_umap_P2_P12_P22, features = c("Zic5"), idents=c("P12_qNSC1","P12_qNSC2"), cols=c("#6F4D0F","#C59226"))+stat_compare_means(label = "p.signif", label.x = 1.5)+NoLegend()
+p2=VlnPlot(P12_dSVZ_Seq, features = c("Zic5"), idents=c("qNSC1","qNSC2"), cols=c("#6F4D0F","#C59226"))+stat_compare_means(label = "p.signif", label.x = 1.5)+NoLegend()
 
-p3=VlnPlot(same_umap_P2_P12_P22, features = c("Tfap2c"), idents=c("P12_qNSC1","P12_qNSC2"), cols=c("#6F4D0F","#C59226"))+stat_compare_means(label = "p.signif", label.x = 1.5)+NoLegend()
+p3=VlnPlot(P12_dSVZ_Seq, features = c("Tfap2c"), idents=c("qNSC1","qNSC2"), cols=c("#6F4D0F","#C59226"))+stat_compare_means(label = "p.signif", label.x = 1.5)+NoLegend()
 
-p4=VlnPlot(same_umap_P2_P12_P22, features = c("Dmrta2"), idents=c("P12_qNSC1","P12_qNSC2"), cols=c("#6F4D0F","#C59226"))+stat_compare_means(label = "p.signif", label.x = 1.5)+NoLegend()
+p4=VlnPlot(P12_dSVZ_Seq, features = c("Dmrta2"), idents=c("qNSC1","qNSC2"), cols=c("#6F4D0F","#C59226"))+stat_compare_means(label = "p.signif", label.x = 1.5)+NoLegend()
 
-p5=VlnPlot(same_umap_P2_P12_P22, features = c("Fezf2"), idents=c("P12_qNSC1","P12_qNSC2"), cols=c("#6F4D0F","#C59226"))+stat_compare_means(label = "p.signif", label.x = 1.5)+NoLegend()
+p5=VlnPlot(P12_dSVZ_Seq, features = c("Fezf2"), idents=c("qNSC1","qNSC2"), cols=c("#6F4D0F","#C59226"))+stat_compare_means(label = "p.signif", label.x = 1.5)+NoLegend()
 
-p6=VlnPlot(same_umap_P2_P12_P22, features = c("Hopx"), idents=c("P12_qNSC1","P12_qNSC2"), cols=c("#6F4D0F","#C59226"))+stat_compare_means(label = "p.signif", label.x = 1.5)+NoLegend()
+p6=VlnPlot(P12_dSVZ_Seq, features = c("Hopx"), idents=c("qNSC1","qNSC2"), cols=c("#6F4D0F","#C59226"))+stat_compare_means(label = "p.signif", label.x = 1.5)+NoLegend()
 
-p7=VlnPlot(same_umap_P2_P12_P22, features = c("Id1"), idents=c("P12_qNSC1","P12_qNSC2"), cols=c("#6F4D0F","#C59226"))+stat_compare_means(label = "p.signif", label.x = 1.5)+NoLegend()
+p7=VlnPlot(P12_dSVZ_Seq, features = c("Id1"), idents=c("qNSC1","qNSC2"), cols=c("#6F4D0F","#C59226"))+stat_compare_means(label = "p.signif", label.x = 1.5)+NoLegend()
 
-p8=VlnPlot(same_umap_P2_P12_P22, features = c("Id2"), idents=c("P12_qNSC1","P12_qNSC2"), cols=c("#6F4D0F","#C59226"))+stat_compare_means(label = "p.signif", label.x = 1.5)+NoLegend()
+p8=VlnPlot(P12_dSVZ_Seq, features = c("Id2"), idents=c("qNSC1","qNSC2"), cols=c("#6F4D0F","#C59226"))+stat_compare_means(label = "p.signif", label.x = 1.5)+NoLegend()
 
-p9=VlnPlot(same_umap_P2_P12_P22, features = c("Id3"), idents=c("P12_qNSC1","P12_qNSC2"), cols=c("#6F4D0F","#C59226"))+stat_compare_means(label = "p.signif", label.x = 1.5)+NoLegend()
+p9=VlnPlot(P12_dSVZ_Seq, features = c("Id3"), idents=c("qNSC1","qNSC2"), cols=c("#6F4D0F","#C59226"))+stat_compare_means(label = "p.signif", label.x = 1.5)+NoLegend()
 
-p10=VlnPlot(same_umap_P2_P12_P22, features = c("Id4"), idents=c("P12_qNSC1","P12_qNSC2"), cols=c("#6F4D0F","#C59226"))+stat_compare_means(label = "p.signif", label.x = 1.5)+NoLegend()
+p10=VlnPlot(P12_dSVZ_Seq, features = c("Id4"), idents=c("qNSC1","qNSC2"), cols=c("#6F4D0F","#C59226"))+stat_compare_means(label = "p.signif", label.x = 1.5)+NoLegend()
 
-p11=VlnPlot(same_umap_P2_P12_P22, features = c("Gsx2"), idents=c("P12_qNSC1","P12_qNSC2"), cols=c("#6F4D0F","#C59226"))+stat_compare_means(label = "p.signif", label.x = 1.5)+NoLegend()
+p11=VlnPlot(P12_dSVZ_Seq, features = c("Gsx2"), idents=c("qNSC1","qNSC2"), cols=c("#6F4D0F","#C59226"))+stat_compare_means(label = "p.signif", label.x = 1.5)+NoLegend()
 
-p12=VlnPlot(same_umap_P2_P12_P22, features = c("Six3"), idents=c("P12_qNSC1","P12_qNSC2"), cols=c("#6F4D0F","#C59226"))+stat_compare_means(label = "p.signif", label.x = 1.5)+NoLegend()
+p12=VlnPlot(P12_dSVZ_Seq, features = c("Six3"), idents=c("qNSC1","qNSC2"), cols=c("#6F4D0F","#C59226"))+stat_compare_means(label = "p.signif", label.x = 1.5)+NoLegend()
 
-p13=VlnPlot(same_umap_P2_P12_P22, features = c("Rorb"), idents=c("P12_qNSC1","P12_qNSC2"), cols=c("#6F4D0F","#C59226"))+stat_compare_means(label = "p.signif", label.x = 1.5)+NoLegend()
+p13=VlnPlot(P12_dSVZ_Seq, features = c("Rorb"), idents=c("qNSC1","qNSC2"), cols=c("#6F4D0F","#C59226"))+stat_compare_means(label = "p.signif", label.x = 1.5)+NoLegend()
 
-p14=VlnPlot(same_umap_P2_P12_P22, features = c("Eno1"), idents=c("P12_qNSC1","P12_qNSC2"), cols=c("#6F4D0F","#C59226"))+stat_compare_means(label = "p.signif", label.x = 1.5)+NoLegend()
+p14=VlnPlot(P12_dSVZ_Seq, features = c("Eno1"), idents=c("qNSC1","qNSC2"), cols=c("#6F4D0F","#C59226"))+stat_compare_means(label = "p.signif", label.x = 1.5)+NoLegend()
 
 suppressWarnings(CombinePlots(plots = list(p1,p2,p3,p4,p5,p6,p7,p8,p9,p10,p11,p12,p13,p14),ncol=5))
 ```
@@ -125,11 +122,10 @@ suppressWarnings(CombinePlots(plots = list(p1,p2,p3,p4,p5,p6,p7,p8,p9,p10,p11,p1
 > FigS5C: Violin plots illustrating higher transcript content of qNSC1 when compared qNSC2.
 
 ```{r,fig.width=10,fig.height=6,fig.align="center"}
-DefaultAssay(same_umap_P2_P12_P22)="RNA"
-Idents(same_umap_P2_P12_P22) = "Full_clusters"
+DefaultAssay(P12_dSVZ_Seq)="RNA"
+Idents(P12_dSVZ_Seq) = "Full_clusters"
 
-
-VlnPlot(same_umap_P2_P12_P22, features = c("nFeature_RNA"), idents=c("P12_qNSC1","P12_qNSC2"), cols=c("#6F4D0F","#C59226"), pt.size=1.5)+stat_compare_means(label = "p.signif", label.x = 1.5)
+VlnPlot(P12_dSVZ_Seq, features = c("nFeature_RNA"), idents=c("qNSC1","qNSC2"), cols=c("#6F4D0F","#C59226"), pt.size=1.5)+stat_compare_means(label = "p.signif", label.x = 1.5)
 ```
 
 # D
@@ -138,7 +134,7 @@ VlnPlot(same_umap_P2_P12_P22, features = c("nFeature_RNA"), idents=c("P12_qNSC1"
 
 ```{r,fig.width=6,fig.height=4,fig.align="center"}
 
-qNSCs <- subset(P12, idents=c("P12_qNSC1","P12_qNSC2"))
+qNSCs <- subset(P12_dSVZ_Seq, idents=c("qNSC1","qNSC2"))
 DefaultAssay(qNSCs)="RNA"
 HopxHigh=WhichCells(qNSCs,expression=Hopx>2.5)
 HopxLow=WhichCells(qNSCs,expression=Hopx<0.4)
@@ -160,17 +156,16 @@ VlnPlot(qNSCs, features = "nFeature_RNA", idents=c("HopxHigh","HopxLow") ,cols=c
 > FigS5F to G: Violin plots illustrating the enrichment of genes associated to deep quiescence 
 
 ```{r,fig.width=10,fig.height=4,fig.align="center"}
-DefaultAssay(same_umap_P2_P12_P22)="RNA"
-Idents(same_umap_P2_P12_P22) = "Full_clusters"
+DefaultAssay(P12_dSVZ_Seq)="RNA"
+Idents(P12_dSVZ_Seq) = "Full_clusters"
 
+p1=VlnPlot(P12_dSVZ_Seq, features = c("Cdkn1b"), idents=c("qNSC1","qNSC2"), cols=c("#6F4D0F","#C59226"))+stat_compare_means(label = "p.signif", label.x = 1.5)+NoLegend()
 
-p1=VlnPlot(same_umap_P2_P12_P22, features = c("Cdkn1b"), idents=c("P12_qNSC1","P12_qNSC2"), cols=c("#6F4D0F","#C59226"))+stat_compare_means(label = "p.signif", label.x = 1.5)+NoLegend()
+p2=VlnPlot(P12_dSVZ_Seq, features = c("Bmpr1a"), idents=c("qNSC1","qNSC2"), cols=c("#6F4D0F","#C59226"))+stat_compare_means(label = "p.signif", label.x = 1.5)+NoLegend()
 
-p2=VlnPlot(same_umap_P2_P12_P22, features = c("Bmpr1a"), idents=c("P12_qNSC1","P12_qNSC2"), cols=c("#6F4D0F","#C59226"))+stat_compare_means(label = "p.signif", label.x = 1.5)+NoLegend()
+p3=VlnPlot(P12_dSVZ_Seq, features = c("Egfr"), idents=c("qNSC1","qNSC2"), cols=c("#6F4D0F","#C59226"))+stat_compare_means(label = "p.signif", label.x = 1.5)+NoLegend()
 
-p3=VlnPlot(same_umap_P2_P12_P22, features = c("Egfr"), idents=c("P12_qNSC1","P12_qNSC2"), cols=c("#6F4D0F","#C59226"))+stat_compare_means(label = "p.signif", label.x = 1.5)+NoLegend()
-
-p4=VlnPlot(same_umap_P2_P12_P22, features = c("Cd9"), idents=c("P12_qNSC1","P12_qNSC2"), cols=c("#6F4D0F","#C59226"))+stat_compare_means(label = "p.signif", label.x = 1.5)+NoLegend()
+p4=VlnPlot(P12_dSVZ_Seq, features = c("Cd9"), idents=c("qNSC1","qNSC2"), cols=c("#6F4D0F","#C59226"))+stat_compare_means(label = "p.signif", label.x = 1.5)+NoLegend()
 
 suppressWarnings(CombinePlots(plots = list(p1,p2,p3,p4),ncol=4))
 ```
@@ -191,7 +186,7 @@ Deep_Quiescence = c("Notch2",
         "Nr2e1",
         "Ascl1", "Nfix")
 
-data_matrix <- GetAssayData(same_umap_P2_P12_P22, assay = "RNA")
+data_matrix <- GetAssayData(P12_dSVZ_Seq, assay = "RNA")
 data_matrix <- as.matrix(data_matrix)
 
 deepquiesencesets = Deep_Quiescence
@@ -202,18 +197,16 @@ ranking <- AUCell_buildRankings(data_matrix)
 AUC_10 <- AUCell_calcAUC(CellTypes10, ranking)
 rankings10 <- apply(AUC_10@assays@data@listData[["AUC"]], 1, function(x) (x-min(x))/(max(x)-min(x))) 
 rankings10 <- as.data.frame(rankings10)
-rankings10$class <- as.data.frame(same_umap_P2_P12_P22@meta.data$predicted.fullcelltype, row.names = Cells(same_umap_P2_P12_P22))[row.names(rankings10),]
+rankings10$class <- as.data.frame(P12_dSVZ_Seq@meta.data$Full_clusters, row.names = Cells(P12_dSVZ_Seq))[row.names(rankings10),]
 ```
 
 ```{r,warning=FALSE,fig.align="center"}
 
-my_comparisons <- list(c("P12_qNSC1", "P12_qNSC2"))
-
-deepquiescent <- c("P12_qNSC1" = "#75540D" , "P12_qNSC2"="#CB9B20")
-
+my_comparisons <- list(c("qNSC1", "qNSC2"))
+deepquiescent <- c("qNSC1" = "#75540D" , "qNSC2"="#CB9B20")
 suppressMessages(suppressWarnings(rankings10 %>%
-  filter(class == "P12_qNSC1" |
-          class == "P12_qNSC2") %>%
+  filter(class == "qNSC1" |
+          class == "qNSC2") %>%
   ggplot(aes(x = class, y = deepquiesencesets,fill=class)) +
-  geom_violin()+ggtitle("AUCell score deep quiescence markers")+stat_compare_means(label="p.signif",comparisons = my_comparisons)+ ylab("AUCell score")+theme_ipsum()+ scale_x_discrete("class", limits = c("P12_qNSC1", "P12_qNSC2"), labels=c("qNSC1","qNSC2")) + scale_fill_manual(values=deepquiescent)+NoLegend()))+ geom_jitter()
+  geom_violin()+ggtitle("AUCell score deep quiescence markers")+stat_compare_means(label="p.signif",comparisons = my_comparisons)+ ylab("AUCell score")+theme_ipsum()+ scale_x_discrete("class", limits = c("qNSC1", "qNSC2"), labels=c("qNSC1","qNSC2")) + scale_fill_manual(values=deepquiescent)+NoLegend()))+ geom_jitter()
 ```

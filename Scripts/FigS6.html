@@ -1644,8 +1644,8 @@ library(ggpubr, quietly = T)
 <blockquote>
 <p>FigS6A: Pseudotime analysis of type I receptors</p>
 </blockquote>
-<pre class="r"><code>pal &lt;- readRDS(&quot;C:/Users/raine/Downloads/wetransfer_subpallial_no_alra_slingshot_qnscs_axis_subset-rds_2022-11-18_1148/pallial_no_alra_slingshot_qNSCs_axis_subset.rds&quot;)
-subpal &lt;- readRDS(&quot;C:/Users/raine/Downloads/wetransfer_subpallial_no_alra_slingshot_qnscs_axis_subset-rds_2022-11-18_1148/subpallial_no_alra_slingshot_qNSCs_axis_subset.rds&quot;)
+<pre class="r"><code>pal &lt;- readRDS(&quot;Slingshot/pallial_slingshot_qNSCs_axis_subset.rds&quot;)
+subpal &lt;- readRDS(&quot;Slingshot/subpallial_slingshot_qNSCs_axis_subset.rds&quot;)
 
 subpal_counts = subpal@assays$RNA@data
 subpal_counts = t(as.matrix(subpal_counts)) #switch row and columns
