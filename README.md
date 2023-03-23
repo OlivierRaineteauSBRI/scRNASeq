@@ -57,7 +57,7 @@ The ventricular-subventricular zone (V-SVZ) is the largest neurogenic region of 
 - ``Mizrak2020_Marcy.rds`` : the complete integrated seurat object of Mizrak et al. dataset and our P12 dataset.
 - ``P12_Neurons.rds`` : the complete seurat object of P12 neuronal cells.
 - ``aNSCs.rds`` : the complete seurat object of P12 activated neural stem cells.
-- ``Lineage_GLU.rds`` : the complete seurat object of P2, P12, P22 GLU lineage.
+- ``Lineage_GLU.rds`` : the complete seurat object of P2, P12, P22 neuronal GLU lineage.
 - ``Slingshot`` : the folder containing slingshot objects of pallial and subpallial trajectories at P12.
 - ``Raw`` : the folder containing raw data of P2, P12, P22 datasets.
 - ``DotPlot`` : the folder containing files related to Figure 5E.
