@@ -1,5 +1,8 @@
 <img src="https://img.shields.io/badge/R-276DC3?style=for-the-badge&logo=r&logoColor=white">  <img src ="https://img.shields.io/badge/Python-14354C?style=for-the-badge&logo=python&logoColor=white">
 
+![Dark Blue Modern Geometric LinkedIn Banner](https://user-images.githubusercontent.com/92512533/227219326-43ce0cf1-3b86-4191-b785-d56f202daa6b.gif)
+
+
 <p align="justify">
 
 Welcome to the GitHub repository related to our recent publication **Single cell analysis of the postnatal dorsal V-SVZ reveals a role for Bmpr1a-signaling in silencing pallial germinal activity** _Guillaume Marcy<sup>1</sup>, Louis Foucault<sup>1</sup>, Elodie Babina, Timothy Capeliez, Emeric Texeraud, Stefan Zweifel, Christophe Heinrich, Hector Hernandez-Vargas, Carlos Parras, Denis Jabaudon, <ins> Olivier Raineteau</ins>, Science Advances, 2023 et <a href="https://github.com/OlivierRaineteauSBRI/scRNASeq"> lien  </a>  :_ 
