@@ -62,6 +62,7 @@ The ventricular-subventricular zone (V-SVZ) is the largest neurogenic region of 
 - ``Slingshot`` : the folder containing slingshot objects of pallial and subpallial trajectories at P12.
 - ``Raw`` : the folder containing raw data of P2, P12, P22 datasets.
 - ``DotPlot`` : the folder containing files related to Figure 5E.
+- ``Velocyto`` : the folder containing files related to Figure 1G.
 
 
 ## Prerequisites 
