@@ -8,7 +8,7 @@ Welcome to the GitHub repository related to our recent publication **Single cell
 
  </p>
 
-<h1 align="center"> Postnatal dorsal V-SVZ single cell and visium analysis </h1>
+<h1 align="center"> TGFbeta/BMP-Signaling in postnatal neurogenesis in dSVZ </h1>
 
   <p align="center">
     This website supports documentation and script so that interested readers may reproduce the major results presented in the study.
