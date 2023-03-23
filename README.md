@@ -1,6 +1,6 @@
 <img src="https://img.shields.io/badge/R-276DC3?style=for-the-badge&logo=r&logoColor=white">  <img src ="https://img.shields.io/badge/Python-14354C?style=for-the-badge&logo=python&logoColor=white">
  
-![Dark Blue Modern Geometric LinkedIn Banner (1)](https://user-images.githubusercontent.com/92512533/224784748-9474061f-78b6-4d29-a73f-d1ea175471a2.png)
+[Dark Blue Modern Geometric LinkedIn Banner.pdf](https://github.com/OlivierRaineteauSBRI/scRNASeq/files/11051188/Dark.Blue.Modern.Geometric.LinkedIn.Banner.pdf)
 
  
 <p align="justify">
