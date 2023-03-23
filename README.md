@@ -1,7 +1,6 @@
 <img src="https://img.shields.io/badge/R-276DC3?style=for-the-badge&logo=r&logoColor=white">  <img src ="https://img.shields.io/badge/Python-14354C?style=for-the-badge&logo=python&logoColor=white">
 
-![Dark Blue Modern Geometric LinkedIn Banner](https://user-images.githubusercontent.com/92512533/227219326-43ce0cf1-3b86-4191-b785-d56f202daa6b.gif)
-
+![Dark Blue Modern Geometric LinkedIn Banner (2)](https://user-images.githubusercontent.com/92512533/227224335-5e7398b7-d5f4-432a-8d5d-ca48fc8535a0.gif)
 
 <p align="justify">
 
@@ -9,7 +8,7 @@ Welcome to the GitHub repository related to our recent publication **Single cell
 
  </p>
 
-<h3 align="center">Postnatal mouse SVZ brain scRNA-seq analysis</h3>
+<h1 align="center">Github repo </h1>
 
   <p align="center">
     This website supports documentation and script so that interested readers may reproduce the major results presented in the study.
