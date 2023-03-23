@@ -1,8 +1,5 @@
 <img src="https://img.shields.io/badge/R-276DC3?style=for-the-badge&logo=r&logoColor=white">  <img src ="https://img.shields.io/badge/Python-14354C?style=for-the-badge&logo=python&logoColor=white">
- 
-[Dark Blue Modern Geometric LinkedIn Banner.pdf](https://github.com/OlivierRaineteauSBRI/scRNASeq/files/11051188/Dark.Blue.Modern.Geometric.LinkedIn.Banner.pdf)
 
- 
 <p align="justify">
 
 Welcome to the GitHub repository related to our recent publication **Single cell analysis of the postnatal dorsal V-SVZ reveals a role for Bmpr1a-signaling in silencing pallial germinal activity** _Guillaume Marcy<sup>1</sup>, Louis Foucault<sup>1</sup>, Elodie Babina, Timothy Capeliez, Emeric Texeraud, Stefan Zweifel, Christophe Heinrich, Hector Hernandez-Vargas, Carlos Parras, Denis Jabaudon, <ins> Olivier Raineteau</ins>, Science Advances, 2023 et <a href="https://github.com/OlivierRaineteauSBRI/scRNASeq"> lien  </a>  :_ 
@@ -30,7 +27,7 @@ The ventricular-subventricular zone (V-SVZ) is the largest neurogenic region of 
  </p>
 
 ## Files you'll find here 
-### In Scripts
+###  <a href="https://github.com/OlivierRaineteauSBRI/scRNASeq/tree/main/Scripts">In Scripts</a>
 - ``Fig1.Rmd`` : to retrieve figure 1.
 - ``Fig1G_Velocity.Rmd`` : to retrieve figure 1G linked to velocity.
 - ``Fig2.Rmd`` : to retrieve figure 2. 
@@ -47,7 +44,7 @@ The ventricular-subventricular zone (V-SVZ) is the largest neurogenic region of 
 - ``FigS7.Rmd`` : to retrieve suppl 7.
 - ``SVZ.Visium.Rmd`` : brief analysis of visium object.
 
-### In Objects
+### <a href="https://github.com/OlivierRaineteauSBRI/scRNASeq/tree/main/Objects">In Objects</a>
 - ``P12_dSVZ_Seq.rds`` : the complete seurat object of P12 dSVZ scRNAseq.
 - ``P22_dSVZ_Seq.rds`` : the complete seurat object of P22 dSVZ scRNAseq.
 - ``P2_dSVZ_Seq.rds`` : the complete seurat object of P2 dSVZ scRNAseq.
