@@ -82,7 +82,7 @@ Download and follow each ``.Rmd`` to retrieve our bioinformatic figures. For new
 - download the github directory
 - (for example) within "P12_dSVZ_Seq" directory, open the ``linux_command`` file on textbook
 - open your shell, and type ``cd path/to/P12_dSVZ_Seq``
-- copy the linux command inside the shell; if you are on Windows replace "cat" by "type" and change the backslash to '/'
+- copy the linux command inside the shell; if you are on Windows replace ``cat`` by ``type`` and change the backslash to '/'
 - run it and enjoy the final object
 
 ## Authors
