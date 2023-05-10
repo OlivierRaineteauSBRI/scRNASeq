@@ -4,7 +4,7 @@
 
 <p align="justify">
 
-Welcome to the GitHub repository related to our recent publication **Single cell analysis of the postnatal dorsal V-SVZ reveals a role for Bmpr1a-signaling in silencing pallial germinal activity** _Guillaume Marcy<sup>1</sup>, Louis Foucault<sup>1</sup>, Elodie Babina, Timothy Capeliez, Emeric Texeraud, Stefan Zweifel, Christophe Heinrich, Hector Hernandez-Vargas, Carlos Parras, Denis Jabaudon, <ins> Olivier Raineteau</ins>, Science Advances, 2023 et <a href="https://github.com/OlivierRaineteauSBRI/scRNASeq"> lien  </a>  :_ 
+Welcome to the GitHub repository related to our recent publication **Single cell analysis of the postnatal dorsal V-SVZ reveals a role for Bmpr1a-signaling in silencing pallial germinal activity** _Guillaume Marcy<sup>1</sup>, Louis Foucault<sup>1</sup>, Elodie Babina, Timothy Capeliez, Emeric Texeraud, Stefan Zweifel, Christophe Heinrich, Hector Hernandez-Vargas, Carlos Parras, Denis Jabaudon, <ins> Olivier Raineteau</ins>, <a href="https://www.science.org/doi/10.1126/sciadv.abq7553"> Science Advances </a>,_ 2023  :
 
  </p>
 
