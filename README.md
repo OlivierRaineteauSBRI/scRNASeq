@@ -1,4 +1,4 @@
-<img src="https://img.shields.io/badge/R-276DC3?style=for-the-badge&logo=r&logoColor=white">  <img src ="https://img.shields.io/badge/Python-14354C?style=for-the-badge&logo=python&logoColor=white"> trstrstrstrststrstrstrstsr
+<img src="https://img.shields.io/badge/R-276DC3?style=for-the-badge&logo=r&logoColor=white">  <img src ="https://img.shields.io/badge/Python-14354C?style=for-the-badge&logo=python&logoColor=white"> trstrstrstrststrstrstrstsryuguyguyfjyf
 
 ![Dark Blue Modern Geometric LinkedIn Banner (3)](https://user-images.githubusercontent.com/92512533/228205919-8659c90d-ab28-4174-8301-e2a6e2e80112.gif)
 
